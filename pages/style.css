@@ -269,22 +269,12 @@ a {
   background: var(--code-bg);
 }
 
-.run-gate {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 66px;
-  padding: 0 20px 10px;
-  font-size: 12px;
-  color: var(--text);
-}
-
-.run-gate span {
-  opacity: 0.7;
-}
-
+/* Interaction-only: nothing renders here unless Turnstile needs the visitor. */
 .turnstile {
-  min-height: 65px;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 30;
 }
 
 .editor-host {
@@ -503,22 +493,12 @@ a {
     border-right: none;
   }
 
-  .run-gate {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 66px;
-  padding: 0 20px 10px;
-  font-size: 12px;
-  color: var(--text);
-}
-
-.run-gate span {
-  opacity: 0.7;
-}
-
+  /* Interaction-only: nothing renders here unless Turnstile needs the visitor. */
 .turnstile {
-  min-height: 65px;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 30;
 }
 
 .editor-host {

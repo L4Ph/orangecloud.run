@@ -43,6 +43,9 @@ export function Turnstile({ onToken }: { onToken: (token: string | null) => void
         widgetId = api.render(host.current, {
           sitekey: SITE_KEY,
           action: 'run',
+          // Stay invisible unless Turnstile actually needs the visitor.
+          appearance: 'interaction-only',
+          size: 'flexible',
           theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
           callback: (token: string) => onTokenRef.current(token),
           'expired-callback': () => onTokenRef.current(null),

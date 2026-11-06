@@ -259,6 +259,8 @@ function Playground({ locale }: { locale: Locale }) {
         </div>
       )}
 
+      <Turnstile key={widgetKey} onToken={setToken} />
+
       <main className="split">
         <section className="pane editor-pane" aria-label={t`エディタ`}>
           <div className="pane-head">
@@ -271,6 +273,7 @@ function Playground({ locale }: { locale: Locale }) {
                 type="button"
                 onClick={run}
                 disabled={!lesson.runnable || pending || !token}
+                title={!token ? t`ボット対策の確認が終わると実行できます` : undefined}
               >
                 {pending ? <Trans>実行中…</Trans> : <Trans>実行 ⌘/Ctrl+Enter</Trans>}
               </button>
@@ -281,17 +284,6 @@ function Playground({ locale }: { locale: Locale }) {
           </div>
 
           {lesson.hint && <p className="hint">{i18n._(lesson.hint)}</p>}
-
-          {lesson.runnable && (
-            <div className="run-gate">
-              <Turnstile key={widgetKey} onToken={setToken} />
-              {!token && (
-                <span>
-                  <Trans>ボット対策の確認が終わると実行できます</Trans>
-                </span>
-              )}
-            </div>
-          )}
 
           <CodeEditor
             value={code}
