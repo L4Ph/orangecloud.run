@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetch as apiFetch } from 'void/client';
+import { useRouter } from '@void/react';
 import { I18n, type Messages } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { marked } from 'marked';
-import { lessonDoc, lessons } from '../lessons';
+import { lessons } from '../lessons';
 import { Turnstile } from '../lib/turnstile';
 import { localeLabel, locales, type Locale } from '../lib/locales';
 import { messages as jaMessages } from '../locales/ja/messages.po';
@@ -117,16 +117,16 @@ function CodeEditor({
   return <div className="editor-host" ref={host} />;
 }
 
-function LanguageSwitcher({ locale }: { locale: Locale }) {
-  function change(next: string) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('lang', next);
-    window.location.assign(url.toString());
-  }
-
+function LanguageSwitcher({
+  locale,
+  onChange,
+}: {
+  locale: Locale;
+  onChange: (next: Locale) => void;
+}) {
   return (
     <label className="language-switcher">
-      <select value={locale} onChange={(event) => change(event.target.value)}>
+      <select value={locale} onChange={(event) => onChange(event.target.value as Locale)}>
         {locales.map((item) => (
           <option key={item} value={item}>
             {localeLabel[item]}
@@ -137,9 +137,17 @@ function LanguageSwitcher({ locale }: { locale: Locale }) {
   );
 }
 
-function Playground({ locale }: { locale: Locale }) {
+function Playground({
+  locale,
+  lessonId,
+  docHtml,
+}: {
+  locale: Locale;
+  lessonId: string;
+  docHtml: string;
+}) {
   const { t, i18n } = useLingui();
-  const [lessonId, setLessonId] = useState(lessons[0].id);
+  const router = useRouter();
   const [indexOpen, setIndexOpen] = useState(false);
   const lessonIndex = Math.max(0, lessons.findIndex((item) => item.id === lessonId));
   const lesson = lessons[lessonIndex];
@@ -150,6 +158,8 @@ function Playground({ locale }: { locale: Locale }) {
   const [pending, setPending] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [widgetKey, setWidgetKey] = useState(0);
+  // The widget only exists while we wait for one, so nothing can sit over the page.
+  const [awaitingToken, setAwaitingToken] = useState(false);
 
   useEffect(() => {
     setCode(lesson.code);
@@ -157,14 +167,18 @@ function Playground({ locale }: { locale: Locale }) {
     setError(null);
   }, [lesson.id, lesson.code]);
 
-  const run = useCallback(async () => {
-    if (!lesson.runnable || pending || !token) return;
+  // Client navigation does not re-run head(), so keep the document language honest.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
+  const execute = useCallback(async (value: string, turnstileToken: string) => {
     setPending(true);
     setError(null);
     try {
       const data: RunResult = await apiFetch('/api/run', {
         method: 'POST',
-        body: { code, token },
+        body: { code: value, token: turnstileToken },
         timeout: 20_000,
       });
       if (data.errorCode === 'turnstile') {
@@ -184,17 +198,41 @@ function Playground({ locale }: { locale: Locale }) {
       setToken(null);
       setWidgetKey((key) => key + 1);
     }
-  }, [code, lesson.runnable, pending, token, t]);
+  }, [t]);
+
+  const run = useCallback(() => {
+    if (!lesson.runnable || pending) return;
+    if (!token) {
+      setAwaitingToken(true);
+      return;
+    }
+    void execute(code, token);
+  }, [code, execute, lesson.runnable, pending, token]);
+
+  // The widget answered: run with the token, then unmount it.
+  useEffect(() => {
+    if (!awaitingToken || !token) return;
+    setAwaitingToken(false);
+    void execute(code, token);
+  }, [awaitingToken, token, code, execute]);
+
+  const navigate = useCallback(
+    (nextLessonId: string, nextLocale?: Locale) => {
+      const query: Record<string, string> = { lesson: nextLessonId };
+      const lang = nextLocale ?? new URLSearchParams(window.location.search).get('lang');
+      if (lang) query.lang = lang;
+      void router.visit({ pathname: '/', query });
+    },
+    [router],
+  );
 
   const go = useCallback(
     (delta: number) => {
       const next = lessons[Math.min(lessons.length - 1, Math.max(0, lessonIndex + delta))];
-      setLessonId(next.id);
+      navigate(next.id);
     },
-    [lessonIndex],
+    [lessonIndex, navigate],
   );
-
-  const docHtml = marked.parse(lessonDoc(locale, lesson.id), { async: false });
 
   return (
     <div className="app">
@@ -221,7 +259,10 @@ function Playground({ locale }: { locale: Locale }) {
           >
             <Trans>目次</Trans>
           </button>
-          <LanguageSwitcher locale={locale} />
+          <LanguageSwitcher
+            locale={locale}
+            onChange={(next) => navigate(lessonId, next)}
+          />
         </div>
       </header>
 
@@ -242,8 +283,8 @@ function Playground({ locale }: { locale: Locale }) {
                     type="button"
                     className={item.id === lesson.id ? 'index-item active' : 'index-item'}
                     onClick={() => {
-                      setLessonId(item.id);
                       setIndexOpen(false);
+                      navigate(item.id);
                     }}
                   >
                     <span className="num">{String(index + 1).padStart(2, '0')}</span>
@@ -259,7 +300,7 @@ function Playground({ locale }: { locale: Locale }) {
         </div>
       )}
 
-      <Turnstile key={widgetKey} onToken={setToken} />
+      {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
 
       <main className="split">
         <section className="pane editor-pane" aria-label={t`エディタ`}>
@@ -272,7 +313,7 @@ function Playground({ locale }: { locale: Locale }) {
               <button
                 type="button"
                 onClick={run}
-                disabled={!lesson.runnable || pending || !token}
+                disabled={!lesson.runnable || pending}
                 title={!token ? t`ボット対策の確認が終わると実行できます` : undefined}
               >
                 {pending ? <Trans>実行中…</Trans> : <Trans>実行 ⌘/Ctrl+Enter</Trans>}
@@ -386,7 +427,7 @@ function Playground({ locale }: { locale: Locale }) {
   );
 }
 
-export default function HomePage({ locale }: Props) {
+export default function HomePage({ locale, lessonId, docHtml }: Props) {
   const i18n = useMemo(
     () => new I18n({ locale, messages: { [locale]: catalogs[locale] } }),
     [locale],
@@ -394,7 +435,7 @@ export default function HomePage({ locale }: Props) {
 
   return (
     <I18nProvider i18n={i18n}>
-      <Playground locale={locale} />
+      <Playground locale={locale} lessonId={lessonId} docHtml={docHtml} />
     </I18nProvider>
   );
 }

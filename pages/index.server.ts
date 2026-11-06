@@ -1,11 +1,22 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
+import { marked } from 'marked';
 import { resolveLocale } from '../lib/locales';
+import { lessons } from '../lessons';
+import { lessonDoc } from '../lessons/docs';
 
-export const loader = defineHandler((c) => ({
-  locale: resolveLocale(
+export const loader = defineHandler((c) => {
+  const locale = resolveLocale(
     (c.get('language') as string | undefined) ?? c.req.header('accept-language'),
-  ),
-}));
+  );
+  const requested = c.req.query('lesson');
+  const lesson = lessons.find((item) => item.id === requested) ?? lessons[0];
+
+  return {
+    locale,
+    lessonId: lesson.id,
+    docHtml: marked.parse(lessonDoc(locale, lesson.id), { async: false }),
+  };
+});
 
 export type Props = InferProps<typeof loader>;
 

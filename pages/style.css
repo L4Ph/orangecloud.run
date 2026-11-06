@@ -91,6 +91,22 @@ a {
   white-space: nowrap;
 }
 
+.language-switcher select {
+  font: inherit;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.language-switcher select:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .index-toggle {
   font: inherit;
   font-size: 13px;

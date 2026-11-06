@@ -1,6 +1,5 @@
 import { msg } from '@lingui/core/macro';
 import type { MessageDescriptor } from '@lingui/core';
-import type { Locale } from '../lib/locales';
 import enginesCode from './code/01-engines.js?raw';
 import workersCode from './code/02-workers.js?raw';
 import kvCode from './code/03-kv.js?raw';
@@ -8,16 +7,6 @@ import d1Code from './code/04-d1.js?raw';
 import r2Code from './code/05-r2.js?raw';
 import doCode from './code/06-do.js?raw';
 import aiCode from './code/08-workers-ai.js?raw';
-
-const docs = import.meta.glob('./docs/*/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>;
-
-export function lessonDoc(locale: Locale, id: string) {
-  return docs[`./docs/${locale}/${id}.md`] ?? docs[`./docs/ja/${id}.md`] ?? '';
-}
 
 export type Lesson = {
   id: string;

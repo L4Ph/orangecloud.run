@@ -7,212 +7,212 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ko\n"
 
-#: pages/index.tsx:332
+#: pages/index.tsx:373
 msgid "← 前の章"
 msgstr "← 이전 장"
 
-#: lessons/index.ts:104
+#: lessons/index.ts:93
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/index.tsx:204
+#: pages/index.tsx:242
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "직접 실행하며 배우는 Cloudflare Workers"
 
-#: pages/index.tsx:377
+#: pages/index.tsx:418
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 실전 가이드(도서)"
 
-#: lessons/index.ts:120
+#: lessons/index.ts:109
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:56
+#: lessons/index.ts:45
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:70
+#: lessons/index.ts:59
 msgid "Durable Objects"
 msgstr ""
 
-#: lessons/index.ts:97
+#: lessons/index.ts:86
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "GPU 없이 하는 추론. 우선 저렴한 모델부터"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:300
+#: pages/index.tsx:341
 msgid "HTTP {0} · {1}ms"
 msgstr ""
 
-#: lessons/index.ts:121
+#: lessons/index.ts:110
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate로 부족할 때의 마지막 수단"
 
-#: lessons/index.ts:43
+#: lessons/index.ts:32
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate, 상태 없음, 제한, 과금"
 
-#: lessons/index.ts:35
+#: lessons/index.ts:24
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 엔진과 런타임"
 
-#: pages/index.tsx:353
+#: pages/index.tsx:394
 msgid "JS がはじめてなら最初に"
 msgstr "JavaScript가 처음이라면 여기부터"
 
-#: lessons/index.ts:49
+#: lessons/index.ts:38
 msgid "KV"
 msgstr ""
 
-#: lessons/index.ts:77
+#: lessons/index.ts:66
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:63
+#: lessons/index.ts:52
 msgid "R2"
 msgstr ""
 
-#: lessons/index.ts:64
+#: lessons/index.ts:53
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "S3 호환 객체 스토리지. 전송 무료"
 
-#: lessons/index.ts:57
+#: lessons/index.ts:46
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite. SQL, 인덱스, 과금되는 '행 수'"
 
-#: lessons/index.ts:36
+#: lessons/index.ts:25
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, 그리고 Node·Bun·Deno·Workers"
 
-#: pages/index.tsx:367
+#: pages/index.tsx:408
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "《웹 개발자를 위한 Cloudflare Workers 입문》(도서)"
 
-#: lessons/index.ts:96
+#: lessons/index.ts:85
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:42
+#: lessons/index.ts:31
 msgid "Workers の実行モデル"
 msgstr "Workers의 실행 모델"
 
-#: pages/index.tsx:265
+#: pages/index.tsx:306
 msgid "エディタ"
 msgstr "에디터"
 
-#: lessons/index.ts:146
+#: lessons/index.ts:135
 msgid "この単元は手元のターミナルで実行してください"
 msgstr "이 명령은 직접 터미널에서 실행하세요"
 
-#: lessons/index.ts:116
+#: lessons/index.ts:105
 msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
 msgstr "자료만 제공 (Gateway 설정과 API 키 필요)"
 
-#: lessons/index.ts:129
+#: lessons/index.ts:118
 msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 msgstr "자료만 제공 (이미지 빌드와 유료 플랜 필요)"
 
-#: lessons/index.ts:92
+#: lessons/index.ts:81
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 msgstr "자료만 제공 (공유 샌드박스에서는 큐를 실행할 수 없음)"
 
-#: pages/index.tsx:320
+#: pages/index.tsx:361
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "이 장은 자료만 제공합니다. 코드는 참고용입니다."
 
-#: pages/index.tsx:207
+#: pages/index.tsx:245
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "튜토리얼 겸 플레이그라운드"
 
-#: lessons/index.ts:133
+#: lessons/index.ts:122
 msgid "デプロイまで"
 msgstr "배포까지"
 
-#: pages/index.tsx:276
+#: pages/index.tsx:317
 msgid "ボット対策の確認が終わると実行できます"
 msgstr "봇 확인이 끝나면 실행할 수 있습니다."
 
-#: pages/index.tsx:172
+#: pages/index.tsx:186
 msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
 msgstr "봇 확인에 실패했습니다. 다시 시도하세요."
 
-#: lessons/index.ts:105
+#: lessons/index.ts:94
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "모델 앞에서 로그·캐시·제한·폴백"
 
-#: lessons/index.ts:134
+#: lessons/index.ts:123
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "로그인, 시크릿, 배포, 공개 후 확인"
 
-#: pages/index.tsx:281
+#: pages/index.tsx:322
 msgid "初期化"
 msgstr "초기화"
 
-#: pages/index.tsx:346
+#: pages/index.tsx:387
 msgid "前提知識"
 msgstr "사전 지식"
 
-#: lessons/index.ts:71
+#: lessons/index.ts:60
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "이름마다 하나의 실체. 상태와 직렬화"
 
-#: pages/index.tsx:359
+#: pages/index.tsx:400
 msgid "型が読めないと先に進みにくい"
 msgstr "타입을 읽지 못하면 계속하기 어렵습니다"
 
-#: pages/index.tsx:278
+#: pages/index.tsx:319
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "실행 ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:316
+#: pages/index.tsx:357
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "실행하면 응답과 console 출력이 여기에 표시됩니다. 네트워크가 막혀 있어 무엇을 써도 안전합니다."
 
-#: pages/index.tsx:278
+#: pages/index.tsx:319
 msgid "実行中…"
 msgstr "실행 중…"
 
-#: pages/index.tsx:369
+#: pages/index.tsx:410
 msgid "本気で使うなら"
 msgstr "본격적으로 쓸 때"
 
-#: pages/index.tsx:342
+#: pages/index.tsx:383
 msgid "次の章 →"
 msgstr "다음 장 →"
 
-#: pages/index.tsx:222
-#: pages/index.tsx:232
-#: pages/index.tsx:236
+#: pages/index.tsx:260
+#: pages/index.tsx:273
+#: pages/index.tsx:277
 msgid "目次"
 msgstr "목차"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:212
+#: pages/index.tsx:250
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "{0}장 / 전체 {1}장"
 
-#: pages/index.tsx:379
+#: pages/index.tsx:420
 msgid "設計・運用まで"
 msgstr "설계와 운영까지"
 
-#: lessons/index.ts:100
+#: lessons/index.ts:89
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 호출 비용은 이 사이트가 부담합니다. 로컬 개발에서만 Cloudflare 로그인이 필요합니다."
 
-#: pages/index.tsx:327
+#: pages/index.tsx:368
 msgid "資料"
 msgstr "자료"
 
-#: lessons/index.ts:50
+#: lessons/index.ts:39
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "빠른 읽기와 최종 일관성. 캐시와 설정의 자리"
 
-#: lessons/index.ts:78
+#: lessons/index.ts:67
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "비동기 처리와 재개 가능한 장기 작업"
 
-#: pages/index.tsx:330
+#: pages/index.tsx:371
 msgid "章の移動"
 msgstr "장 이동"

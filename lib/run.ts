@@ -61,7 +61,7 @@ const hash = (text: string) => {
 const stub = (namespace: DurableObjectNamespace, name: string) =>
   namespace.get(namespace.idFromName(name));
 
-type SandboxEnv = VoidGeneratedEnvBindings & {
+type SandboxEnv = {
   LOADER: WorkerLoader;
   LESSON_KV: DurableObjectNamespace;
   LESSON_R2: DurableObjectNamespace;
