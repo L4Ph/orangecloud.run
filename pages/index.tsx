@@ -50,6 +50,7 @@ function CodeEditor({
         lineHeight: 20,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
+        wordWrap: 'on',
         automaticLayout: true,
         tabSize: 2,
         padding: { top: 14, bottom: 14 },
@@ -94,7 +95,9 @@ function CodeEditor({
 
 export default function HomePage() {
   const [lessonId, setLessonId] = useState(lessons[0].id);
-  const lesson = lessons.find((item) => item.id === lessonId) ?? lessons[0];
+  const [indexOpen, setIndexOpen] = useState(false);
+  const lessonIndex = Math.max(0, lessons.findIndex((item) => item.id === lessonId));
+  const lesson = lessons[lessonIndex];
 
   const [code, setCode] = useState(lesson.code);
   const [result, setResult] = useState<RunResult | null>(null);
@@ -130,6 +133,14 @@ export default function HomePage() {
     }
   }, [code, lesson.runnable, pending]);
 
+  const go = useCallback(
+    (delta: number) => {
+      const next = lessons[Math.min(lessons.length - 1, Math.max(0, lessonIndex + delta))];
+      setLessonId(next.id);
+    },
+    [lessonIndex],
+  );
+
   const docHtml = marked.parse(lesson.doc, { async: false });
 
   return (
@@ -139,20 +150,52 @@ export default function HomePage() {
           <strong>Cloudflare Workers を動かして学ぶ</strong>
           <span>チュートリアル兼プレイグラウンド</span>
         </div>
-        <nav className="tabs" aria-label="単元">
-          {lessons.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              className={item.id === lesson.id ? 'tab active' : 'tab'}
-              onClick={() => setLessonId(item.id)}
-              title={item.summary}
-            >
-              {index + 1}. {item.title}
-            </button>
-          ))}
-        </nav>
+        <div className="progress-area">
+          <span className="progress">
+            第 {lessonIndex + 1} 章 / 全 {lessons.length} 章
+          </span>
+          <button
+            type="button"
+            className="index-toggle"
+            aria-expanded={indexOpen}
+            onClick={() => setIndexOpen((open) => !open)}
+          >
+            目次
+          </button>
+        </div>
       </header>
+
+      {indexOpen && (
+        <div className="index-overlay" onClick={() => setIndexOpen(false)}>
+          <nav
+            className="index-panel"
+            aria-label="目次"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <p className="index-title">目次</p>
+            <ol>
+              {lessons.map((item, index) => (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    className={item.id === lesson.id ? 'index-item active' : 'index-item'}
+                    onClick={() => {
+                      setLessonId(item.id);
+                      setIndexOpen(false);
+                    }}
+                  >
+                    <span className="num">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="info">
+                      <strong>{item.title}</strong>
+                      <small>{item.summary}</small>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </div>
+      )}
 
       <main className="split">
         <section className="pane editor-pane" aria-label="エディタ">
@@ -209,6 +252,21 @@ export default function HomePage() {
         <section className="pane doc-pane" aria-label="資料">
           <article className="doc" dangerouslySetInnerHTML={{ __html: docHtml }} />
           <footer className="doc-footer">
+            <nav className="lesson-nav" aria-label="章の移動">
+              <button type="button" onClick={() => go(-1)} disabled={lessonIndex === 0}>
+                ← 前の章
+              </button>
+              <span>
+                {lessonIndex + 1} / {lessons.length}
+              </span>
+              <button
+                type="button"
+                onClick={() => go(1)}
+                disabled={lessonIndex === lessons.length - 1}
+              >
+                次の章 →
+              </button>
+            </nav>
             <p>前提知識</p>
             <ul>
               <li>

@@ -104,7 +104,7 @@ export class Onboarding extends WorkflowEntrypoint {
     doc: aiDoc,
     code: aiCode,
     runnable: true,
-    hint: '要 Cloudflare ログイン（Workers AI はローカルで動きません）',
+    hint: '費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です',
   },
   {
     id: 'ai-gateway',
