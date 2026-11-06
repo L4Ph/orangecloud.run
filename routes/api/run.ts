@@ -34,11 +34,14 @@ export default {
     globalThis.console = { log: record, info: record, warn: record, error: record, debug: record };
     try {
       if (typeof user?.fetch !== 'function') {
-        return Response.json({ error: 'export default { async fetch(request, env) { ... } } を書いてください', logs });
+        return Response.json({
+          error: 'Write a module that exports default { fetch(request, env) { ... } }',
+          logs,
+        });
       }
       const res = await user.fetch(request, env, ctx);
       if (!(res instanceof Response)) {
-        return Response.json({ error: 'Response を return してください', logs });
+        return Response.json({ error: 'Return a Response', logs });
       }
       return Response.json({ status: res.status, body: await res.text(), logs });
     } catch (error) {

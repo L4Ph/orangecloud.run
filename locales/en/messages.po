@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-11-07 02:29+0900\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+
+#: pages/index.tsx:309
+msgid "← 前の章"
+msgstr "← Previous"
+
+#: lessons/index.ts:104
+msgid "AI Gateway"
+msgstr ""
+
+#: pages/index.tsx:188
+msgid "Cloudflare Workers を動かして学ぶ"
+msgstr "Learn Cloudflare Workers by running them"
+
+#: pages/index.tsx:354
+msgid "Cloudflare Workers 実践ガイド"
+msgstr "Cloudflare Workers in Practice (book)"
+
+#: lessons/index.ts:120
+msgid "Containers"
+msgstr ""
+
+#: lessons/index.ts:56
+msgid "D1"
+msgstr ""
+
+#: lessons/index.ts:70
+msgid "Durable Objects"
+msgstr ""
+
+#: lessons/index.ts:97
+msgid "GPU を持たずに推論。まずは安いモデルから"
+msgstr "Inference without owning a GPU. Start with a cheap model"
+
+#. placeholder {0}: result.status
+#. placeholder {1}: result.ms
+#: pages/index.tsx:277
+msgid "HTTP {0} · {1}ms"
+msgstr ""
+
+#: lessons/index.ts:121
+msgid "isolate で足りないときの最後の手段"
+msgstr "The last resort when isolates are not enough"
+
+#: lessons/index.ts:43
+msgid "isolate、状態を持たない、制限、課金"
+msgstr "Isolates, no shared state, limits, billing"
+
+#: lessons/index.ts:35
+msgid "JavaScript エンジンとランタイム"
+msgstr "JavaScript engines and runtimes"
+
+#: pages/index.tsx:330
+msgid "JS がはじめてなら最初に"
+msgstr "start here if JavaScript is new"
+
+#: lessons/index.ts:49
+msgid "KV"
+msgstr ""
+
+#: lessons/index.ts:77
+msgid "Queues / Workflows"
+msgstr ""
+
+#: lessons/index.ts:63
+msgid "R2"
+msgstr ""
+
+#: lessons/index.ts:64
+msgid "S3 互換のオブジェクトストレージ。転送無料"
+msgstr "S3-compatible object storage. Egress is free"
+
+#: lessons/index.ts:57
+msgid "SQLite。SQL、索引、課金される「行数」"
+msgstr "SQLite. SQL, indexes, and the rows you are billed for"
+
+#: lessons/index.ts:36
+msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
+msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, plus Node, Bun, Deno, and Workers"
+
+#: pages/index.tsx:344
+msgid "Web開発者のための［入門］Cloudflare Workers"
+msgstr "Cloudflare Workers: A Guide for Web Developers (book)"
+
+#: lessons/index.ts:96
+msgid "Workers AI"
+msgstr ""
+
+#: lessons/index.ts:42
+msgid "Workers の実行モデル"
+msgstr "The Workers execution model"
+
+#: pages/index.tsx:247
+msgid "エディタ"
+msgstr "Editor"
+
+#: lessons/index.ts:146
+msgid "この単元は手元のターミナルで実行してください"
+msgstr "Run these commands in your own terminal"
+
+#: lessons/index.ts:116
+msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
+msgstr "Reference only (needs a Gateway and an API key)"
+
+#: lessons/index.ts:129
+msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
+msgstr "Reference only (needs an image build and a paid plan)"
+
+#: lessons/index.ts:92
+msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
+msgstr "Reference only (queues are not available in the shared sandbox)"
+
+#: pages/index.tsx:297
+msgid "この単元は資料のみです。コードは参考として置いています。"
+msgstr "This chapter is reference only. The code is here to read."
+
+#: pages/index.tsx:191
+msgid "チュートリアル兼プレイグラウンド"
+msgstr "Tutorial and playground"
+
+#: lessons/index.ts:133
+msgid "デプロイまで"
+msgstr "Deploying"
+
+#: lessons/index.ts:105
+msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
+msgstr "Logging, caching, limits, and fallbacks in front of the model"
+
+#: lessons/index.ts:134
+msgid "ログイン、秘密値、デプロイ、公開後の確認"
+msgstr "Login, secrets, deploy, and what to check after"
+
+#: pages/index.tsx:258
+msgid "初期化"
+msgstr "Reset"
+
+#: pages/index.tsx:323
+msgid "前提知識"
+msgstr "Prerequisites"
+
+#: lessons/index.ts:71
+msgid "名前ごとに 1 つの実体。状態と直列化"
+msgstr "One instance per name. State and serialization"
+
+#: pages/index.tsx:336
+msgid "型が読めないと先に進みにくい"
+msgstr "hard to continue without reading types"
+
+#: pages/index.tsx:255
+msgid "実行 ⌘/Ctrl+Enter"
+msgstr "Run ⌘/Ctrl+Enter"
+
+#: pages/index.tsx:293
+msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+msgstr "Run the code and the response plus console output appear here. The network is blocked, so nothing can break."
+
+#: pages/index.tsx:255
+msgid "実行中…"
+msgstr "Running…"
+
+#: pages/index.tsx:346
+msgid "本気で使うなら"
+msgstr "when you get serious"
+
+#: pages/index.tsx:319
+msgid "次の章 →"
+msgstr "Next →"
+
+#: pages/index.tsx:206
+#: pages/index.tsx:216
+#: pages/index.tsx:220
+msgid "目次"
+msgstr "Contents"
+
+#. placeholder {0}: lessonIndex + 1
+#. placeholder {1}: lessons.length
+#: pages/index.tsx:196
+msgid "第 {0} 章 / 全 {1} 章"
+msgstr "Chapter {0} of {1}"
+
+#: pages/index.tsx:356
+msgid "設計・運用まで"
+msgstr "design and operations"
+
+#: lessons/index.ts:100
+msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
+msgstr "This site pays for the AI calls. Only local development needs a Cloudflare login."
+
+#: pages/index.tsx:304
+msgid "資料"
+msgstr "Lesson"
+
+#: lessons/index.ts:50
+msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
+msgstr "Fast reads with eventual consistency. A home for cache and config"
+
+#: lessons/index.ts:78
+msgid "非同期処理と、再開できる長時間ジョブ"
+msgstr "Async work and long-running jobs that resume"
+
+#: pages/index.tsx:307
+msgid "章の移動"
+msgstr "Chapter navigation"

@@ -11,7 +11,7 @@ class AiFacade extends DurableObject {
       const message = error instanceof Error ? error.message : String(error);
       if (/Not available|authentication|unauthorized/i.test(message)) {
         throw new Error(
-          'Workers AI に接続できません。ローカル開発では `void cloudflare login` が必要です（デプロイ後は不要）。',
+          'Workers AI is unavailable. Run `void cloudflare login` for local development (not needed once deployed).',
         );
       }
       throw error;

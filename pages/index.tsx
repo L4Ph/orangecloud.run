@@ -1,8 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetch as apiFetch } from 'void/client';
+import { I18n, type Messages } from '@lingui/core';
+import { I18nProvider } from '@lingui/react';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { marked } from 'marked';
-import { lessons } from '../lessons';
+import { lessonDoc, lessons } from '../lessons';
+import { localeLabel, locales, type Locale } from '../lib/locales';
+import { messages as jaMessages } from '../locales/ja/messages.po';
+import { messages as enMessages } from '../locales/en/messages.po';
+import { messages as zhMessages } from '../locales/zh/messages.po';
+import { messages as koMessages } from '../locales/ko/messages.po';
+import type { Props } from './index.server';
 import './style.css';
+
+const catalogs: Record<Locale, Messages> = {
+  ja: jaMessages,
+  en: enMessages,
+  zh: zhMessages,
+  ko: koMessages,
+};
 
 type RunResult = { status: number; body: string; logs: string[]; ms: number; error?: string };
 
@@ -93,7 +109,28 @@ function CodeEditor({
   return <div className="editor-host" ref={host} />;
 }
 
-export default function HomePage() {
+function LanguageSwitcher({ locale }: { locale: Locale }) {
+  function change(next: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', next);
+    window.location.assign(url.toString());
+  }
+
+  return (
+    <label className="language-switcher">
+      <select value={locale} onChange={(event) => change(event.target.value)}>
+        {locales.map((item) => (
+          <option key={item} value={item}>
+            {localeLabel[item]}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function Playground({ locale }: { locale: Locale }) {
+  const { t, i18n } = useLingui();
   const [lessonId, setLessonId] = useState(lessons[0].id);
   const [indexOpen, setIndexOpen] = useState(false);
   const lessonIndex = Math.max(0, lessons.findIndex((item) => item.id === lessonId));
@@ -141,18 +178,24 @@ export default function HomePage() {
     [lessonIndex],
   );
 
-  const docHtml = marked.parse(lesson.doc, { async: false });
+  const docHtml = marked.parse(lessonDoc(locale, lesson.id), { async: false });
 
   return (
     <div className="app">
       <header className="top">
         <div className="brand">
-          <strong>Cloudflare Workers を動かして学ぶ</strong>
-          <span>チュートリアル兼プレイグラウンド</span>
+          <strong>
+            <Trans>Cloudflare Workers を動かして学ぶ</Trans>
+          </strong>
+          <span>
+            <Trans>チュートリアル兼プレイグラウンド</Trans>
+          </span>
         </div>
         <div className="progress-area">
           <span className="progress">
-            第 {lessonIndex + 1} 章 / 全 {lessons.length} 章
+            <Trans>
+              第 {lessonIndex + 1} 章 / 全 {lessons.length} 章
+            </Trans>
           </span>
           <button
             type="button"
@@ -160,8 +203,9 @@ export default function HomePage() {
             aria-expanded={indexOpen}
             onClick={() => setIndexOpen((open) => !open)}
           >
-            目次
+            <Trans>目次</Trans>
           </button>
+          <LanguageSwitcher locale={locale} />
         </div>
       </header>
 
@@ -169,10 +213,12 @@ export default function HomePage() {
         <div className="index-overlay" onClick={() => setIndexOpen(false)}>
           <nav
             className="index-panel"
-            aria-label="目次"
+            aria-label={t`目次`}
             onClick={(event) => event.stopPropagation()}
           >
-            <p className="index-title">目次</p>
+            <p className="index-title">
+              <Trans>目次</Trans>
+            </p>
             <ol>
               {lessons.map((item, index) => (
                 <li key={item.id}>
@@ -186,8 +232,8 @@ export default function HomePage() {
                   >
                     <span className="num">{String(index + 1).padStart(2, '0')}</span>
                     <span className="info">
-                      <strong>{item.title}</strong>
-                      <small>{item.summary}</small>
+                      <strong>{i18n._(item.title)}</strong>
+                      <small>{i18n._(item.summary)}</small>
                     </span>
                   </button>
                 </li>
@@ -198,23 +244,23 @@ export default function HomePage() {
       )}
 
       <main className="split">
-        <section className="pane editor-pane" aria-label="エディタ">
+        <section className="pane editor-pane" aria-label={t`エディタ`}>
           <div className="pane-head">
             <div>
-              <h1>{lesson.title}</h1>
-              <p>{lesson.summary}</p>
+              <h1>{i18n._(lesson.title)}</h1>
+              <p>{i18n._(lesson.summary)}</p>
             </div>
             <div className="controls">
               <button type="button" onClick={run} disabled={!lesson.runnable || pending}>
-                {pending ? '実行中…' : '実行 ⌘/Ctrl+Enter'}
+                {pending ? <Trans>実行中…</Trans> : <Trans>実行 ⌘/Ctrl+Enter</Trans>}
               </button>
               <button type="button" className="ghost" onClick={() => setCode(lesson.code)}>
-                初期化
+                <Trans>初期化</Trans>
               </button>
             </div>
           </div>
 
-          {lesson.hint && <p className="hint">{lesson.hint}</p>}
+          {lesson.hint && <p className="hint">{i18n._(lesson.hint)}</p>}
 
           <CodeEditor
             value={code}
@@ -228,7 +274,9 @@ export default function HomePage() {
             {result && (
               <>
                 <p className="status">
-                  HTTP {result.status} · {result.ms}ms
+                  <Trans>
+                    HTTP {result.status} · {result.ms}ms
+                  </Trans>
                 </p>
                 <pre>{result.body}</pre>
                 {result.logs.length > 0 && (
@@ -241,20 +289,24 @@ export default function HomePage() {
             )}
             {!error && !result && (
               <p className="empty">
-                {lesson.runnable
-                  ? '実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。'
-                  : 'この単元は資料のみです。コードは参考として置いています。'}
+                {lesson.runnable ? (
+                  <Trans>
+                    実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。
+                  </Trans>
+                ) : (
+                  <Trans>この単元は資料のみです。コードは参考として置いています。</Trans>
+                )}
               </p>
             )}
           </div>
         </section>
 
-        <section className="pane doc-pane" aria-label="資料">
+        <section className="pane doc-pane" aria-label={t`資料`}>
           <article className="doc" dangerouslySetInnerHTML={{ __html: docHtml }} />
           <footer className="doc-footer">
-            <nav className="lesson-nav" aria-label="章の移動">
+            <nav className="lesson-nav" aria-label={t`章の移動`}>
               <button type="button" onClick={() => go(-1)} disabled={lessonIndex === 0}>
-                ← 前の章
+                <Trans>← 前の章</Trans>
               </button>
               <span>
                 {lessonIndex + 1} / {lessons.length}
@@ -264,22 +316,24 @@ export default function HomePage() {
                 onClick={() => go(1)}
                 disabled={lessonIndex === lessons.length - 1}
               >
-                次の章 →
+                <Trans>次の章 →</Trans>
               </button>
             </nav>
-            <p>前提知識</p>
+            <p>
+              <Trans>前提知識</Trans>
+            </p>
             <ul>
               <li>
                 <a href="https://jsprimer.net/" target="_blank" rel="noreferrer">
                   JavaScript Primer
                 </a>{' '}
-                — JS がはじめてなら最初に
+                — <Trans>JS がはじめてなら最初に</Trans>
               </li>
               <li>
                 <a href="https://typescriptbook.jp/" target="_blank" rel="noreferrer">
                   サバイバル TypeScript
                 </a>{' '}
-                — 型が読めないと先に進みにくい
+                — <Trans>型が読めないと先に進みにくい</Trans>
               </li>
               <li>
                 <a
@@ -287,9 +341,9 @@ export default function HomePage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Web開発者のための［入門］Cloudflare Workers
+                  <Trans>Web開発者のための［入門］Cloudflare Workers</Trans>
                 </a>{' '}
-                — 本気で使うなら
+                — <Trans>本気で使うなら</Trans>
               </li>
               <li>
                 <a
@@ -297,14 +351,27 @@ export default function HomePage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Cloudflare Workers 実践ガイド
+                  <Trans>Cloudflare Workers 実践ガイド</Trans>
                 </a>{' '}
-                — 設計・運用まで
+                — <Trans>設計・運用まで</Trans>
               </li>
             </ul>
           </footer>
         </section>
       </main>
     </div>
+  );
+}
+
+export default function HomePage({ locale }: Props) {
+  const i18n = useMemo(
+    () => new I18n({ locale, messages: { [locale]: catalogs[locale] } }),
+    [locale],
+  );
+
+  return (
+    <I18nProvider i18n={i18n}>
+      <Playground locale={locale} />
+    </I18nProvider>
   );
 }

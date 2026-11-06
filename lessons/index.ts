@@ -1,87 +1,81 @@
-import enginesDoc from './01-engines.md?raw';
+import { msg } from '@lingui/core/macro';
+import type { MessageDescriptor } from '@lingui/core';
+import type { Locale } from '../lib/locales';
 import enginesCode from './code/01-engines.js?raw';
-import workersDoc from './02-workers.md?raw';
 import workersCode from './code/02-workers.js?raw';
-import kvDoc from './03-kv.md?raw';
 import kvCode from './code/03-kv.js?raw';
-import d1Doc from './04-d1.md?raw';
 import d1Code from './code/04-d1.js?raw';
-import r2Doc from './05-r2.md?raw';
 import r2Code from './code/05-r2.js?raw';
-import doDoc from './06-durable-objects.md?raw';
 import doCode from './code/06-do.js?raw';
-import queuesDoc from './07-queues-workflows.md?raw';
-import aiDoc from './08-workers-ai.md?raw';
 import aiCode from './code/08-workers-ai.js?raw';
-import gatewayDoc from './09-ai-gateway.md?raw';
-import containersDoc from './10-containers.md?raw';
-import deployDoc from './11-deploy.md?raw';
+
+const docs = import.meta.glob('./docs/*/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+export function lessonDoc(locale: Locale, id: string) {
+  return docs[`./docs/${locale}/${id}.md`] ?? docs[`./docs/ja/${id}.md`] ?? '';
+}
 
 export type Lesson = {
   id: string;
-  title: string;
-  summary: string;
-  doc: string;
+  title: MessageDescriptor;
+  summary: MessageDescriptor;
   code: string;
   language?: 'javascript' | 'shell';
   runnable: boolean;
-  hint?: string;
+  hint?: MessageDescriptor;
 };
 
 export const lessons: Lesson[] = [
   {
     id: 'engines',
-    title: 'JavaScript エンジンとランタイム',
-    summary: 'V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers',
-    doc: enginesDoc,
+    title: msg`JavaScript エンジンとランタイム`,
+    summary: msg`V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers`,
     code: enginesCode,
     runnable: true,
   },
   {
     id: 'workers',
-    title: 'Workers の実行モデル',
-    summary: 'isolate、状態を持たない、制限、課金',
-    doc: workersDoc,
+    title: msg`Workers の実行モデル`,
+    summary: msg`isolate、状態を持たない、制限、課金`,
     code: workersCode,
     runnable: true,
   },
   {
     id: 'kv',
-    title: 'KV',
-    summary: '速い読み取りと結果整合。キャッシュや設定の置き場',
-    doc: kvDoc,
+    title: msg`KV`,
+    summary: msg`速い読み取りと結果整合。キャッシュや設定の置き場`,
     code: kvCode,
     runnable: true,
   },
   {
     id: 'd1',
-    title: 'D1',
-    summary: 'SQLite。SQL、索引、課金される「行数」',
-    doc: d1Doc,
+    title: msg`D1`,
+    summary: msg`SQLite。SQL、索引、課金される「行数」`,
     code: d1Code,
     runnable: true,
   },
   {
     id: 'r2',
-    title: 'R2',
-    summary: 'S3 互換のオブジェクトストレージ。転送無料',
-    doc: r2Doc,
+    title: msg`R2`,
+    summary: msg`S3 互換のオブジェクトストレージ。転送無料`,
     code: r2Code,
     runnable: true,
   },
   {
     id: 'durable-objects',
-    title: 'Durable Objects',
-    summary: '名前ごとに 1 つの実体。状態と直列化',
-    doc: doDoc,
+    title: msg`Durable Objects`,
+    summary: msg`名前ごとに 1 つの実体。状態と直列化`,
     code: doCode,
     runnable: true,
   },
   {
     id: 'queues',
-    title: 'Queues / Workflows',
-    summary: '非同期処理と、再開できる長時間ジョブ',
-    doc: queuesDoc,
+    title: msg`Queues / Workflows`,
+    summary: msg`非同期処理と、再開できる長時間ジョブ`,
     code: `// Queues: 送る側は send()、受ける側は別 Worker のコンシューマ
 await env.QUEUE_EMAILS.send({ to: 'a@example.com', template: 'welcome' });
 
@@ -95,22 +89,20 @@ export class Onboarding extends WorkflowEntrypoint {
 }
 `,
     runnable: false,
-    hint: 'この単元は資料のみ（共有サンドボックスではキューを流せません）',
+    hint: msg`この単元は資料のみ（共有サンドボックスではキューを流せません）`,
   },
   {
     id: 'workers-ai',
-    title: 'Workers AI',
-    summary: 'GPU を持たずに推論。まずは安いモデルから',
-    doc: aiDoc,
+    title: msg`Workers AI`,
+    summary: msg`GPU を持たずに推論。まずは安いモデルから`,
     code: aiCode,
     runnable: true,
-    hint: '費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です',
+    hint: msg`費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です`,
   },
   {
     id: 'ai-gateway',
-    title: 'AI Gateway',
-    summary: 'ログ・キャッシュ・制限・フォールバックをモデルの手前に',
-    doc: gatewayDoc,
+    title: msg`AI Gateway`,
+    summary: msg`ログ・キャッシュ・制限・フォールバックをモデルの手前に`,
     code: `const res = await fetch(
   \`https://gateway.ai.cloudflare.com/v1/\${accountId}/\${gateway}/anthropic/v1/messages\`,
   {
@@ -121,13 +113,12 @@ export class Onboarding extends WorkflowEntrypoint {
 );
 `,
     runnable: false,
-    hint: 'この単元は資料のみ（Gateway の設定と API キーが必要）',
+    hint: msg`この単元は資料のみ（Gateway の設定と API キーが必要）`,
   },
   {
     id: 'containers',
-    title: 'Containers',
-    summary: 'isolate で足りないときの最後の手段',
-    doc: containersDoc,
+    title: msg`Containers`,
+    summary: msg`isolate で足りないときの最後の手段`,
     code: `import { getSandbox } from 'void/sandbox';
 
 const sandbox = await getSandbox('user-123');
@@ -135,13 +126,12 @@ const result = await sandbox.run(['node', '--version']);
 console.log(new TextDecoder().decode(result.stdout));
 `,
     runnable: false,
-    hint: 'この単元は資料のみ（イメージのビルドと有料プランが必要）',
+    hint: msg`この単元は資料のみ（イメージのビルドと有料プランが必要）`,
   },
   {
     id: 'deploy',
-    title: 'デプロイまで',
-    summary: 'ログイン、秘密値、デプロイ、公開後の確認',
-    doc: deployDoc,
+    title: msg`デプロイまで`,
+    summary: msg`ログイン、秘密値、デプロイ、公開後の確認`,
     code: `# Cloudflare にログイン
 npx void cloudflare login
 
@@ -153,6 +143,6 @@ npx void deploy --platform cloudflare
 `,
     language: 'shell',
     runnable: false,
-    hint: 'この単元は手元のターミナルで実行してください',
+    hint: msg`この単元は手元のターミナルで実行してください`,
   },
 ];

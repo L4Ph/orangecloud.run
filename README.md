@@ -8,13 +8,24 @@
 npm install
 npm run dev        # http://localhost:5173
 npm run smoke      # 動いている開発サーバーに対して全単元のコードを実行
+npm run i18n:extract  # 文言を抽出して .po を更新
 ```
+
+## 言語
+
+日本語 / English / 简体中文 / 한국어。`hono/language` で `?lang=` → Cookie → `Accept-Language` の順に判定し、SSR 時にその言語のカタログを読みます。ヘッダーのセレクタで切り替えると `?lang=` 付きで再読み込みし、Cookie に残ります。
+
+- UI 文言: Lingui（`lingui({ macroTransform: true })` の native macro transform）+ `locales/{locale}/messages.po`
+- 章の本文: `lessons/docs/{locale}/{id}.md`（無い言語は日本語にフォールバック）
+- 文言の追加・変更: `npm run i18n:extract` → `.po` を埋める
 
 ## 構成
 
 - **Void（Vite+）**: ルーティング・SSR・Cloudflare へのデプロイ
 - **`routes/api/run.ts`**: `env.LOADER`（Worker Loader バインディング）でサンドボックス Worker を起動
-- **`lessons/`**: 単元ごとの Markdown とコード（`lessons/code/*.js` はそのまま実行される）
+- **`lessons/`**: 単元データ（`lessons/docs/{locale}/*.md`、`lessons/code/*.js` はそのまま実行される）
+- **`lib/locales.ts`**: 対応言語の定義（唯一の出典）
+- **`middleware/01.language.ts`**: hono/language による言語判定と Cookie 保存
 - **`pages/index.tsx`**: 左 Monaco エディタ / 右 資料
 - **`durable-objects/`**:
   - `lesson-kv` / `lesson-r2` / `lesson-ai` — isolate に渡せないバインディングの中継

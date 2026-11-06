@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-11-07 02:29+0900\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: zh\n"
+
+#: pages/index.tsx:309
+msgid "← 前の章"
+msgstr "← 上一章"
+
+#: lessons/index.ts:104
+msgid "AI Gateway"
+msgstr ""
+
+#: pages/index.tsx:188
+msgid "Cloudflare Workers を動かして学ぶ"
+msgstr "动手运行，学习 Cloudflare Workers"
+
+#: pages/index.tsx:354
+msgid "Cloudflare Workers 実践ガイド"
+msgstr "Cloudflare Workers 实战指南（书）"
+
+#: lessons/index.ts:120
+msgid "Containers"
+msgstr ""
+
+#: lessons/index.ts:56
+msgid "D1"
+msgstr ""
+
+#: lessons/index.ts:70
+msgid "Durable Objects"
+msgstr ""
+
+#: lessons/index.ts:97
+msgid "GPU を持たずに推論。まずは安いモデルから"
+msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
+
+#. placeholder {0}: result.status
+#. placeholder {1}: result.ms
+#: pages/index.tsx:277
+msgid "HTTP {0} · {1}ms"
+msgstr ""
+
+#: lessons/index.ts:121
+msgid "isolate で足りないときの最後の手段"
+msgstr "isolate 不够用时的最后手段"
+
+#: lessons/index.ts:43
+msgid "isolate、状態を持たない、制限、課金"
+msgstr "isolate、无共享状态、限制、计费"
+
+#: lessons/index.ts:35
+msgid "JavaScript エンジンとランタイム"
+msgstr "JavaScript 引擎与运行时"
+
+#: pages/index.tsx:330
+msgid "JS がはじめてなら最初に"
+msgstr "初次接触 JavaScript 从这里开始"
+
+#: lessons/index.ts:49
+msgid "KV"
+msgstr ""
+
+#: lessons/index.ts:77
+msgid "Queues / Workflows"
+msgstr ""
+
+#: lessons/index.ts:63
+msgid "R2"
+msgstr ""
+
+#: lessons/index.ts:64
+msgid "S3 互換のオブジェクトストレージ。転送無料"
+msgstr "兼容 S3 的对象存储。出网流量免费"
+
+#: lessons/index.ts:57
+msgid "SQLite。SQL、索引、課金される「行数」"
+msgstr "SQLite。SQL、索引，以及被计费的“行数”"
+
+#: lessons/index.ts:36
+msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
+msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
+
+#: pages/index.tsx:344
+msgid "Web開発者のための［入門］Cloudflare Workers"
+msgstr "《面向 Web 开发者的 Cloudflare Workers 入门》（书）"
+
+#: lessons/index.ts:96
+msgid "Workers AI"
+msgstr ""
+
+#: lessons/index.ts:42
+msgid "Workers の実行モデル"
+msgstr "Workers 的执行模型"
+
+#: pages/index.tsx:247
+msgid "エディタ"
+msgstr "编辑器"
+
+#: lessons/index.ts:146
+msgid "この単元は手元のターミナルで実行してください"
+msgstr "请在本地终端中运行这些命令"
+
+#: lessons/index.ts:116
+msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
+msgstr "仅作资料（需要配置 Gateway 和 API 密钥）"
+
+#: lessons/index.ts:129
+msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
+msgstr "仅作资料（需要构建镜像和付费套餐）"
+
+#: lessons/index.ts:92
+msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
+msgstr "仅作资料（共享沙箱中无法运行队列）"
+
+#: pages/index.tsx:297
+msgid "この単元は資料のみです。コードは参考として置いています。"
+msgstr "本章仅为资料。代码供阅读参考。"
+
+#: pages/index.tsx:191
+msgid "チュートリアル兼プレイグラウンド"
+msgstr "教程兼演练场"
+
+#: lessons/index.ts:133
+msgid "デプロイまで"
+msgstr "部署上线"
+
+#: lessons/index.ts:105
+msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
+msgstr "在模型之前统一做日志、缓存、限流和回退"
+
+#: lessons/index.ts:134
+msgid "ログイン、秘密値、デプロイ、公開後の確認"
+msgstr "登录、密钥、部署，以及上线后的检查"
+
+#: pages/index.tsx:258
+msgid "初期化"
+msgstr "重置"
+
+#: pages/index.tsx:323
+msgid "前提知識"
+msgstr "前置知识"
+
+#: lessons/index.ts:71
+msgid "名前ごとに 1 つの実体。状態と直列化"
+msgstr "每个名字只有一个实例。状态与串行化"
+
+#: pages/index.tsx:336
+msgid "型が読めないと先に進みにくい"
+msgstr "读不懂类型就很难继续"
+
+#: pages/index.tsx:255
+msgid "実行 ⌘/Ctrl+Enter"
+msgstr "运行 ⌘/Ctrl+Enter"
+
+#: pages/index.tsx:293
+msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+msgstr "运行后，响应和 console 输出会显示在这里。网络已关闭，写坏了也不会有事。"
+
+#: pages/index.tsx:255
+msgid "実行中…"
+msgstr "运行中…"
+
+#: pages/index.tsx:346
+msgid "本気で使うなら"
+msgstr "想认真使用时"
+
+#: pages/index.tsx:319
+msgid "次の章 →"
+msgstr "下一章 →"
+
+#: pages/index.tsx:206
+#: pages/index.tsx:216
+#: pages/index.tsx:220
+msgid "目次"
+msgstr "目录"
+
+#. placeholder {0}: lessonIndex + 1
+#. placeholder {1}: lessons.length
+#: pages/index.tsx:196
+msgid "第 {0} 章 / 全 {1} 章"
+msgstr "第 {0} 章 / 共 {1} 章"
+
+#: pages/index.tsx:356
+msgid "設計・運用まで"
+msgstr "设计与运维"
+
+#: lessons/index.ts:100
+msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
+msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
+
+#: pages/index.tsx:304
+msgid "資料"
+msgstr "资料"
+
+#: lessons/index.ts:50
+msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
+msgstr "读取快，最终一致。适合缓存和配置"
+
+#: lessons/index.ts:78
+msgid "非同期処理と、再開できる長時間ジョブ"
+msgstr "异步处理，以及可恢复的长时间任务"
+
+#: pages/index.tsx:307
+msgid "章の移動"
+msgstr "章节导航"

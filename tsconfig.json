@@ -14,14 +14,17 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "pages",
-    "routes",
-    "middleware",
     "crons",
-    "queues",
     "db",
+    "durable-objects",
     "lessons",
-    "durable-objects"
+    "lib",
+    "lingui.config.ts",
+    "locales",
+    "middleware",
+    "pages",
+    "queues",
+    "routes",
+    "src"
   ]
 }

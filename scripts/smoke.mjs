@@ -1,13 +1,9 @@
 // Runs every lesson snippet against a running dev server (default: 5173).
-// Workers AI needs a Cloudflare login, so its snippet is skipped unless
-// INCLUDE_AI=1.
 import { readdir, readFile } from 'node:fs/promises';
 
 const base = process.argv[2] ?? 'http://localhost:5173';
-const includeAi = process.env.INCLUDE_AI === '1';
 const files = (await readdir(new URL('../lessons/code/', import.meta.url)))
   .filter((file) => file.endsWith('.js'))
-  .filter((file) => includeAi || !file.startsWith('08-'))
   .sort();
 
 let failed = 0;
@@ -19,6 +15,11 @@ for (const file of files) {
     body: JSON.stringify({ code }),
   });
   const data = await response.json();
+  // Workers AI has no local simulator; without a login it is expected to fail.
+  if (/cloudflare login/i.test(data.error ?? '')) {
+    console.log('skip', file, 'needs a Cloudflare login');
+    continue;
+  }
   const ok = response.ok && !data.error;
   console.log(ok ? 'ok  ' : 'FAIL', file, ok ? `${data.ms}ms` : data.error ?? response.status);
   if (!ok) failed += 1;
