@@ -20,7 +20,11 @@ function loadTurnstile(): Promise<TurnstileApi> {
     script.async = true;
     script.onload = () => {
       const api = (window as { turnstile?: TurnstileApi }).turnstile;
-      api ? resolve(api) : reject(new Error('Turnstile did not initialise'));
+      if (api) {
+        resolve(api);
+      } else {
+        reject(new Error('Turnstile did not initialise'));
+      }
     };
     script.onerror = () => reject(new Error('Turnstile failed to load'));
     document.head.appendChild(script);

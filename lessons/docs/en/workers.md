@@ -11,11 +11,11 @@ A Worker is **a function called once per request**. Whatever `fetch(request, env
 
 ## Rough limits
 
-| | Free | Paid |
-| --- | --- | --- |
-| Requests | 100k/day | 10M/month + usage |
+|          | Free         | Paid                    |
+| -------- | ------------ | ----------------------- |
+| Requests | 100k/day     | 10M/month + usage       |
 | CPU time | 10ms/request | 30s/request (max 5 min) |
-| Memory | 128MB | 128MB |
+| Memory   | 128MB        | 128MB                   |
 
 "Every request gets a clean room" is a good enough mental model to start. When you want state, go to the next chapter.
 

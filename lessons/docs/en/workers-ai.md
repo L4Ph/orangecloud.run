@@ -4,12 +4,12 @@ Models running on Cloudflare's GPUs. **You own neither the inference engine nor 
 
 ## Start with a cheap model
 
-| Model | Use | Rough cost |
-| --- | --- | --- |
-| `@cf/meta/llama-3.1-8b-instruct` | General chat and summaries | Cheap. Start here |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Harder reasoning | Expensive |
-| `@cf/baai/bge-small-en-v1.5` | Embeddings (search, RAG) | Very cheap |
-| `@cf/openai/whisper` | Speech to text | Billed per second |
+| Model                                      | Use                        | Rough cost        |
+| ------------------------------------------ | -------------------------- | ----------------- |
+| `@cf/meta/llama-3.1-8b-instruct`           | General chat and summaries | Cheap. Start here |
+| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Harder reasoning           | Expensive         |
+| `@cf/baai/bge-small-en-v1.5`               | Embeddings (search, RAG)   | Very cheap        |
+| `@cf/openai/whisper`                       | Speech to text             | Billed per second |
 
 Pricing is per input and output token. With a cheap model a call is well under a yen. Run the 8B first and only step up when it is not enough.
 

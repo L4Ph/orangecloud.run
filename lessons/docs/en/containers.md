@@ -22,12 +22,12 @@ Void integrates Cloudflare Sandbox as `void/sandbox`: `getSandbox(id)` gives you
 
 ## Pricing and startup
 
-| | Paid plan |
-| --- | --- |
-| Memory | 25 GiB-hours/month included |
-| CPU | 375 vCPU-minutes/month included |
-| Startup | Seconds (isolates are milliseconds) |
-| Sleep | Scales down when idle; billed only while used |
+|         | Paid plan                                     |
+| ------- | --------------------------------------------- |
+| Memory  | 25 GiB-hours/month included                   |
+| CPU     | 375 vCPU-minutes/month included               |
+| Startup | Seconds (isolates are milliseconds)           |
+| Sleep   | Scales down when idle; billed only while used |
 
 **Seconds to start, plus image build and placement costs even when idle**, so isolates (Dynamic Workers) are the better fit for an educational sandbox. This site is built that way.
 

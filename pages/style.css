@@ -510,14 +510,14 @@ a {
   }
 
   /* Interaction-only: nothing renders here unless Turnstile needs the visitor. */
-.turnstile {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 30;
-}
+  .turnstile {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 30;
+  }
 
-.editor-host {
+  .editor-host {
     height: 380px;
     flex: none;
   }

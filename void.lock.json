@@ -36,27 +36,19 @@
     "migrations": [
       {
         "tag": "void-durable-lesson-ai-v1",
-        "new_sqlite_classes": [
-          "LessonAiDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonAiDurableObject"]
       },
       {
         "tag": "void-durable-lesson-counter-v1",
-        "new_sqlite_classes": [
-          "LessonCounterDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonCounterDurableObject"]
       },
       {
         "tag": "void-durable-lesson-kv-v1",
-        "new_sqlite_classes": [
-          "LessonKvDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonKvDurableObject"]
       },
       {
         "tag": "void-durable-lesson-r2-v1",
-        "new_sqlite_classes": [
-          "LessonR2DurableObject"
-        ]
+        "new_sqlite_classes": ["LessonR2DurableObject"]
       }
     ]
   },

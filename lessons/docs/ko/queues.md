@@ -41,11 +41,11 @@ export class Onboarding extends WorkflowEntrypoint {
 
 ## 선택 기준
 
-| 하고 싶은 일 | 선택 |
-| --- | --- |
-| 바로 응답하고 뒤에서 한 번 처리 | Queues |
-| 순서, 재개, 대기가 필요 | Workflows |
-| 몇 초 안에 끝나는 단발 작업 | `ctx.waitUntil()` |
-| 동시 실행을 하나로 제한 | Durable Objects |
+| 하고 싶은 일                    | 선택              |
+| ------------------------------- | ----------------- |
+| 바로 응답하고 뒤에서 한 번 처리 | Queues            |
+| 순서, 재개, 대기가 필요         | Workflows         |
+| 몇 초 안에 끝나는 단발 작업     | `ctx.waitUntil()` |
+| 동시 실행을 하나로 제한         | Durable Objects   |
 
 이 장은 자료만 제공합니다(공유 샌드박스에서는 큐를 안전하게 돌릴 수 없음). 배포 후 자신의 계정에서 시험해 보세요.

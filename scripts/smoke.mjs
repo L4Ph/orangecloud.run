@@ -21,7 +21,7 @@ for (const file of files) {
     continue;
   }
   const ok = response.ok && !data.error;
-  console.log(ok ? 'ok  ' : 'FAIL', file, ok ? `${data.ms}ms` : data.error ?? response.status);
+  console.log(ok ? 'ok  ' : 'FAIL', file, ok ? `${data.ms}ms` : (data.error ?? response.status));
   if (!ok) failed += 1;
 }
 

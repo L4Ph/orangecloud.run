@@ -18,5 +18,5 @@ Workers 每个请求都可能落在不同的 isolate 上，全局变量不可信
 
 ```js
 const n = await env.COUNTER.increment(); // 同名即同实例
-await env.COUNTER.read();                // 读取已保存的值
+await env.COUNTER.read(); // 读取已保存的值
 ```

@@ -18,5 +18,5 @@ Here `env.COUNTER` is a real deployed Durable Object. **The value survives acros
 
 ```js
 const n = await env.COUNTER.increment(); // same name, same instance
-await env.COUNTER.read();                // read what was stored
+await env.COUNTER.read(); // read what was stored
 ```

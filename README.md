@@ -7,6 +7,9 @@
 ```sh
 npm install
 npm run dev        # http://localhost:5173
+npm run check      # Vite+ の fmt / lint（type-aware + type check）をまとめて実行
+npm run lint       # Oxlint のみ
+npm run fmt        # Oxfmt のみ
 npm run smoke      # 動いている開発サーバーに対して全単元のコードを実行
 npm run i18n:extract  # 文言を抽出して .po を更新
 ```
@@ -28,6 +31,10 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 - ローカルは `.env` の `TURNSTILE_SECRET`（本番と同じ widget の secret）で検証する
 - 公開するドメインを widget のドメイン一覧に追加するのを忘れない
 
+## ツールチェーン
+
+Vite+（`vp`）の `check` を使います。設定は `vite.config.ts` の `lint` / `fmt` ブロックに集約し、`lint.options.typeAware` と `typeCheck` を有効にしています。
+
 ## 構成
 
 - **Void（Vite+）**: ルーティング・SSR・Cloudflare へのデプロイ
@@ -46,11 +53,11 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 
 ## 実行モデル
 
-| バインディング | サンドボックスへの渡し方 |
-| --- | --- |
-| `env.DB`（D1） | そのまま（structured clone 可能） |
+| バインディング                      | サンドボックスへの渡し方                              |
+| ----------------------------------- | ----------------------------------------------------- |
+| `env.DB`（D1）                      | そのまま（structured clone 可能）                     |
 | `env.KV` / `env.STORAGE` / `env.AI` | Durable Object 経由の RPC（namespace 自体は渡せない） |
-| `env.COUNTER` | 本物の Durable Object スタブ |
+| `env.COUNTER`                       | 本物の Durable Object スタブ                          |
 
 サンドボックスのキャッシュ ID は `run-<WRAPPER_VERSION>-<hash(code)>`。同じコードの再実行は isolate を再利用し、Dynamic Workers の課金（ユニーク数）を増やしません。`WRAPPER_VERSION` は `routes/api/run.ts` のラッパーを変えたら上げてください。
 

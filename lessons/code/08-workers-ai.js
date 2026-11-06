@@ -1,6 +1,7 @@
 export default {
   async fetch(request, env) {
-    const prompt = new URL(request.url).searchParams.get('prompt') ?? 'Cloudflare Workers を一言で説明して';
+    const prompt =
+      new URL(request.url).searchParams.get('prompt') ?? 'Cloudflare Workers を一言で説明して';
 
     const answer = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
       messages: [

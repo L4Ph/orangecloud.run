@@ -4,12 +4,12 @@
 
 ## 先从便宜的模型开始
 
-| 模型 | 用途 | 大致费用 |
-| --- | --- | --- |
-| `@cf/meta/llama-3.1-8b-instruct` | 通用对话与摘要 | 便宜。先用它 |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 更难的推理 | 贵 |
-| `@cf/baai/bge-small-en-v1.5` | 向量（检索、RAG） | 非常便宜 |
-| `@cf/openai/whisper` | 语音转文字 | 按秒计费 |
+| 模型                                       | 用途              | 大致费用     |
+| ------------------------------------------ | ----------------- | ------------ |
+| `@cf/meta/llama-3.1-8b-instruct`           | 通用对话与摘要    | 便宜。先用它 |
+| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 更难的推理        | 贵           |
+| `@cf/baai/bge-small-en-v1.5`               | 向量（检索、RAG） | 非常便宜     |
+| `@cf/openai/whisper`                       | 语音转文字        | 按秒计费     |
 
 价格按输入与输出 token 计费。用便宜模型时单次不到一日元。先用 8B，不够再升级。
 

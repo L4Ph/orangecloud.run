@@ -41,11 +41,11 @@ export class Onboarding extends WorkflowEntrypoint {
 
 ## 怎么选
 
-| 想做的事 | 选择 |
-| --- | --- |
-| 立即返回，后台处理一次 | Queues |
-| 有顺序、可恢复、需要等待 | Workflows |
-| 几秒内完成的单次任务 | `ctx.waitUntil()` |
-| 同时只能有一个执行 | Durable Objects |
+| 想做的事                 | 选择              |
+| ------------------------ | ----------------- |
+| 立即返回，后台处理一次   | Queues            |
+| 有顺序、可恢复、需要等待 | Workflows         |
+| 几秒内完成的单次任务     | `ctx.waitUntil()` |
+| 同时只能有一个执行       | Durable Objects   |
 
 本章仅为资料（共享沙箱无法安全地运行队列）。部署后请在自己的账号里试验。

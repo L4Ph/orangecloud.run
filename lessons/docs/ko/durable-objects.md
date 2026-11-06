@@ -18,5 +18,5 @@ Workers는 요청마다 다른 isolate에 올라갈 수 있어 전역 변수를 
 
 ```js
 const n = await env.COUNTER.increment(); // 같은 이름이면 같은 실체
-await env.COUNTER.read();                // 저장된 값을 읽음
+await env.COUNTER.read(); // 저장된 값을 읽음
 ```

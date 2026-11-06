@@ -52,7 +52,7 @@ function CodeEditor({
     let disposed = false;
     let subscription: { dispose: () => void } | null = null;
 
-    (async () => {
+    void (async () => {
       const [monaco, editorWorker] = await Promise.all([
         import('monaco-editor/editor/editor.api'),
         import('monaco-editor/editor/editor.worker?worker'),
@@ -108,7 +108,7 @@ function CodeEditor({
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
-    import('monaco-editor/editor/editor.api').then((monaco) => {
+    void import('monaco-editor/editor/editor.api').then((monaco) => {
       const model = editor.getModel();
       if (model) monaco.editor.setModelLanguage(model, language);
     });
@@ -149,7 +149,10 @@ function Playground({
   const { t, i18n } = useLingui();
   const router = useRouter();
   const [indexOpen, setIndexOpen] = useState(false);
-  const lessonIndex = Math.max(0, lessons.findIndex((item) => item.id === lessonId));
+  const lessonIndex = Math.max(
+    0,
+    lessons.findIndex((item) => item.id === lessonId),
+  );
   const lesson = lessons[lessonIndex];
 
   const [code, setCode] = useState(lesson.code);
@@ -172,33 +175,36 @@ function Playground({
     document.documentElement.lang = locale;
   }, [locale]);
 
-  const execute = useCallback(async (value: string, turnstileToken: string) => {
-    setPending(true);
-    setError(null);
-    try {
-      const data: RunResult = await apiFetch('/api/run', {
-        method: 'POST',
-        body: { code: value, token: turnstileToken },
-        timeout: 20_000,
-      });
-      if (data.errorCode === 'turnstile') {
-        setResult(null);
-        setError(t`ボット対策の確認に失敗しました。もう一度お試しください。`);
-      } else if (data.error) {
-        setResult(null);
-        setError(data.error);
-      } else {
-        setResult(data);
+  const execute = useCallback(
+    async (value: string, turnstileToken: string) => {
+      setPending(true);
+      setError(null);
+      try {
+        const data: RunResult = await apiFetch('/api/run', {
+          method: 'POST',
+          body: { code: value, token: turnstileToken },
+          timeout: 20_000,
+        });
+        if (data.errorCode === 'turnstile') {
+          setResult(null);
+          setError(t`ボット対策の確認に失敗しました。もう一度お試しください。`);
+        } else if (data.error) {
+          setResult(null);
+          setError(data.error);
+        } else {
+          setResult(data);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      } finally {
+        setPending(false);
+        // Turnstile tokens are single-use, so start over with a fresh widget.
+        setToken(null);
+        setWidgetKey((key) => key + 1);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setPending(false);
-      // Turnstile tokens are single-use, so start over with a fresh widget.
-      setToken(null);
-      setWidgetKey((key) => key + 1);
-    }
-  }, [t]);
+    },
+    [t],
+  );
 
   const run = useCallback(() => {
     if (!lesson.runnable || pending) return;
@@ -259,10 +265,7 @@ function Playground({
           >
             <Trans>目次</Trans>
           </button>
-          <LanguageSwitcher
-            locale={locale}
-            onChange={(next) => navigate(lessonId, next)}
-          />
+          <LanguageSwitcher locale={locale} onChange={(next) => navigate(lessonId, next)} />
         </div>
       </header>
 
@@ -355,7 +358,8 @@ function Playground({
               <p className="empty">
                 {lesson.runnable ? (
                   <Trans>
-                    実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。
+                    実行するとここにレスポンスと console
+                    の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。
                   </Trans>
                 ) : (
                   <Trans>この単元は資料のみです。コードは参考として置いています。</Trans>

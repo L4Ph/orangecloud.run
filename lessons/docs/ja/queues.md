@@ -41,11 +41,11 @@ export class Onboarding extends WorkflowEntrypoint {
 
 ## 選び方
 
-| やりたいこと | 選ぶ |
-| --- | --- |
-| すぐ返して裏で 1 回処理 | Queues |
-| 順番・再開・待機がある | Workflows |
-| 数秒で終わる単発 | `ctx.waitUntil()` |
-| 同時実行を 1 つに絞りたい | Durable Objects |
+| やりたいこと              | 選ぶ              |
+| ------------------------- | ----------------- |
+| すぐ返して裏で 1 回処理   | Queues            |
+| 順番・再開・待機がある    | Workflows         |
+| 数秒で終わる単発          | `ctx.waitUntil()` |
+| 同時実行を 1 つに絞りたい | Durable Objects   |
 
 この単元は資料のみです（共有サンドボックスではキューを安全に流せないため）。デプロイ後に自分のアカウントで試してください。

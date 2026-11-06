@@ -31,7 +31,10 @@ async function verifyTurnstile(token: string, hostname: string, remoteip: string
 
 export const POST = defineHandler.withValidator({
   body: z.object({
-    code: z.string().min(1).max(64 * 1024),
+    code: z
+      .string()
+      .min(1)
+      .max(64 * 1024),
     token: z.string().min(1).max(2048),
   }),
 })(async (c, { body }): Promise<RunResult> => {

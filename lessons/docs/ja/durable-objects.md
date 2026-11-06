@@ -18,5 +18,5 @@ Workers はリクエストごとに別の isolate に載る可能性がありま
 
 ```js
 const n = await env.COUNTER.increment(); // 同じ名前なら同じ実体
-await env.COUNTER.read();                // 保存された値を読む
+await env.COUNTER.read(); // 保存された値を読む
 ```

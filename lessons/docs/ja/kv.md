@@ -19,6 +19,6 @@
 
 ```js
 await env.KV.put('user:1', 'Alice');
-await env.KV.get('user:1');      // 'Alice'
-await env.KV.list('user:');      // ['user:1', 'user:2', ...]
+await env.KV.get('user:1'); // 'Alice'
+await env.KV.list('user:'); // ['user:1', 'user:2', ...]
 ```
