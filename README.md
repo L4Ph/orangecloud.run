@@ -19,10 +19,22 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 - 章の本文: `lessons/docs/{locale}/{id}.md`（無い言語は日本語にフォールバック）
 - 文言の追加・変更: `npm run i18n:extract` → `.po` を埋める
 
+## ボット対策（Turnstile）
+
+`/api/run` は Turnstile のトークンが無いと実行しません（widget の sitekey は `lib/turnstile.tsx`）。
+
+- 本番: ダッシュボードで widget の secret を確認し `void secret put TURNSTILE_SECRET`
+- siteverify は `action === 'run'` と、リクエストのホスト名と一致する `hostname` を確認
+- ローカルは `.env` の `TURNSTILE_SECRET`（本番と同じ widget の secret）で検証する
+- 公開するドメインを widget のドメイン一覧に追加するのを忘れない
+
 ## 構成
 
 - **Void（Vite+）**: ルーティング・SSR・Cloudflare へのデプロイ
-- **`routes/api/run.ts`**: `env.LOADER`（Worker Loader バインディング）でサンドボックス Worker を起動
+- **`routes/api/run.ts`**: Turnstile を検証してから `env.LOADER`（Worker Loader バインディング）でサンドボックス Worker を起動
+- **`lib/turnstile.tsx`**: widget の描画（実行ごとに作り直して単発トークンを取り直す）
+- **`env.ts`**: `TURNSTILE_SECRET` のスキーマ（ローカルは `.env`、本番は `void secret put`）
+- **`routes/api/sandbox.dev.ts`**: 開発専用の検証なし実行口（smoke 用。ビルド対象外）
 - **`lessons/`**: 単元データ（`lessons/docs/{locale}/*.md`、`lessons/code/*.js` はそのまま実行される）
 - **`lib/locales.ts`**: 対応言語の定義（唯一の出典）
 - **`middleware/01.language.ts`**: hono/language による言語判定と Cookie 保存

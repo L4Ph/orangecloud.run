@@ -269,6 +269,24 @@ a {
   background: var(--code-bg);
 }
 
+.run-gate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 0 20px 10px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.run-gate span {
+  opacity: 0.7;
+}
+
+.turnstile {
+  min-height: 65px;
+}
+
 .editor-host {
   flex: 1;
   min-height: 200px;
@@ -485,7 +503,25 @@ a {
     border-right: none;
   }
 
-  .editor-host {
+  .run-gate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 0 20px 10px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.run-gate span {
+  opacity: 0.7;
+}
+
+.turnstile {
+  min-height: 65px;
+}
+
+.editor-host {
     height: 380px;
     flex: none;
   }

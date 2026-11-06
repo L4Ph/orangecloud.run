@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ja\n"
 
-#: pages/index.tsx:309
+#: pages/index.tsx:340
 msgid "← 前の章"
 msgstr "← 前の章"
 
@@ -15,11 +15,11 @@ msgstr "← 前の章"
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
-#: pages/index.tsx:188
+#: pages/index.tsx:204
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "Cloudflare Workers を動かして学ぶ"
 
-#: pages/index.tsx:354
+#: pages/index.tsx:385
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 実践ガイド"
 
@@ -41,7 +41,7 @@ msgstr "GPU を持たずに推論。まずは安いモデルから"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:277
+#: pages/index.tsx:308
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -57,7 +57,7 @@ msgstr "isolate、状態を持たない、制限、課金"
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript エンジンとランタイム"
 
-#: pages/index.tsx:330
+#: pages/index.tsx:361
 msgid "JS がはじめてなら最初に"
 msgstr "JS がはじめてなら最初に"
 
@@ -85,7 +85,7 @@ msgstr "SQLite。SQL、索引、課金される「行数」"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 
-#: pages/index.tsx:344
+#: pages/index.tsx:375
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -97,7 +97,7 @@ msgstr "Workers AI"
 msgid "Workers の実行モデル"
 msgstr "Workers の実行モデル"
 
-#: pages/index.tsx:247
+#: pages/index.tsx:263
 msgid "エディタ"
 msgstr "エディタ"
 
@@ -117,17 +117,25 @@ msgstr "この単元は資料のみ（イメージのビルドと有料プラン
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 msgstr "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 
-#: pages/index.tsx:297
+#: pages/index.tsx:328
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
-#: pages/index.tsx:191
+#: pages/index.tsx:207
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "チュートリアル兼プレイグラウンド"
 
 #: lessons/index.ts:133
 msgid "デプロイまで"
 msgstr "デプロイまで"
+
+#: pages/index.tsx:290
+msgid "ボット対策の確認が終わると実行できます"
+msgstr "ボット対策の確認が終わると実行できます"
+
+#: pages/index.tsx:172
+msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
+msgstr "ボット対策の確認に失敗しました。もう一度お試しください。"
 
 #: lessons/index.ts:105
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -137,11 +145,11 @@ msgstr "ログ・キャッシュ・制限・フォールバックをモデルの
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "ログイン、秘密値、デプロイ、公開後の確認"
 
-#: pages/index.tsx:258
+#: pages/index.tsx:278
 msgid "初期化"
 msgstr "初期化"
 
-#: pages/index.tsx:323
+#: pages/index.tsx:354
 msgid "前提知識"
 msgstr "前提知識"
 
@@ -149,43 +157,43 @@ msgstr "前提知識"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "名前ごとに 1 つの実体。状態と直列化"
 
-#: pages/index.tsx:336
+#: pages/index.tsx:367
 msgid "型が読めないと先に進みにくい"
 msgstr "型が読めないと先に進みにくい"
 
-#: pages/index.tsx:255
+#: pages/index.tsx:275
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "実行 ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:293
+#: pages/index.tsx:324
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 
-#: pages/index.tsx:255
+#: pages/index.tsx:275
 msgid "実行中…"
 msgstr "実行中…"
 
-#: pages/index.tsx:346
+#: pages/index.tsx:377
 msgid "本気で使うなら"
 msgstr "本気で使うなら"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:350
 msgid "次の章 →"
 msgstr "次の章 →"
 
-#: pages/index.tsx:206
-#: pages/index.tsx:216
-#: pages/index.tsx:220
+#: pages/index.tsx:222
+#: pages/index.tsx:232
+#: pages/index.tsx:236
 msgid "目次"
 msgstr "目次"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:196
+#: pages/index.tsx:212
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "第 {0} 章 / 全 {1} 章"
 
-#: pages/index.tsx:356
+#: pages/index.tsx:387
 msgid "設計・運用まで"
 msgstr "設計・運用まで"
 
@@ -193,7 +201,7 @@ msgstr "設計・運用まで"
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 
-#: pages/index.tsx:304
+#: pages/index.tsx:335
 msgid "資料"
 msgstr "資料"
 
@@ -205,6 +213,6 @@ msgstr "速い読み取りと結果整合。キャッシュや設定の置き場
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "非同期処理と、再開できる長時間ジョブ"
 
-#: pages/index.tsx:307
+#: pages/index.tsx:338
 msgid "章の移動"
 msgstr "章の移動"

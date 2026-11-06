@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh\n"
 
-#: pages/index.tsx:309
+#: pages/index.tsx:340
 msgid "← 前の章"
 msgstr "← 上一章"
 
@@ -15,11 +15,11 @@ msgstr "← 上一章"
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/index.tsx:188
+#: pages/index.tsx:204
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "动手运行，学习 Cloudflare Workers"
 
-#: pages/index.tsx:354
+#: pages/index.tsx:385
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 实战指南（书）"
 
@@ -41,7 +41,7 @@ msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:277
+#: pages/index.tsx:308
 msgid "HTTP {0} · {1}ms"
 msgstr ""
 
@@ -57,7 +57,7 @@ msgstr "isolate、无共享状态、限制、计费"
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
 
-#: pages/index.tsx:330
+#: pages/index.tsx:361
 msgid "JS がはじめてなら最初に"
 msgstr "初次接触 JavaScript 从这里开始"
 
@@ -85,7 +85,7 @@ msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
-#: pages/index.tsx:344
+#: pages/index.tsx:375
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "《面向 Web 开发者的 Cloudflare Workers 入门》（书）"
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
-#: pages/index.tsx:247
+#: pages/index.tsx:263
 msgid "エディタ"
 msgstr "编辑器"
 
@@ -117,17 +117,25 @@ msgstr "仅作资料（需要构建镜像和付费套餐）"
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 msgstr "仅作资料（共享沙箱中无法运行队列）"
 
-#: pages/index.tsx:297
+#: pages/index.tsx:328
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "本章仅为资料。代码供阅读参考。"
 
-#: pages/index.tsx:191
+#: pages/index.tsx:207
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "教程兼演练场"
 
 #: lessons/index.ts:133
 msgid "デプロイまで"
 msgstr "部署上线"
+
+#: pages/index.tsx:290
+msgid "ボット対策の確認が終わると実行できます"
+msgstr "完成人机验证后即可运行。"
+
+#: pages/index.tsx:172
+msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
+msgstr "人机验证失败，请重试。"
 
 #: lessons/index.ts:105
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -137,11 +145,11 @@ msgstr "在模型之前统一做日志、缓存、限流和回退"
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "登录、密钥、部署，以及上线后的检查"
 
-#: pages/index.tsx:258
+#: pages/index.tsx:278
 msgid "初期化"
 msgstr "重置"
 
-#: pages/index.tsx:323
+#: pages/index.tsx:354
 msgid "前提知識"
 msgstr "前置知识"
 
@@ -149,43 +157,43 @@ msgstr "前置知识"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
 
-#: pages/index.tsx:336
+#: pages/index.tsx:367
 msgid "型が読めないと先に進みにくい"
 msgstr "读不懂类型就很难继续"
 
-#: pages/index.tsx:255
+#: pages/index.tsx:275
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "运行 ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:293
+#: pages/index.tsx:324
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "运行后，响应和 console 输出会显示在这里。网络已关闭，写坏了也不会有事。"
 
-#: pages/index.tsx:255
+#: pages/index.tsx:275
 msgid "実行中…"
 msgstr "运行中…"
 
-#: pages/index.tsx:346
+#: pages/index.tsx:377
 msgid "本気で使うなら"
 msgstr "想认真使用时"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:350
 msgid "次の章 →"
 msgstr "下一章 →"
 
-#: pages/index.tsx:206
-#: pages/index.tsx:216
-#: pages/index.tsx:220
+#: pages/index.tsx:222
+#: pages/index.tsx:232
+#: pages/index.tsx:236
 msgid "目次"
 msgstr "目录"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:196
+#: pages/index.tsx:212
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "第 {0} 章 / 共 {1} 章"
 
-#: pages/index.tsx:356
+#: pages/index.tsx:387
 msgid "設計・運用まで"
 msgstr "设计与运维"
 
@@ -193,7 +201,7 @@ msgstr "设计与运维"
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
 
-#: pages/index.tsx:304
+#: pages/index.tsx:335
 msgid "資料"
 msgstr "资料"
 
@@ -205,6 +213,6 @@ msgstr "读取快，最终一致。适合缓存和配置"
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "异步处理，以及可恢复的长时间任务"
 
-#: pages/index.tsx:307
+#: pages/index.tsx:338
 msgid "章の移動"
 msgstr "章节导航"

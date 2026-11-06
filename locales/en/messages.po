@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
 
-#: pages/index.tsx:309
+#: pages/index.tsx:340
 msgid "← 前の章"
 msgstr "← Previous"
 
@@ -15,11 +15,11 @@ msgstr "← Previous"
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/index.tsx:188
+#: pages/index.tsx:204
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "Learn Cloudflare Workers by running them"
 
-#: pages/index.tsx:354
+#: pages/index.tsx:385
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers in Practice (book)"
 
@@ -41,7 +41,7 @@ msgstr "Inference without owning a GPU. Start with a cheap model"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:277
+#: pages/index.tsx:308
 msgid "HTTP {0} · {1}ms"
 msgstr ""
 
@@ -57,7 +57,7 @@ msgstr "Isolates, no shared state, limits, billing"
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript engines and runtimes"
 
-#: pages/index.tsx:330
+#: pages/index.tsx:361
 msgid "JS がはじめてなら最初に"
 msgstr "start here if JavaScript is new"
 
@@ -85,7 +85,7 @@ msgstr "SQLite. SQL, indexes, and the rows you are billed for"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, plus Node, Bun, Deno, and Workers"
 
-#: pages/index.tsx:344
+#: pages/index.tsx:375
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Cloudflare Workers: A Guide for Web Developers (book)"
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "The Workers execution model"
 
-#: pages/index.tsx:247
+#: pages/index.tsx:263
 msgid "エディタ"
 msgstr "Editor"
 
@@ -117,17 +117,25 @@ msgstr "Reference only (needs an image build and a paid plan)"
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 msgstr "Reference only (queues are not available in the shared sandbox)"
 
-#: pages/index.tsx:297
+#: pages/index.tsx:328
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reference only. The code is here to read."
 
-#: pages/index.tsx:191
+#: pages/index.tsx:207
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "Tutorial and playground"
 
 #: lessons/index.ts:133
 msgid "デプロイまで"
 msgstr "Deploying"
+
+#: pages/index.tsx:290
+msgid "ボット対策の確認が終わると実行できます"
+msgstr "Finish the bot check to enable Run."
+
+#: pages/index.tsx:172
+msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
+msgstr "The bot check failed. Please try again."
 
 #: lessons/index.ts:105
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -137,11 +145,11 @@ msgstr "Logging, caching, limits, and fallbacks in front of the model"
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "Login, secrets, deploy, and what to check after"
 
-#: pages/index.tsx:258
+#: pages/index.tsx:278
 msgid "初期化"
 msgstr "Reset"
 
-#: pages/index.tsx:323
+#: pages/index.tsx:354
 msgid "前提知識"
 msgstr "Prerequisites"
 
@@ -149,43 +157,43 @@ msgstr "Prerequisites"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "One instance per name. State and serialization"
 
-#: pages/index.tsx:336
+#: pages/index.tsx:367
 msgid "型が読めないと先に進みにくい"
 msgstr "hard to continue without reading types"
 
-#: pages/index.tsx:255
+#: pages/index.tsx:275
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "Run ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:293
+#: pages/index.tsx:324
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "Run the code and the response plus console output appear here. The network is blocked, so nothing can break."
 
-#: pages/index.tsx:255
+#: pages/index.tsx:275
 msgid "実行中…"
 msgstr "Running…"
 
-#: pages/index.tsx:346
+#: pages/index.tsx:377
 msgid "本気で使うなら"
 msgstr "when you get serious"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:350
 msgid "次の章 →"
 msgstr "Next →"
 
-#: pages/index.tsx:206
-#: pages/index.tsx:216
-#: pages/index.tsx:220
+#: pages/index.tsx:222
+#: pages/index.tsx:232
+#: pages/index.tsx:236
 msgid "目次"
 msgstr "Contents"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:196
+#: pages/index.tsx:212
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "Chapter {0} of {1}"
 
-#: pages/index.tsx:356
+#: pages/index.tsx:387
 msgid "設計・運用まで"
 msgstr "design and operations"
 
@@ -193,7 +201,7 @@ msgstr "design and operations"
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "This site pays for the AI calls. Only local development needs a Cloudflare login."
 
-#: pages/index.tsx:304
+#: pages/index.tsx:335
 msgid "資料"
 msgstr "Lesson"
 
@@ -205,6 +213,6 @@ msgstr "Fast reads with eventual consistency. A home for cache and config"
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "Async work and long-running jobs that resume"
 
-#: pages/index.tsx:307
+#: pages/index.tsx:338
 msgid "章の移動"
 msgstr "Chapter navigation"

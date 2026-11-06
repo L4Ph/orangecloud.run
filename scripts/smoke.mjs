@@ -9,7 +9,7 @@ const files = (await readdir(new URL('../lessons/code/', import.meta.url)))
 let failed = 0;
 for (const file of files) {
   const code = await readFile(new URL(`../lessons/code/${file}`, import.meta.url), 'utf8');
-  const response = await fetch(`${base}/api/run`, {
+  const response = await fetch(`${base}/api/sandbox`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ code }),

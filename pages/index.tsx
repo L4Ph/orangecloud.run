@@ -5,6 +5,7 @@ import { I18nProvider } from '@lingui/react';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { marked } from 'marked';
 import { lessonDoc, lessons } from '../lessons';
+import { Turnstile } from '../lib/turnstile';
 import { localeLabel, locales, type Locale } from '../lib/locales';
 import { messages as jaMessages } from '../locales/ja/messages.po';
 import { messages as enMessages } from '../locales/en/messages.po';
@@ -20,7 +21,14 @@ const catalogs: Record<Locale, Messages> = {
   ko: koMessages,
 };
 
-type RunResult = { status: number; body: string; logs: string[]; ms: number; error?: string };
+type RunResult = {
+  status: number;
+  body: string;
+  logs: string[];
+  ms: number;
+  error?: string;
+  errorCode?: 'turnstile';
+};
 
 function CodeEditor({
   value,
@@ -140,6 +148,8 @@ function Playground({ locale }: { locale: Locale }) {
   const [result, setResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [widgetKey, setWidgetKey] = useState(0);
 
   useEffect(() => {
     setCode(lesson.code);
@@ -148,16 +158,19 @@ function Playground({ locale }: { locale: Locale }) {
   }, [lesson.id, lesson.code]);
 
   const run = useCallback(async () => {
-    if (!lesson.runnable || pending) return;
+    if (!lesson.runnable || pending || !token) return;
     setPending(true);
     setError(null);
     try {
       const data: RunResult = await apiFetch('/api/run', {
         method: 'POST',
-        body: { code },
+        body: { code, token },
         timeout: 20_000,
       });
-      if (data.error) {
+      if (data.errorCode === 'turnstile') {
+        setResult(null);
+        setError(t`ボット対策の確認に失敗しました。もう一度お試しください。`);
+      } else if (data.error) {
         setResult(null);
         setError(data.error);
       } else {
@@ -167,8 +180,11 @@ function Playground({ locale }: { locale: Locale }) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setPending(false);
+      // Turnstile tokens are single-use, so start over with a fresh widget.
+      setToken(null);
+      setWidgetKey((key) => key + 1);
     }
-  }, [code, lesson.runnable, pending]);
+  }, [code, lesson.runnable, pending, token, t]);
 
   const go = useCallback(
     (delta: number) => {
@@ -251,7 +267,11 @@ function Playground({ locale }: { locale: Locale }) {
               <p>{i18n._(lesson.summary)}</p>
             </div>
             <div className="controls">
-              <button type="button" onClick={run} disabled={!lesson.runnable || pending}>
+              <button
+                type="button"
+                onClick={run}
+                disabled={!lesson.runnable || pending || !token}
+              >
                 {pending ? <Trans>実行中…</Trans> : <Trans>実行 ⌘/Ctrl+Enter</Trans>}
               </button>
               <button type="button" className="ghost" onClick={() => setCode(lesson.code)}>
@@ -261,6 +281,17 @@ function Playground({ locale }: { locale: Locale }) {
           </div>
 
           {lesson.hint && <p className="hint">{i18n._(lesson.hint)}</p>}
+
+          {lesson.runnable && (
+            <div className="run-gate">
+              <Turnstile key={widgetKey} onToken={setToken} />
+              {!token && (
+                <span>
+                  <Trans>ボット対策の確認が終わると実行できます</Trans>
+                </span>
+              )}
+            </div>
+          )}
 
           <CodeEditor
             value={code}

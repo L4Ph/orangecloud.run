@@ -1,106 +1,55 @@
 import { defineHandler } from 'void';
 import { z } from 'zod';
+import { env } from 'void/env';
+import { runInSandbox, type RunResult } from '../../lib/run';
 
-declare global {
-  interface VoidGeneratedEnvBindings {
-    LOADER: WorkerLoader;
-    LESSON_KV: DurableObjectNamespace;
-    LESSON_R2: DurableObjectNamespace;
-    LESSON_AI: DurableObjectNamespace;
-    LESSON_COUNTER: DurableObjectNamespace;
-    DB: D1Database;
+// Cloudflare's published test secrets accept any token, so they skip the
+// hostname/action checks that a real secret relies on.
+const TEST_SECRET_PREFIX = '1x0000000000000000000000000000000';
+
+async function verifyTurnstile(token: string, hostname: string, remoteip: string | undefined) {
+  const body = new URLSearchParams({ secret: env.TURNSTILE_SECRET, response: token });
+  if (remoteip) body.set('remoteip', remoteip);
+
+  let result: { success?: boolean; action?: string; hostname?: string };
+  try {
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body,
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) return false;
+    result = await response.json();
+  } catch {
+    return false;
   }
+
+  if (result.success !== true) return false;
+  if (env.TURNSTILE_SECRET.startsWith(TEST_SECRET_PREFIX)) return true;
+  return result.action === 'run' && result.hostname === hostname;
 }
 
-type RunResult = {
-  status: number;
-  body: string;
-  logs: string[];
-  ms: number;
-  error?: string;
-};
-
-// console is captured inside the sandbox; the wrapper always answers JSON so
-// the API shape stays stable whatever the learner writes.
-// Bump the version when the wrapper changes: it is part of the cache id.
-const WRAPPER_VERSION = 2;
-const wrap = () => `
-import user from './user.js';
-export default {
-  async fetch(request, env, ctx) {
-    // Must live inside fetch: a warm isolate keeps module scope across runs.
-    const logs = [];
-    const record = (...args) => logs.push(args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' '));
-    globalThis.console = { log: record, info: record, warn: record, error: record, debug: record };
-    try {
-      if (typeof user?.fetch !== 'function') {
-        return Response.json({
-          error: 'Write a module that exports default { fetch(request, env) { ... } }',
-          logs,
-        });
-      }
-      const res = await user.fetch(request, env, ctx);
-      if (!(res instanceof Response)) {
-        return Response.json({ error: 'Return a Response', logs });
-      }
-      return Response.json({ status: res.status, body: await res.text(), logs });
-    } catch (error) {
-      return Response.json({ error: error?.message ?? String(error), logs });
-    }
-  },
-};
-`;
-
-// Same code + same id is reused, so repeat runs skip isolate creation and are
-// billed once per day rather than once per request.
-const hash = (text: string) => {
-  let h = 5381;
-  for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
-  return (h >>> 0).toString(36);
-};
-
-// Local dev rejects string ids on `get()`; resolving the id works everywhere.
-const stub = (namespace: DurableObjectNamespace, name: string) =>
-  namespace.get(namespace.idFromName(name));
-
 export const POST = defineHandler.withValidator({
-  body: z.object({ code: z.string().min(1).max(64 * 1024) }),
+  body: z.object({
+    code: z.string().min(1).max(64 * 1024),
+    token: z.string().min(1).max(2048),
+  }),
 })(async (c, { body }): Promise<RunResult> => {
-  const started = performance.now();
-  const elapsed = () => Math.round(performance.now() - started);
-  try {
-    const wrapped = wrap();
-    const id = `run-${WRAPPER_VERSION}-${hash(body.code)}`;
-    const worker = c.env.LOADER.get(id, () => ({
-      compatibilityDate: '2026-02-24',
-      mainModule: 'index.js',
-      modules: { 'index.js': wrapped, 'user.js': body.code },
-      env: {
-        KV: stub(c.env.LESSON_KV, 'lesson-kv'),
-        STORAGE: stub(c.env.LESSON_R2, 'lesson-r2'),
-        AI: stub(c.env.LESSON_AI, 'lesson-ai'),
-        COUNTER: stub(c.env.LESSON_COUNTER, 'lesson-counter'),
-        DB: c.env.DB,
-      },
-      globalOutbound: null,
-      limits: { cpuMs: 100, subRequests: 0 },
-    }));
-    const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
-    const result = await response.json<Partial<RunResult>>();
-    return {
-      status: result.status ?? 0,
-      body: result.body ?? '',
-      logs: result.logs ?? [],
-      error: result.error,
-      ms: elapsed(),
-    };
-  } catch (error) {
+  const verified = await verifyTurnstile(
+    body.token,
+    new URL(c.req.url).hostname,
+    c.req.header('cf-connecting-ip'),
+  );
+  if (!verified) {
     return {
       status: 0,
       body: '',
       logs: [],
-      error: error instanceof Error ? error.message : String(error),
-      ms: elapsed(),
+      error: 'Turnstile verification failed',
+      errorCode: 'turnstile',
+      ms: 0,
     };
   }
+
+  return runInSandbox(c.env, body.code);
 });
