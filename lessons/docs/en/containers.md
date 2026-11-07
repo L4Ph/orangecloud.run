@@ -14,11 +14,13 @@ If you are only "waiting on HTTP" or "querying a database", the isolate is faste
 ## Shape of the code
 
 ```ts
-const sandbox = await getSandbox('user-123');
-const result = await sandbox.run(['node', '--version']);
+import { getSandbox } from '@cloudflare/sandbox';
+
+const sandbox = await getSandbox(env.SANDBOX, 'user-123');
+const result = await sandbox.run('node --version');
 ```
 
-Void integrates Cloudflare Sandbox as `void/sandbox`: `getSandbox(id)` gives you a container with `run`, file operations, and port forwarding.
+With Cloudflare's Sandbox SDK (`@cloudflare/sandbox`), `getSandbox()` gives a Worker a container with `run`, file operations, and port forwarding.
 
 ## Pricing and startup
 

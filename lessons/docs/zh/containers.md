@@ -14,11 +14,13 @@ Workers（isolate）不够用时的**最后手段**。可以直接运行 Docker 
 ## 代码形态
 
 ```ts
-const sandbox = await getSandbox('user-123');
-const result = await sandbox.run(['node', '--version']);
+import { getSandbox } from '@cloudflare/sandbox';
+
+const sandbox = await getSandbox(env.SANDBOX, 'user-123');
+const result = await sandbox.run('node --version');
 ```
 
-Void 集成了 Cloudflare Sandbox（`void/sandbox`）：`getSandbox(id)` 拿到容器，可以 `run`、操作文件、开放端口。
+使用 Cloudflare 的 Sandbox SDK（`@cloudflare/sandbox`）时，Worker 可以通过 `getSandbox()` 拿到容器，执行 `run`、文件操作和端口公开。
 
 ## 费用与启动
 

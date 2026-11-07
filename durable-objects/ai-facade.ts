@@ -10,9 +10,8 @@ class AiFacade extends DurableObject {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (/Not available|authentication|unauthorized/i.test(message)) {
-        throw new Error(
-          'Workers AI is unavailable. Run `void cloudflare login` for local development (not needed once deployed).',
-        );
+        console.error('ai binding unavailable:', message);
+        throw new Error('Workers AI is unavailable right now. Try again in a moment.');
       }
       throw error;
     }

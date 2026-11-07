@@ -1,6 +1,8 @@
 # Cloudflare Workers を動かして学ぶ
 
-チュートリアル兼プレイグラウンド。左のエディタに Worker のコードを書き、「実行」を押すと**リクエストごとに新しい Worker（Dynamic Workers）**として走ります。ネットワークは塞がれ、CPU は 100ms で打ち切られるので、何を書いても共有環境は壊れません。
+Cloudflare Workers とその周辺（KV / D1 / R2 / Durable Objects / AI / Containers / Hono）を、動かしながら学ぶ初学者向けのチュートリアルです。左のエディタに Worker のコードを書き、「実行」を押すと**リクエストごとに新しい Worker（Dynamic Workers）**として走ります。ネットワークは塞がれ、CPU は 100ms で打ち切られるので、何を書いても共有環境は壊れません。
+
+このリポジトリ自体は Void（Vite+）で実装していますが、教材の内容は特定のフレームワークに依存しません。
 
 ## 起動
 

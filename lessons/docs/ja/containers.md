@@ -14,11 +14,13 @@ Workers（isolate）で足りないときの**最後の手段**。Docker イメ�
 ## 動かし方の形
 
 ```ts
-const sandbox = await getSandbox('user-123');
-const result = await sandbox.run(['node', '--version']);
+import { getSandbox } from '@cloudflare/sandbox';
+
+const sandbox = await getSandbox(env.SANDBOX, 'user-123');
+const result = await sandbox.run('node --version');
 ```
 
-Void には `void/sandbox`（Cloudflare Sandbox）が統合されていて、`getSandbox(id)` でコンテナを取って `run` / ファイル操作 / ポート公開ができます。
+Cloudflare の Sandbox SDK（`@cloudflare/sandbox`）を使うと、Worker から `getSandbox()` でコンテナを取り、`run` / ファイル操作 / ポート公開ができます。
 
 ## 料金と起動
 

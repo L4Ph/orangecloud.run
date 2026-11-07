@@ -33,6 +33,6 @@ answer.response; // 字符串
 
 **调用费用由本站承担。** 不需要 API 密钥（Workers AI 的绑定本身就是凭证）。
 
-但 Workers AI 没有本地模拟器，用 `npm run dev` 尝试时需要先登录 Cloudflare。遇到认证错误就执行 `void cloudflare login` 再试。部署后任何人都能直接用。
+但 Workers AI 没有本地模拟器，用 `npm run dev` 尝试时需要先登录 Cloudflare。遇到认证错误就执行 `npx wrangler login` 再试。部署后任何人都能直接用。
 
 公开前别忘了限制调用次数并固定使用便宜模型。把下一章的 **AI Gateway** 放在前面，就能一次性获得缓存、限流和费用可视化。

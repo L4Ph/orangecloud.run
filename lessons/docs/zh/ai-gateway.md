@@ -13,7 +13,7 @@
 ## 两种用法
 
 1. **替换服务商 URL**：`https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway}/openai/chat/completions`
-2. **从 Workers 的 `ai` 调用**（Void 中 `void/ai` 已自动经过 Gateway）
+2. **通过 Workers 的 `ai` 绑定调用**（想经过 Gateway 时使用第 1 种的 URL）
 
 ```js
 const res = await fetch(

@@ -14,11 +14,13 @@ Workers(isolate)로 부족할 때의 **마지막 수단**입니다. Docker 이�
 ## 코드의 모양
 
 ```ts
-const sandbox = await getSandbox('user-123');
-const result = await sandbox.run(['node', '--version']);
+import { getSandbox } from '@cloudflare/sandbox';
+
+const sandbox = await getSandbox(env.SANDBOX, 'user-123');
+const result = await sandbox.run('node --version');
 ```
 
-Void에는 Cloudflare Sandbox(`void/sandbox`)가 통합되어 있어 `getSandbox(id)`로 컨테이너를 얻고 `run`, 파일 조작, 포트 공개를 할 수 있습니다.
+Cloudflare의 Sandbox SDK(`@cloudflare/sandbox`)를 쓰면 Worker에서 `getSandbox()`로 컨테이너를 얻고 `run`, 파일 조작, 포트 공개를 할 수 있습니다.
 
 ## 가격과 기동
 

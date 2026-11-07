@@ -1,26 +1,41 @@
 # Deploying
 
-Once it runs locally, the last step is shipping it to your own account.
+Once it runs locally, ship it to your Cloudflare account. This chapter uses Wrangler, the official CLI.
 
 ## Steps
 
 ```sh
-# 1. Log in to Cloudflare (opens a browser)
-npx void cloudflare login
+# 1. Log in (opens a browser)
+npx wrangler login
 
-# 2. Store production secrets (.env is never uploaded)
-npx void secret put MY_API_KEY
+# 2. Check it locally
+npx wrangler dev
 
-# 3. Deploy (the first run picks account and resources)
-npx void deploy --platform cloudflare
+# 3. Deploy
+npx wrangler deploy
 ```
 
-The first deploy creates resources such as D1 and records them in `void.lock.json`. **Commit that file** — it holds the migration history.
+For a fresh project, `npm create cloudflare@latest` starts you from a template.
+
+## Secrets and resources
+
+```sh
+# Keep API keys out of code: store them as Worker secrets
+npx wrangler secret put API_KEY
+
+# D1 database
+npx wrangler d1 create my-db
+npx wrangler d1 migrations apply my-db --remote
+
+# KV / R2 / Queues are created the same way, then bound in wrangler.jsonc
+```
+
+Bindings live in `wrangler.jsonc`. Locally, Miniflare reads the same file, so your code uses `env.DB` and friends exactly as it will in production.
 
 ## Check before deploying
 
-- [ ] Secrets live in the `env.ts` schema plus `void secret put`; never in code
-- [ ] Binding names such as `env.DB` are the same in production
+- [ ] Secrets are in `wrangler secret put`, never in code or `vars`
+- [ ] Binding names match production (`wrangler.jsonc`)
 - [ ] No infinite loops (CPU limits kill them, but requests fail meanwhile)
 - [ ] No unexpectedly huge responses
 - [ ] You can read the bill (dashboard Usage)
@@ -28,14 +43,13 @@ The first deploy creates resources such as D1 and records them in `void.lock.jso
 ## After it is public
 
 - Attach a custom domain (Workers Custom Domain)
-- Watch logs (`cf` CLI or the dashboard; the `wrangler tail` equivalent)
+- Watch logs: `npx wrangler tail`
 - Add caching (Cache API / static assets) when traffic grows
 
-## How this site is built
+## How this site works
 
-This site runs on **Void (Vite+) + Cloudflare Workers**. The code in the left editor is executed per request by **Dynamic Workers** (a Worker created at runtime) with networking blocked, so nothing you write can break it.
+This site runs on Cloudflare Workers. The code in the left editor is executed per request by **Dynamic Workers** — a Worker created at runtime — with networking blocked, so nothing you write can break it.
 
-- Execution: `env.LOADER` (Worker Loader binding)
+- Execution: the Worker Loader binding
 - Per-run limits: 100ms CPU, no outbound network
-- KV / R2 / AI are proxied through Durable Objects (isolates cannot receive them)
-- D1 and Durable Objects are passed as real bindings
+- KV / R2 / AI are relayed through Durable Objects; D1 and Durable Objects are real bindings

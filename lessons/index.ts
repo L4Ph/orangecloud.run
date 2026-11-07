@@ -117,11 +117,11 @@ export class Onboarding extends WorkflowEntrypoint {
     id: 'containers',
     title: msg`Containers`,
     summary: msg`isolate で足りないときの最後の手段`,
-    code: `import { getSandbox } from 'void/sandbox';
+    code: `import { getSandbox } from '@cloudflare/sandbox';
 
-const sandbox = await getSandbox('user-123');
-const result = await sandbox.run(['node', '--version']);
-console.log(new TextDecoder().decode(result.stdout));
+const sandbox = await getSandbox(env.SANDBOX, 'user-123');
+const result = await sandbox.run('node --version');
+console.log(result.stdout);
 `,
     runnable: false,
     hint: msg`この単元は資料のみ（イメージのビルドと有料プランが必要）`,
@@ -130,14 +130,14 @@ console.log(new TextDecoder().decode(result.stdout));
     id: 'deploy',
     title: msg`デプロイまで`,
     summary: msg`ログイン、秘密値、デプロイ、公開後の確認`,
-    code: `# Cloudflare にログイン
-npx void cloudflare login
+    code: `# ログイン
+npx wrangler login
 
-# 本番の秘密値を登録
-npx void secret put MY_API_KEY
+# 秘密値を登録
+npx wrangler secret put MY_API_KEY
 
 # デプロイ
-npx void deploy --platform cloudflare
+npx wrangler deploy
 `,
     language: 'shell',
     runnable: false,

@@ -18,8 +18,8 @@ for (const file of files) {
   });
   const data = await response.json();
   // Workers AI has no local simulator; without a login it is expected to fail.
-  if (/cloudflare login/i.test(data.error ?? '')) {
-    console.log('skip', file, 'needs a Cloudflare login');
+  if (/cloudflare login|Workers AI is unavailable/i.test(data.error ?? '')) {
+    console.log('skip', file, 'Workers AI is unavailable in this environment');
     continue;
   }
   const ok = response.ok && !data.error;

@@ -13,7 +13,7 @@
 ## 쓰는 두 가지 방법
 
 1. **프로바이더 URL 교체**: `https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway}/openai/chat/completions`
-2. **Workers의 `ai`에서 사용** (Void에서는 `void/ai`가 자동으로 Gateway를 경유)
+2. **Workers의 `ai` 바인딩으로 호출** (Gateway를 거치게 하려면 1번의 URL 사용)
 
 ```js
 const res = await fetch(

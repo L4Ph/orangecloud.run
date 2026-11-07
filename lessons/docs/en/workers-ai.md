@@ -33,6 +33,6 @@ answer.response; // a string
 
 **This site pays for the calls.** No API key is needed, because the Workers AI binding is itself the credential.
 
-Workers AI has no local simulator, so trying it with `npm run dev` needs a Cloudflare login. If you hit an auth error, run `void cloudflare login` and try again. After deploying, it works for anyone.
+Workers AI has no local simulator, so trying it with `npm run dev` needs a Cloudflare login. If you hit an auth error, run `npx wrangler login` and try again. After deploying, it works for anyone.
 
 Before going public, cap the number of runs and pin a cheap model. Putting the next chapter's **AI Gateway** in front buys you caching, rate limiting, and cost visibility in one move.

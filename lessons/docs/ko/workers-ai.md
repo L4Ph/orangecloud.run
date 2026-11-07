@@ -33,6 +33,6 @@ answer.response; // 문자열
 
 이 사이트는 **비용을 사이트가 부담합니다.** API 키는 필요 없습니다(Workers AI는 바인딩 자체가 인증을 겸함).
 
-다만 Workers AI에는 로컬 시뮬레이터가 없어서 `npm run dev`로 시도할 때만 Cloudflare 로그인이 필요합니다. 인증 오류가 나면 `void cloudflare login` 후 다시 실행하세요. 배포 후에는 누구나 그대로 동작합니다.
+다만 Workers AI에는 로컬 시뮬레이터가 없어서 `npm run dev`로 시도할 때만 Cloudflare 로그인이 필요합니다. 인증 오류가 나면 `npx wrangler login` 후 다시 실행하세요. 배포 후에는 누구나 그대로 동작합니다.
 
 공개할 때는 실행 횟수 제한과 저렴한 모델 고정을 잊지 마세요. 다음 장의 **AI Gateway**를 앞에 두면 캐시, 레이트 리밋, 비용 파악을 한 번에 얻습니다.
