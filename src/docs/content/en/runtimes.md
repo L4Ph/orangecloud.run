@@ -6,37 +6,39 @@ By understanding what **V8 isolate**, which powers Cloudflare Workers, stripped 
 
 ## Fundamental Differences in Process Models and Isolation Architectures
 
-Node.js assigns a single V8 instance to a single OS process. Outside of that lies a web of libuv event loops, multithreading pools, file descriptor tables, and raw socket management mechanisms. This structure assumes that a single process remains resident indefinitely, making it utterly unsuitable for operations where a process is created and destroyed for every request.
+Node.js, by default, assigns a single V8 instance (isolate) to a single OS process. With `worker_threads` you can add isolates to the same process, but each isolate comes with its own libuv event loop. Outside of that lies a web of libuv thread pools and socket management mechanisms. This structure assumes that a single process remains resident indefinitely, making it ill-suited to operations where a process is created and destroyed for every request.
 
 ```
 [Node.js Process Structure]
-OS Process ── libuv (C++ / Thread Pool / File I/O / Network Sockets)
+OS Process ── libuv (C / Thread Pool / File I/O / Network Sockets)
              └── Single V8 Instance (Shares heap and state across all requests)
 
 [Workers' Isolate Structure]
-Single Host Process ── Isolation Boundary (Memory Protection / Privileged Sandbox)
-                      ├── Isolate A (User A's heap / Independent memory space)
-                      ├── Isolate B (User B's heap / Independent memory space)
-                      └── Isolate C (User C's heap / Independent memory space)
+Runtime Process ── Isolation Boundary (Memory Protection / Permission Sandbox)
+                  ├── Isolate A (User A's heap / Independent memory space)
+                  ├── Isolate B (User B's heap / Independent memory space)
+                  └── Isolate C (User C's heap / Independent memory space)
 ```
 
-Cloudflare Workers completely hides the OS process layer and treats **V8 isolate alone** as the basic unit of execution. Within a single host process, thousands of isolates—with strictly decoupled memory spaces—are packed tightly together.
+Cloudflare Workers hides the OS process layer and treats **V8 isolate alone** as the basic unit of execution. A single instance of the runtime can switch between hundreds or thousands of isolates whose memory spaces are separated from one another.
 
-By stripping away privileged system calls, such as file system access and direct socket control, from the outset, it fundamentally eliminates the risk of other code peering into adjacent memory regions on the same host.
+V8 keeps code from touching memory outside its isolate. On top of that, Cloudflare uses Linux namespaces and seccomp to cut the process off from the file system and the network, and places Workers of different trust levels in separate runtime instances. Because V8 has bugs too, Cloudflare keeps the time from publishing a V8 patch to deploying it in production under 24 hours.
 
-## Physical Limits of Cold Starts
+## Startup Times of Containers and Isolates
 
-Starting a container (such as Docker) requires a series of essential steps: unpacking the container image, initializing the Linux namespace, configuring virtual network interfaces, and launching the guest process. No matter how much you optimize, this process takes several hundred milliseconds to several seconds.
+Starting a container (such as Docker) requires a series of steps: unpacking the container image layers, initializing the Linux namespace, configuring virtual network interfaces, and launching the guest process. On Cloudflare Containers, each instance runs inside a Firecracker microVM with its own kernel, and a cold start is often in the 1 to 3 second range, depending on image size and code.
 
-In contrast, launching an isolate is completed simply by "initializing the V8 heap area" and "loading precompiled bytecode." Since there are no network or virtual machine boot sequences, as a physical constraint, request processing can begin within 1 to 5 milliseconds.
+In contrast, an isolate is simply created inside a runtime that is already running; no process or virtual machine is started. Cloudflare says an isolate can start about a hundred times faster than a Node process on a container or virtual machine. A Worker's cold start still includes fetching the script, compiling it, and running its top-level code. It takes longer as the script grows and its top-level work gets heavier, and startup time has a limit of 1 second.
 
 ## Architectural Selection Boundary
 
-| Process Nature                                                    | Optimal Choice            | Rationale                                                          |
-| ----------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------ |
-| Web APIs, lightweight business logic, data relay                  | **V8 isolate (Workers)**  | Startup is in milliseconds; zero idle cost                         |
-| Long-running batches, FFmpeg, Playwright                          | **Cloudflare Containers** | A full Linux kernel and binary execution environment are essential |
-| Waiting for external connections (DB queries, external REST APIs) | **V8 isolate (Workers)**  | Free network wait time due to CPU time billing                     |
-| Serialization to a single resource and exclusive control          | **Durable Objects**       | Consolidate requests into a single instance globally               |
+| Workload Type                                                     | Optimal Choice                         | Rationale                                                                                                           |
+| ----------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Web APIs, lightweight business logic, data relay                  | **V8 isolate (Workers)**               | Isolates start quickly; zero idle cost                                                                              |
+| Running Linux binaries (such as FFmpeg)                           | **Cloudflare Containers**              | A full Linux kernel and binary execution environment are required                                                   |
+| Headless browser automation (Playwright)                          | **Browser Run**                        | Playwright can drive it from a Worker                                                                               |
+| Long-running batches                                              | **Workflows / Queues / Cron Triggers** | Cron and Queue consumers get up to 15 minutes; a Workflows step has no wall-time limit (the CPU time limit remains) |
+| Waiting for external connections (DB queries, external REST APIs) | **V8 isolate (Workers)**               | Billed by requests and CPU time; time spent waiting on the network is not billed                                    |
+| Serialization to a single resource and exclusive control          | **Durable Objects**                    | Consolidate requests into a single instance globally                                                                |
 
-When bringing in libraries for Node.js, the `nodejs_compat` compatibility flag can be used, but this only provides a subset of abstraction layers close to Web standards, such as `Buffer`, `crypto`, and `events`. Designs that assume local disk operations via `fs` are fundamentally incompatible with the philosophy of isolate.
+When bringing in libraries written for Node.js, use the `nodejs_compat` compatibility flag. For Workers with a compatibility date of 2026-08-04 or later, this flag is enabled by default. In addition to `Buffer`, `crypto`, and `events`, modules such as `process`, `node:fs`, `node:http`, `node:net`, and `node:zlib` are built in, although some modules, such as `child_process`, can be imported but do not work. `node:fs` is an in-memory virtual file system, and the writable `/tmp` is a temporary area that exists only for a single request. Designs that assume a persistent local disk do not hold up.
