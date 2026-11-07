@@ -7,7 +7,7 @@ Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 
 | 모델                                           | 용도              | 대략            |
 | ---------------------------------------------- | ----------------- | --------------- |
 | `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화·요약    | 저렴. 먼저 이것 |
-| `@cf/openai/gpt-oss-20b`                       | 어려운 추론       | 비쌈            |
+| `@cf/openai/gpt-oss-20b`                       | 추론이 필요할 때  | 추론 토큰 사용  |
 | `@cf/baai/bge-small-en-v1.5`                   | 임베딩(검색, RAG) | 매우 저렴       |
 | `@cf/openai/whisper`                           | 음성→문자         | 초 단위 과금    |
 
@@ -17,7 +17,7 @@ Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 
 
 비용은 대개 출력 토큰이 좌우하므로 출력 단가를 비교하세요. `mistral-small-3.1-24b`는 출력 100만 토큰당 $0.555로 llama-3.3-70b의 $2.253보다 약 4배 저렴하고, `response`에 문자열을 돌려줍니다.
 
-모델마다 응답 구조가 다릅니다. `@cf/mistralai/mistral-small-3.1-24b-instruct`는 `response`에 문자열을 주지만, Gemma 4 같은 추론 모델은 `choices[0].message.content`에 주고 생각하는 데 토큰을 많이 씁니다. 처음에는 `response` 모델이 다루기 쉽습니다.
+모델마다 응답 구조가 다릅니다. `@cf/mistralai/mistral-small-3.1-24b-instruct`는 `response`에 문자열을 주지만, gpt-oss-20b 같은 추론 모델은 `choices[0].message.content`에 주고 생각하는 데 토큰을 많이 씁니다. 처음에는 `response` 모델이 다루기 쉽습니다.
 
 ## 호출 방법
 
