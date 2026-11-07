@@ -32,6 +32,10 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 - ローカルは `.env` の `TURNSTILE_SECRET`（本番と同じ widget の secret）で検証する
 - 公開するドメインを widget のドメイン一覧に追加するのを忘れない
 
+## UI
+
+コンポーネントは Cloudflare の [Kumo UI](https://kumo-ui.com/)（`@cloudflare/kumo`）。スタイルは Tailwind 無しで `@cloudflare/kumo/styles/standalone` を読み、色は Kumo のセマンティックトークン（`--color-kumo-*` / `--text-color-kumo-*`）を参照しています。ダークモードは `<html data-mode>` を matchMedia で切り替え（初回描画前に head のスクリプトで設定）。
+
 ## ツールチェーン
 
 Vite+（`vp`）の `check` を使います。設定は `vite.config.ts` の `lint` / `fmt` ブロックに集約し、`lint.options.typeAware` と `typeCheck` を有効にしています。

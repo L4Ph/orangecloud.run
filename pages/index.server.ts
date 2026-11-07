@@ -22,4 +22,11 @@ export type Props = InferProps<typeof loader>;
 
 export const head = defineHead<Props>((_c, props) => ({
   htmlAttrs: { lang: props.locale },
+  // Set the Kumo mode before first paint so dark mode does not flash.
+  script: [
+    {
+      innerHTML:
+        "document.documentElement.dataset.mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'",
+    },
+  ],
 }));

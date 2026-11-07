@@ -3,6 +3,12 @@ import { fetch as apiFetch } from 'void/client';
 import { useRouter } from '@void/react';
 import { I18n, type Messages } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { Button } from '@cloudflare/kumo/components/button';
+import { Dialog } from '@cloudflare/kumo/components/dialog';
+import { Link } from '@cloudflare/kumo/components/link';
+import { Select } from '@cloudflare/kumo/components/select';
+import { ArrowLeftIcon, ArrowRightIcon, ListIcon, PlayIcon } from '@phosphor-icons/react';
+import '@cloudflare/kumo/styles/standalone';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { lessons } from '../lessons';
 import { Turnstile } from '../lib/turnstile';
@@ -117,6 +123,8 @@ function CodeEditor({
   return <div className="editor-host" ref={host} />;
 }
 
+const languageItems = Object.fromEntries(locales.map((item) => [item, localeLabel[item]]));
+
 function LanguageSwitcher({
   locale,
   onChange,
@@ -124,16 +132,19 @@ function LanguageSwitcher({
   locale: Locale;
   onChange: (next: Locale) => void;
 }) {
+  const { t } = useLingui();
+
   return (
-    <label className="language-switcher">
-      <select value={locale} onChange={(event) => onChange(event.target.value as Locale)}>
-        {locales.map((item) => (
-          <option key={item} value={item}>
-            {localeLabel[item]}
-          </option>
-        ))}
-      </select>
-    </label>
+    <Select
+      aria-label={t`言語`}
+      className="lang-select"
+      size="sm"
+      value={locale}
+      onValueChange={(next) => {
+        if (next) onChange(next as Locale);
+      }}
+      items={languageItems}
+    />
   );
 }
 
@@ -174,6 +185,16 @@ function Playground({
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = () => {
+      document.documentElement.dataset.mode = media.matches ? 'dark' : 'light';
+    };
+    apply();
+    media.addEventListener('change', apply);
+    return () => media.removeEventListener('change', apply);
+  }, []);
 
   const execute = useCallback(
     async (value: string, turnstileToken: string | null) => {
@@ -258,51 +279,46 @@ function Playground({
               第 {lessonIndex + 1} 章 / 全 {lessons.length} 章
             </Trans>
           </span>
-          <button
-            type="button"
-            className="index-toggle"
+          <Button
+            size="sm"
+            variant="secondary"
+            icon={<ListIcon />}
             aria-expanded={indexOpen}
             onClick={() => setIndexOpen((open) => !open)}
           >
             <Trans>目次</Trans>
-          </button>
+          </Button>
           <LanguageSwitcher locale={locale} onChange={(next) => navigate(lessonId, next)} />
         </div>
       </header>
 
-      {indexOpen && (
-        <div className="index-overlay" onClick={() => setIndexOpen(false)}>
-          <nav
-            className="index-panel"
-            aria-label={t`目次`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <p className="index-title">
-              <Trans>目次</Trans>
-            </p>
-            <ol>
-              {lessons.map((item, index) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    className={item.id === lesson.id ? 'index-item active' : 'index-item'}
-                    onClick={() => {
-                      setIndexOpen(false);
-                      navigate(item.id);
-                    }}
-                  >
-                    <span className="num">{String(index + 1).padStart(2, '0')}</span>
-                    <span className="info">
-                      <strong>{i18n._(item.title)}</strong>
-                      <small>{i18n._(item.summary)}</small>
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        </div>
-      )}
+      <Dialog.Root open={indexOpen} onOpenChange={setIndexOpen}>
+        <Dialog size="xl" className="index-dialog">
+          <Dialog.Title>
+            <Trans>目次</Trans>
+          </Dialog.Title>
+          <ol className="index-list">
+            {lessons.map((item, index) => (
+              <li key={item.id}>
+                <Button
+                  variant="ghost"
+                  className={item.id === lesson.id ? 'index-item active' : 'index-item'}
+                  onClick={() => {
+                    setIndexOpen(false);
+                    navigate(item.id);
+                  }}
+                >
+                  <span className="num">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="info">
+                    <strong>{i18n._(item.title)}</strong>
+                    <small>{i18n._(item.summary)}</small>
+                  </span>
+                </Button>
+              </li>
+            ))}
+          </ol>
+        </Dialog>
+      </Dialog.Root>
 
       {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
 
@@ -314,12 +330,18 @@ function Playground({
               <p>{i18n._(lesson.summary)}</p>
             </div>
             <div className="controls">
-              <button type="button" onClick={run} disabled={!lesson.runnable || pending}>
-                {pending ? <Trans>実行中…</Trans> : <Trans>実行 ⌘/Ctrl+Enter</Trans>}
-              </button>
-              <button type="button" className="ghost" onClick={() => setCode(lesson.code)}>
+              <Button
+                variant="primary"
+                icon={<PlayIcon />}
+                loading={pending}
+                onClick={run}
+                disabled={!lesson.runnable}
+              >
+                <Trans>実行 ⌘/Ctrl+Enter</Trans>
+              </Button>
+              <Button variant="secondary" onClick={() => setCode(lesson.code)}>
                 <Trans>初期化</Trans>
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -369,54 +391,60 @@ function Playground({
           <article className="doc" dangerouslySetInnerHTML={{ __html: docHtml }} />
           <footer className="doc-footer">
             <nav className="lesson-nav" aria-label={t`章の移動`}>
-              <button type="button" onClick={() => go(-1)} disabled={lessonIndex === 0}>
-                <Trans>← 前の章</Trans>
-              </button>
+              <Button
+                variant="outline"
+                icon={<ArrowLeftIcon />}
+                onClick={() => go(-1)}
+                disabled={lessonIndex === 0}
+              >
+                <Trans>前の章</Trans>
+              </Button>
               <span>
                 {lessonIndex + 1} / {lessons.length}
               </span>
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                icon={<ArrowRightIcon />}
                 onClick={() => go(1)}
                 disabled={lessonIndex === lessons.length - 1}
               >
-                <Trans>次の章 →</Trans>
-              </button>
+                <Trans>次の章</Trans>
+              </Button>
             </nav>
             <p>
               <Trans>前提知識</Trans>
             </p>
             <ul>
               <li>
-                <a href="https://jsprimer.net/" target="_blank" rel="noreferrer">
+                <Link href="https://jsprimer.net/" target="_blank" rel="noreferrer">
                   JavaScript Primer
-                </a>{' '}
+                </Link>{' '}
                 — <Trans>JS がはじめてなら最初に</Trans>
               </li>
               <li>
-                <a href="https://typescriptbook.jp/" target="_blank" rel="noreferrer">
+                <Link href="https://typescriptbook.jp/" target="_blank" rel="noreferrer">
                   サバイバル TypeScript
-                </a>{' '}
+                </Link>{' '}
                 — <Trans>型が読めないと先に進みにくい</Trans>
               </li>
               <li>
-                <a
+                <Link
                   href="https://gihyo.jp/book/2026/978-4-297-15438-7"
                   target="_blank"
                   rel="noreferrer"
                 >
                   <Trans>Web開発者のための［入門］Cloudflare Workers</Trans>
-                </a>{' '}
+                </Link>{' '}
                 — <Trans>本気で使うなら</Trans>
               </li>
               <li>
-                <a
+                <Link
                   href="https://gihyo.jp/book/2026/978-4-297-15678-7"
                   target="_blank"
                   rel="noreferrer"
                 >
                   <Trans>Cloudflare Workers 実践ガイド</Trans>
-                </a>{' '}
+                </Link>{' '}
                 — <Trans>設計・運用まで</Trans>
               </li>
             </ul>
