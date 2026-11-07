@@ -41,3 +41,12 @@ export const markdownCss = createThemeCss({
   darkSelector: '[data-mode="dark"] .markdown-renderer',
   codeBlockSelector: ".markdown-renderer pre.tm-code",
 });
+
+// The playground editor reads the same palette. Variables only: the editor sets its own surface.
+export const editorCss = createThemeCss({
+  light: githubLightTheme,
+  dark: githubDarkTheme,
+  lightSelector: ".cm-editor",
+  darkSelector: '[data-mode="dark"] .cm-editor',
+  includeBaseStyles: false,
+});

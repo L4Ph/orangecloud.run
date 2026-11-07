@@ -10,6 +10,7 @@ import { Turnstile } from "./turnstile";
 import type { Locale } from "./locales";
 import { ChapterFooter, ChapterHeader, ContentShell } from "./content-shell";
 import { MarkdownArticle } from "./markdown-article";
+import { editorCss } from "./markdown-highlight";
 import type { MarkdownDocument } from "@tanstack/markdown";
 
 type RunResult = {
@@ -19,6 +20,18 @@ type RunResult = {
   ms: number;
   error?: string;
   errorCode?: "turnstile";
+};
+
+// Only the lesson's language is fetched, so a shell lesson never downloads the JS parser.
+const languages = {
+  javascript: () => import("@codemirror/lang-javascript").then((m) => m.javascript()),
+  python: () => import("@codemirror/lang-python").then((m) => m.python()),
+  // No Lezer grammar exists for shell, so it is the one language left on a stream parser.
+  shell: () =>
+    Promise.all([
+      import("@codemirror/language"),
+      import("@codemirror/legacy-modes/mode/shell"),
+    ]).then(([{ StreamLanguage }, { shell }]) => StreamLanguage.define(shell)),
 };
 
 function CodeEditor({
@@ -36,103 +49,135 @@ function CodeEditor({
 }) {
   const [ready, setReady] = useState(false);
   const host = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<import("monaco-editor").editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<{
+    view: import("@codemirror/view").EditorView;
+    replace: (next: string) => void;
+  } | null>(null);
+  const valueRef = useRef(value);
   const onChangeRef = useRef(onChange);
   const onRunRef = useRef(onRun);
+  valueRef.current = value;
   onChangeRef.current = onChange;
   onRunRef.current = onRun;
 
   useEffect(() => {
     let disposed = false;
-    const disposables: { dispose: () => void }[] = [];
 
     void (async () => {
-      const [monaco, editorWorker] = await Promise.all([
-        import("monaco-editor/editor/editor.api"),
-        import("monaco-editor/editor/editor.worker?worker"),
-        import("monaco-editor/languages/definitions/javascript/register"),
-        import("monaco-editor/languages/definitions/shell/register"),
-        import("monaco-editor/languages/definitions/python/register"),
+      const [
+        { EditorState, Transaction },
+        { EditorView, keymap, lineNumbers },
+        { defaultKeymap, history, historyKeymap },
+        { HighlightStyle, bracketMatching, indentOnInput, syntaxHighlighting },
+        { closeBrackets, closeBracketsKeymap },
+        { tags },
+        languageSupport,
+      ] = await Promise.all([
+        import("@codemirror/state"),
+        import("@codemirror/view"),
+        import("@codemirror/commands"),
+        import("@codemirror/language"),
+        import("@codemirror/autocomplete"),
+        import("@lezer/highlight"),
+        languages[language](),
       ]);
       if (disposed || !host.current) return;
 
-      (self as unknown as { MonacoEnvironment: unknown }).MonacoEnvironment = {
-        getWorker: () => new editorWorker.default(),
+      const view = new EditorView({
+        parent: host.current,
+        doc: valueRef.current,
+        extensions: [
+          lineNumbers(),
+          history(),
+          indentOnInput(),
+          bracketMatching(),
+          closeBrackets(),
+          EditorView.lineWrapping,
+          EditorState.tabSize.of(2),
+          languageSupport,
+          // Same palette as the article's code blocks; the variables come from editorCss, which
+          // also follows the page's light/dark switch.
+          syntaxHighlighting(
+            HighlightStyle.define([
+              { tag: tags.keyword, color: "var(--th-keyword)" },
+              { tag: [tags.string, tags.regexp], color: "var(--th-string)" },
+              { tag: [tags.number, tags.atom, tags.bool], color: "var(--th-number)" },
+              { tag: tags.comment, color: "var(--th-comment)" },
+              {
+                tag: [
+                  tags.definition(tags.variableName),
+                  tags.function(tags.variableName),
+                  tags.function(tags.propertyName),
+                ],
+                color: "var(--th-function)",
+              },
+              { tag: tags.standard(tags.variableName), color: "var(--th-command)" },
+              { tag: [tags.typeName, tags.className], color: "var(--th-type)" },
+              { tag: tags.meta, color: "var(--th-meta)" },
+            ]),
+          ),
+          EditorView.contentAttributes.of({ "aria-label": label }),
+          EditorView.theme({
+            "&": { height: "100%", color: "var(--th-token)" },
+            "&.cm-focused": { outline: "2px solid var(--th-attr)", outlineOffset: "-2px" },
+            ".cm-scroller": { overflow: "auto", fontFamily: "inherit", lineHeight: "inherit" },
+            ".cm-content": { padding: "14px 0", caretColor: "currentColor" },
+            ".cm-line": { padding: "0 16px" },
+            ".cm-gutters": {
+              backgroundColor: "transparent",
+              border: "none",
+              color: "var(--th-comment)",
+            },
+          }),
+          // Tab is left unbound on purpose: binding it to indent traps keyboard users (WCAG 2.1.2)
+          // and then needs a hint explaining the way out. Mod-[ and Mod-] indent instead.
+          keymap.of([
+            {
+              key: "Mod-Enter",
+              run: () => {
+                onRunRef.current();
+                return true;
+              },
+            },
+            ...closeBracketsKeymap,
+            ...defaultKeymap,
+            ...historyKeymap,
+          ]),
+          EditorView.updateListener.of((update) => {
+            if (update.docChanged) onChangeRef.current(update.state.doc.toString());
+          }),
+        ],
+      });
+      editorRef.current = {
+        view,
+        // A replacement from outside (reset, next lesson) is not something Ctrl+Z should undo.
+        replace: (next) =>
+          view.dispatch({
+            changes: { from: 0, to: view.state.doc.length, insert: next },
+            annotations: Transaction.addToHistory.of(false),
+          }),
       };
-
-      const scheme = window.matchMedia("(prefers-color-scheme: dark)");
-      const editor = monaco.editor.create(host.current, {
-        value,
-        language,
-        theme: scheme.matches ? "vs-dark" : "vs",
-        fontSize: 13,
-        lineHeight: 20,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-        wordWrap: "on",
-        automaticLayout: true,
-        tabSize: 2,
-        padding: { top: 14, bottom: 14 },
-        renderLineHighlight: "none",
-        smoothScrolling: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-        ariaLabel: label,
-      });
-      editorRef.current = editor;
       setReady(true);
-      disposables.push(
-        editor.onDidChangeModelContent(() => {
-          onChangeRef.current(editor.getValue());
-        }),
-      );
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-        onRunRef.current();
-      });
-
-      // Tab indents here, which would trap keyboard users: Esc hands Tab back to the page
-      // until the editor loses focus. Open widgets keep their own Esc.
-      editor.addCommand(
-        monaco.KeyCode.Escape,
-        () => editor.updateOptions({ tabFocusMode: true }),
-        "!suggestWidgetVisible && !findWidgetVisible && !parameterHintsVisible && !renameInputVisible",
-      );
-      disposables.push(
-        editor.onDidBlurEditorText(() => editor.updateOptions({ tabFocusMode: false })),
-      );
-
-      // The rest of the page follows the OS theme; keep the editor in step.
-      const syncTheme = () => monaco.editor.setTheme(scheme.matches ? "vs-dark" : "vs");
-      scheme.addEventListener("change", syncTheme);
-      disposables.push({ dispose: () => scheme.removeEventListener("change", syncTheme) });
     })();
 
     return () => {
       disposed = true;
-      disposables.forEach((item) => item.dispose());
-      editorRef.current?.dispose();
+      editorRef.current?.view.destroy();
       editorRef.current = null;
+      setReady(false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [language, label]);
 
   useEffect(() => {
     const editor = editorRef.current;
-    if (!editor) return;
-    if (editor.getValue() !== value) editor.setValue(value);
+    if (editor && editor.view.state.doc.toString() !== value) editor.replace(value);
   }, [value]);
 
-  useEffect(() => {
-    const editor = editorRef.current;
-    if (!editor) return;
-    void import("monaco-editor/editor/editor.api").then((monaco) => {
-      const model = editor.getModel();
-      if (model) monaco.editor.setModelLanguage(model, language);
-    });
-  }, [language]);
-
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full font-mono text-[13px] leading-5">
+      <style>{editorCss}</style>
       <div className="h-full w-full" ref={host} />
-      {/* Same text while Monaco downloads, so the pane is never an empty box. */}
+      {/* Same text while the editor downloads, so the pane is never an empty box. */}
       {!ready && (
         <pre className="absolute inset-0 overflow-auto px-6 py-3.5 font-mono text-[13px] leading-5 whitespace-pre-wrap text-kumo-default">
           {value}
@@ -291,9 +336,6 @@ function Playground({
           className="flex h-[min(calc(100dvh-4rem),46rem)] scroll-mt-20 flex-col overflow-hidden rounded-lg bg-kumo-base ring ring-kumo-line xl:sticky xl:top-22 xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:h-[min(calc(100dvh-7.5rem),52rem)]"
         >
           <div className="flex shrink-0 items-center gap-2 border-b border-kumo-line px-3 py-2">
-            <p className="text-xs text-kumo-subtle max-md:hidden [@media(hover:none)]:hidden">
-              <Trans>Esc → Tab でエディタの外へ</Trans>
-            </p>
             <div className="ml-auto flex items-center gap-2">
               <Button variant="secondary" size="sm" onClick={() => setCode(lesson.code)}>
                 <Trans>初期化</Trans>
@@ -325,7 +367,7 @@ function Playground({
               value={code}
               onChange={setCode}
               language={lesson.language ?? "javascript"}
-              label={t`コードエディタ。Esc のあと Tab でエディタの外へ移動します。`}
+              label={t`コードエディタ`}
               onRun={run}
             />
           </div>

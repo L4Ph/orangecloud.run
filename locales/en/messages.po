@@ -69,13 +69,9 @@ msgstr "Durable Objects and the Actor model"
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, relayed bindings, and run limits"
 
-#: lib/playground.tsx:295
-msgid "Esc → Tab でエディタの外へ"
-msgstr "Esc → Tab to leave the editor"
-
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:256
+#: lib/playground.tsx:301
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -97,7 +93,7 @@ msgstr "Hono's router and middleware"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:260
+#: lib/playground.tsx:305
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -177,17 +173,17 @@ msgstr "The Workers execution model"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "See the difference between in-memory state and SQLite by editing code"
 
-#: lib/playground.tsx:290
+#: lib/playground.tsx:335
 msgid "エディタ"
 msgstr "Editor"
 
-#: lib/playground.tsx:278
+#: lib/playground.tsx:323
 msgid "エディタへ移動"
 msgstr "Go to the editor"
 
-#: lib/playground.tsx:328
-msgid "コードエディタ。Esc のあと Tab でエディタの外へ移動します。"
-msgstr "Code editor. Press Escape, then Tab, to move out of the editor."
+#: lib/playground.tsx:370
+msgid "コードエディタ"
+msgstr "Code editor"
 
 #: pages/books.tsx:57
 msgid "このサイトで足りなくなったら、本で通して学べます。"
@@ -202,7 +198,7 @@ msgstr "How this site works"
 msgid "このページ"
 msgstr "On this page"
 
-#: lib/playground.tsx:379
+#: lib/playground.tsx:421
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reading only. The code is there for reference."
 
@@ -218,7 +214,7 @@ msgstr "Deploying"
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "Why a class, and how far the actor model goes"
 
-#: lib/playground.tsx:212
+#: lib/playground.tsx:257
 msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
 msgstr "Bot check failed. Try again."
 
@@ -254,7 +250,7 @@ msgstr "Pipe any Linux binaries together. FFmpeg and friends are an extension of
 msgid "公開と運用"
 msgstr "Ship and operate"
 
-#: lib/playground.tsx:299
+#: lib/playground.tsx:341
 msgid "初期化"
 msgstr "Reset"
 
@@ -292,11 +288,11 @@ msgstr "Basics"
 msgid "学ぶ"
 msgstr "Learn"
 
-#: lib/playground.tsx:309
+#: lib/playground.tsx:351
 msgid "実行"
 msgstr "Run"
 
-#: lib/playground.tsx:374
+#: lib/playground.tsx:416
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "The response and console output appear here after you run. The network is blocked, so nothing breaks."
 
@@ -304,7 +300,7 @@ msgstr "The response and console output appear here after you run. The network i
 msgid "実行環境"
 msgstr "Compute"
 
-#: lib/playground.tsx:336
+#: lib/playground.tsx:378
 msgid "実行結果"
 msgstr "Run output"
 

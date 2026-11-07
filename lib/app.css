@@ -27,6 +27,6 @@ h3 {
 }
 
 /* Scrolling inside the editor stays inside it. */
-.monaco-scrollable-element {
+.cm-scroller {
   overscroll-behavior: contain;
 }
