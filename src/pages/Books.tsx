@@ -54,21 +54,36 @@ function BooksPage({ locale }: Props) {
             <Trans>書籍の紹介</Trans>
           </Text>
         </div>
-        <div className="mt-1 max-w-2xl">
+        <div className="mt-1 max-w-2xl space-y-1">
           <Text as="p" variant="secondary">
             <Trans>このサイトで足りなくなったら、本で通して学べます。</Trans>
           </Text>
+          {locale !== "ja" && (
+            <Text as="p" variant="secondary">
+              <Trans comment="Shown only when the page language is not Japanese.">
+                どちらも日本語の本です。
+              </Trans>
+            </Text>
+          )}
         </div>
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
           <BookCard
             href="https://gihyo.jp/book/2026/978-4-297-15438-7"
-            title={<Trans>Web開発者のための［入門］Cloudflare Workers</Trans>}
-            note={<Trans>本気で使うなら</Trans>}
+            title={
+              <Trans comment="Book title. Keep the Japanese original in every language.">
+                Web開発者のための［入門］Cloudflare Workers
+              </Trans>
+            }
+            note={<Trans>手軽な入門書。ハンズオンで基本から一歩進んだ使い方まで</Trans>}
           />
           <BookCard
             href="https://gihyo.jp/book/2026/978-4-297-15678-7"
-            title={<Trans>Cloudflare Workers 実践ガイド</Trans>}
-            note={<Trans>設計・運用まで</Trans>}
+            title={
+              <Trans comment="Book title. Keep the Japanese original in every language.">
+                Cloudflare Workers 実践ガイド
+              </Trans>
+            }
+            note={<Trans>設計・実装・運用まで</Trans>}
           />
         </ul>
       </main>

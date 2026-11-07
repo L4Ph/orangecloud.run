@@ -15,13 +15,13 @@ export const docs: Doc[] = [
     slug: "hono",
     section: "languages",
     title: msg`Hono`,
-    summary: msg`ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク`,
+    summary: msg`ルーティング、ミドルウェア、型安全な RPC。小さく速い Web フレームワーク`,
   },
   {
     slug: "hono-router",
     section: "languages",
     title: msg`Hono のルーターとミドルウェア`,
-    summary: msg`ルーターの仕組み、ミドルウェアの合成、型と RPC`,
+    summary: msg`ルーターの仕組み、ミドルウェアの合成、ストリーミング`,
   },
   {
     slug: "rust",

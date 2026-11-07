@@ -13,9 +13,13 @@ msgstr ""
 msgid "（新しいタブで開く）"
 msgstr "(opens in a new tab)"
 
+#: src/pages/Home.tsx:29
+msgid "「動かす」の章ではネットワークが塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "In \"Run\" chapters the network is blocked, but D1, KV, R2 and Durable Object state is shared by all visitors."
+
 #: src/pages/Home.tsx:24
-msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
-msgstr "\"Run\" chapters let you execute code in a browser editor. The network is blocked, so nothing breaks if you make a mistake. \"Read\" pages are articles on how to make design decisions."
+msgid "「動かす」は、ブラウザのエディタに書いたコードをサーバーで実行しながら進む章です。「読む」は、仕組み・選び方・手順を解説した記事です。"
+msgstr "\"Run\" chapters execute the code you write in the browser editor on the server. \"Read\" pages explain mechanisms, choices and procedures."
 
 #: src/pages/Books.tsx:50
 msgid "← 学ぶ"
@@ -25,9 +29,10 @@ msgstr "← Learn"
 msgid "AI Gateway"
 msgstr ""
 
-#: src/pages/Books.tsx:70
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:82
 msgid "Cloudflare Workers 実践ガイド"
-msgstr "Cloudflare Workers Practical Guide"
+msgstr "Cloudflare Workers 実践ガイド"
 
 #: src/docs/index.ts:65
 msgid "Containers"
@@ -71,7 +76,7 @@ msgstr "Dynamic Workers, relayed bindings, and run limits"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:279
+#: src/components/playground.tsx:280
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +98,7 @@ msgstr "Hono's router and middleware"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:283
+#: src/components/playground.tsx:284
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -101,13 +106,13 @@ msgstr "HTTP {0} · {1}ms"
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "What an isolate leaves out, and when to reach for a container"
 
+#: src/lessons/index.ts:120
+msgid "isolate では動かない child_process や、本物のファイルシステム・OS の情報が、コンテナでは普通に使える"
+msgstr "child_process, a real file system, and OS details that do not work in an isolate work normally in a container"
+
 #: src/docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
 msgstr "The last resort when isolates are not enough"
-
-#: src/lessons/index.ts:120
-msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
-msgstr "fs, child_process and OS details that an isolate lacks work normally in a container"
 
 #: src/lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
@@ -157,7 +162,8 @@ msgstr "SQLite. SQL, indexes, and the rows you are billed for"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, plus Node, Bun, Deno, and Workers"
 
-#: src/pages/Books.tsx:65
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:73
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,15 +179,15 @@ msgstr "The Workers execution model"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "See the difference between in-memory state and SQLite by editing code"
 
-#: src/components/playground.tsx:311
+#: src/components/playground.tsx:323
 msgid "エディタ"
 msgstr "Editor"
 
-#: src/components/playground.tsx:299
+#: src/components/playground.tsx:311
 msgid "エディタへ移動"
 msgstr "Go to the editor"
 
-#: src/components/playground.tsx:346
+#: src/components/playground.tsx:358
 msgid "コードエディタ"
 msgstr "Code editor"
 
@@ -198,7 +204,7 @@ msgstr "How this site works"
 msgid "このページ"
 msgstr "On this page"
 
-#: src/components/playground.tsx:397
+#: src/components/playground.tsx:406
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reading only. The code is there for reference."
 
@@ -210,6 +216,12 @@ msgstr "Storage"
 msgid "デプロイまで"
 msgstr "Deploying"
 
+#. Shown only when the page language is not Japanese.
+#: src/components/content-shell.tsx:250
+#: src/pages/Books.tsx:63
+msgid "どちらも日本語の本です。"
+msgstr "Both books are in Japanese."
+
 #: src/docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "Why a class, and how far the actor model goes"
@@ -219,12 +231,12 @@ msgid "ランタイムの深掘り"
 msgstr "Inside the runtime"
 
 #: src/docs/index.ts:24
-msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
-msgstr "How the router works, middleware composition, and types plus RPC"
+msgid "ルーターの仕組み、ミドルウェアの合成、ストリーミング"
+msgstr "How the router works, middleware composition, and streaming"
 
 #: src/docs/index.ts:18
-msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
-msgstr "Routing, middleware, validation — a small, fast web framework"
+msgid "ルーティング、ミドルウェア、型安全な RPC。小さく速い Web フレームワーク"
+msgstr "Routing, middleware, and type-safe RPC — a small, fast web framework"
 
 #: src/docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -239,14 +251,14 @@ msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を�
 msgstr "Choosing KV / D1 / R2 / Durable Objects by consistency, size, and cost"
 
 #: src/lessons/index.ts:130
-msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
-msgstr "Pipe any Linux binaries together. FFmpeg and friends are an extension of this"
+msgid "任意の Linux コマンドをパイプでつなぐ。FFmpeg などは、イメージに入れれば同じ形で使える"
+msgstr "Pipe any Linux commands together. Tools like FFmpeg work the same way once they are in the image"
 
 #: src/lessons/index.ts:23
 msgid "公開と運用"
 msgstr "Ship and operate"
 
-#: src/components/playground.tsx:317
+#: src/components/playground.tsx:329
 msgid "初期化"
 msgstr "Reset"
 
@@ -284,15 +296,19 @@ msgstr "Basics"
 msgid "学ぶ"
 msgstr "Learn"
 
-#: src/components/playground.tsx:327
+#: src/components/playground.tsx:339
 msgid "実行"
 msgstr "Run"
 
-#: src/components/playground.tsx:392
-msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "The response and console output appear here after you run. The network is blocked, so nothing breaks."
+#: src/components/playground.tsx:298
+msgid "実行するとここに結果が出ます。ネットワークは塞がれています。"
+msgstr "The result appears here after you run. The network is blocked."
 
-#: src/components/playground.tsx:242
+#: src/components/playground.tsx:293
+msgid "実行するとここに結果が出ます。ネットワークは塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "The result appears here after you run. The network is blocked, but D1, KV, R2 and Durable Object state is shared by all visitors."
+
+#: src/components/playground.tsx:243
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "Too many runs. Wait a moment and try again."
 
@@ -300,27 +316,27 @@ msgstr "Too many runs. Wait a moment and try again."
 msgid "実行環境"
 msgstr "Compute"
 
-#: src/components/playground.tsx:354
+#: src/components/playground.tsx:366
 msgid "実行結果"
 msgstr "Run output"
+
+#: src/pages/Books.tsx:77
+msgid "手軽な入門書。ハンズオンで基本から一歩進んだ使い方まで"
+msgstr "An easy introduction, hands-on from the basics to one step beyond"
 
 #: src/pages/Books.tsx:54
 #: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "Books"
 
-#: src/components/content-shell.tsx:250
-#: src/pages/Home.tsx:67
+#: src/components/content-shell.tsx:255
+#: src/pages/Home.tsx:73
 msgid "書籍の紹介 →"
 msgstr "Books →"
 
 #: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "Skip to content"
-
-#: src/pages/Books.tsx:66
-msgid "本気で使うなら"
-msgstr "For serious use"
 
 #: src/lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
@@ -335,13 +351,16 @@ msgid "状態の置き場所を選ぶ"
 msgstr "Choosing where state lives"
 
 #: src/components/site-header.tsx:33
-#: src/lessons/index.ts:20
-msgid "言語"
-msgstr "Languages"
+msgid "表示言語"
+msgstr "Language"
 
-#: src/pages/Books.tsx:71
-msgid "設計・運用まで"
-msgstr "Through design and operations"
+#: src/lessons/index.ts:20
+msgid "言語とフレームワーク"
+msgstr "Languages and frameworks"
+
+#: src/pages/Books.tsx:86
+msgid "設計・実装・運用まで"
+msgstr "Through design, implementation and operations"
 
 #: src/components/content-shell.tsx:30
 #: src/components/content-shell.tsx:83

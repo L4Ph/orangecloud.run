@@ -30,7 +30,7 @@ export function SiteHeader({ locale, children }: { locale: Locale; children?: Re
       <div className="flex w-full items-center gap-2 py-1 sm:w-auto">
         {children}
         <Select
-          aria-label={t`言語`}
+          aria-label={t`表示言語`}
           className="w-[110px] shrink-0"
           size="base"
           value={locale}

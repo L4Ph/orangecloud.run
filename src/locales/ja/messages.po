@@ -13,9 +13,13 @@ msgstr ""
 msgid "（新しいタブで開く）"
 msgstr "（新しいタブで開く）"
 
+#: src/pages/Home.tsx:29
+msgid "「動かす」の章ではネットワークが塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "「動かす」の章ではネットワークが塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+
 #: src/pages/Home.tsx:24
-msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
-msgstr "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
+msgid "「動かす」は、ブラウザのエディタに書いたコードをサーバーで実行しながら進む章です。「読む」は、仕組み・選び方・手順を解説した記事です。"
+msgstr "「動かす」は、ブラウザのエディタに書いたコードをサーバーで実行しながら進む章です。「読む」は、仕組み・選び方・手順を解説した記事です。"
 
 #: src/pages/Books.tsx:50
 msgid "← 学ぶ"
@@ -25,7 +29,8 @@ msgstr "← 学ぶ"
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
-#: src/pages/Books.tsx:70
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:82
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 実践ガイド"
 
@@ -71,7 +76,7 @@ msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:279
+#: src/components/playground.tsx:280
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +98,7 @@ msgstr "Hono のルーターとミドルウェア"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:283
+#: src/components/playground.tsx:284
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -101,13 +106,13 @@ msgstr "HTTP {0} · {1}ms"
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate が何を省略しているか、コンテナとの分岐"
 
+#: src/lessons/index.ts:120
+msgid "isolate では動かない child_process や、本物のファイルシステム・OS の情報が、コンテナでは普通に使える"
+msgstr "isolate では動かない child_process や、本物のファイルシステム・OS の情報が、コンテナでは普通に使える"
+
 #: src/docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate で足りないときの最後の手段"
-
-#: src/lessons/index.ts:120
-msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
-msgstr "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
 
 #: src/lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
@@ -157,7 +162,8 @@ msgstr "SQLite。SQL、索引、課金される「行数」"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 
-#: src/pages/Books.tsx:65
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:73
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,15 +179,15 @@ msgstr "Workers の実行モデル"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 
-#: src/components/playground.tsx:311
+#: src/components/playground.tsx:323
 msgid "エディタ"
 msgstr "エディタ"
 
-#: src/components/playground.tsx:299
+#: src/components/playground.tsx:311
 msgid "エディタへ移動"
 msgstr "エディタへ移動"
 
-#: src/components/playground.tsx:346
+#: src/components/playground.tsx:358
 msgid "コードエディタ"
 msgstr "コードエディタ"
 
@@ -198,7 +204,7 @@ msgstr "このサイトの仕組み"
 msgid "このページ"
 msgstr "このページ"
 
-#: src/components/playground.tsx:397
+#: src/components/playground.tsx:406
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
@@ -210,6 +216,12 @@ msgstr "ストレージ"
 msgid "デプロイまで"
 msgstr "デプロイまで"
 
+#. Shown only when the page language is not Japanese.
+#: src/components/content-shell.tsx:250
+#: src/pages/Books.tsx:63
+msgid "どちらも日本語の本です。"
+msgstr "どちらも日本語の本です。"
+
 #: src/docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "なぜ class なのか、どこまでが actor なのか"
@@ -219,12 +231,12 @@ msgid "ランタイムの深掘り"
 msgstr "ランタイムの深掘り"
 
 #: src/docs/index.ts:24
-msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
-msgstr "ルーターの仕組み、ミドルウェアの合成、型と RPC"
+msgid "ルーターの仕組み、ミドルウェアの合成、ストリーミング"
+msgstr "ルーターの仕組み、ミドルウェアの合成、ストリーミング"
 
 #: src/docs/index.ts:18
-msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
-msgstr "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
+msgid "ルーティング、ミドルウェア、型安全な RPC。小さく速い Web フレームワーク"
+msgstr "ルーティング、ミドルウェア、型安全な RPC。小さく速い Web フレームワーク"
 
 #: src/docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -239,14 +251,14 @@ msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を�
 msgstr "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 
 #: src/lessons/index.ts:130
-msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
-msgstr "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
+msgid "任意の Linux コマンドをパイプでつなぐ。FFmpeg などは、イメージに入れれば同じ形で使える"
+msgstr "任意の Linux コマンドをパイプでつなぐ。FFmpeg などは、イメージに入れれば同じ形で使える"
 
 #: src/lessons/index.ts:23
 msgid "公開と運用"
 msgstr "公開と運用"
 
-#: src/components/playground.tsx:317
+#: src/components/playground.tsx:329
 msgid "初期化"
 msgstr "初期化"
 
@@ -284,15 +296,19 @@ msgstr "基礎"
 msgid "学ぶ"
 msgstr "学ぶ"
 
-#: src/components/playground.tsx:327
+#: src/components/playground.tsx:339
 msgid "実行"
 msgstr "実行"
 
-#: src/components/playground.tsx:392
-msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+#: src/components/playground.tsx:298
+msgid "実行するとここに結果が出ます。ネットワークは塞がれています。"
+msgstr "実行するとここに結果が出ます。ネットワークは塞がれています。"
 
-#: src/components/playground.tsx:242
+#: src/components/playground.tsx:293
+msgid "実行するとここに結果が出ます。ネットワークは塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "実行するとここに結果が出ます。ネットワークは塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+
+#: src/components/playground.tsx:243
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 
@@ -300,27 +316,27 @@ msgstr "実行回数が多すぎます。少し待ってからもう一度お試
 msgid "実行環境"
 msgstr "実行環境"
 
-#: src/components/playground.tsx:354
+#: src/components/playground.tsx:366
 msgid "実行結果"
 msgstr "実行結果"
+
+#: src/pages/Books.tsx:77
+msgid "手軽な入門書。ハンズオンで基本から一歩進んだ使い方まで"
+msgstr "手軽な入門書。ハンズオンで基本から一歩進んだ使い方まで"
 
 #: src/pages/Books.tsx:54
 #: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "書籍の紹介"
 
-#: src/components/content-shell.tsx:250
-#: src/pages/Home.tsx:67
+#: src/components/content-shell.tsx:255
+#: src/pages/Home.tsx:73
 msgid "書籍の紹介 →"
 msgstr "書籍の紹介 →"
 
 #: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "本文へ移動"
-
-#: src/pages/Books.tsx:66
-msgid "本気で使うなら"
-msgstr "本気で使うなら"
 
 #: src/lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
@@ -335,13 +351,16 @@ msgid "状態の置き場所を選ぶ"
 msgstr "状態の置き場所を選ぶ"
 
 #: src/components/site-header.tsx:33
-#: src/lessons/index.ts:20
-msgid "言語"
-msgstr "言語"
+msgid "表示言語"
+msgstr "表示言語"
 
-#: src/pages/Books.tsx:71
-msgid "設計・運用まで"
-msgstr "設計・運用まで"
+#: src/lessons/index.ts:20
+msgid "言語とフレームワーク"
+msgstr "言語とフレームワーク"
+
+#: src/pages/Books.tsx:86
+msgid "設計・実装・運用まで"
+msgstr "設計・実装・運用まで"
 
 #: src/components/content-shell.tsx:30
 #: src/components/content-shell.tsx:83

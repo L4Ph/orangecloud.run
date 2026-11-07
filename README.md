@@ -6,6 +6,8 @@ Hono on Cloudflare Workers, rendered on the server with React and hydrated in th
 
 ## Run
 
+Requires Node.js `^22.23.0 || ^24.22.0 || ^26.12.0`, the range that `cf` 1.0.0-beta.28 declares in `engines`.
+
 ```sh
 npm install
 npm run dev
@@ -33,8 +35,10 @@ npm run check   # format, lint (type-aware), type check
 All routes are in `src/server.tsx`. Each page route builds its props there and renders a component from `src/pages/`.
 
 - `/` — index of chapters (run) and articles (read)
+- `/books` — book recommendations
 - `/lessons/:id` — chapter with the editor
 - `/docs/:slug` — long-form articles
+- `/lessons`, `/docs` — redirect to `/`
 - `POST /api/run` — runs the editor's code in a Dynamic Worker, a Durable Object or a container
 
 The sandbox reaches D1, KV, R2, AI and the counter through the `WorkerEntrypoint` classes in `src/lib/lesson-bindings.ts`.

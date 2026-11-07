@@ -17,7 +17,7 @@ export type LessonSection = "basics" | "languages" | "storage" | "compute" | "sh
 
 export const lessonSections: { id: LessonSection; title: MessageDescriptor }[] = [
   { id: "basics", title: msg`基礎` },
-  { id: "languages", title: msg`言語` },
+  { id: "languages", title: msg`言語とフレームワーク` },
   { id: "storage", title: msg`ストレージ` },
   { id: "compute", title: msg`実行環境` },
   { id: "ship", title: msg`公開と運用` },
@@ -117,7 +117,7 @@ export const lessons: Lesson[] = [
     id: "containers-node",
     section: "compute",
     title: msg`Containers で Node.js を動かす`,
-    summary: msg`isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える`,
+    summary: msg`isolate では動かない child_process や、本物のファイルシステム・OS の情報が、コンテナでは普通に使える`,
     code: containersNodeCode,
     language: "javascript",
     runner: "container",
@@ -127,7 +127,7 @@ export const lessons: Lesson[] = [
     id: "containers-shell",
     section: "compute",
     title: msg`Containers でシェルを動かす`,
-    summary: msg`任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長`,
+    summary: msg`任意の Linux コマンドをパイプでつなぐ。FFmpeg などは、イメージに入れれば同じ形で使える`,
     code: containersShellCode,
     language: "shell",
     runner: "container",

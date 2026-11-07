@@ -219,7 +219,7 @@ export function ChapterFooter({
   activeKey: string;
   className?: string;
 }) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { index, previous, next } = neighbours(activeKey);
 
   return (
@@ -241,10 +241,15 @@ export function ChapterFooter({
           <Trans>JS がはじめてなら最初に</Trans>
         </li>
         <li>
-          <ExternalLink href="https://typescriptbook.jp/">サバイバル TypeScript</ExternalLink> —{" "}
+          <ExternalLink href="https://typescriptbook.jp/">サバイバルTypeScript</ExternalLink> —{" "}
           <Trans>型が読めないと先に進みにくい</Trans>
         </li>
       </ul>
+      {i18n.locale !== "ja" && (
+        <p className="mt-2 text-xs text-kumo-subtle">
+          <Trans>どちらも日本語の本です。</Trans>
+        </p>
+      )}
       <p className="mt-4">
         <Link href="/books" className="inline-flex min-h-10 items-center">
           <Trans>書籍の紹介 →</Trans>

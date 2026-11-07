@@ -23,7 +23,8 @@ type RunResult = {
 const languages = {
   javascript: () => import("@codemirror/lang-javascript").then((m) => m.javascript()),
   python: () => import("@codemirror/lang-python").then((m) => m.python()),
-  // No Lezer grammar exists for shell, so it is the one language left on a stream parser.
+  // There is no official CodeMirror language package for shell (the community Lezer grammar
+  // @fig/lezer-bash was last published in 2023), so it is the one language left on a stream parser.
   shell: () =>
     Promise.all([
       import("@codemirror/language"),
@@ -286,6 +287,17 @@ function Playground({
     )
   ) : null;
 
+  // Storage chapters write to KV, R2, D1 and Durable Objects, and every visitor shares that state.
+  const idleHint =
+    lesson.section === "storage" ? (
+      <Trans>
+        実行するとここに結果が出ます。ネットワークは塞がれていますが、D1・KV・R2・Durable Object
+        の状態は訪問者全員で共有されます。
+      </Trans>
+    ) : (
+      <Trans>実行するとここに結果が出ます。ネットワークは塞がれています。</Trans>
+    );
+
   return (
     <ContentShell locale={locale} activeKey={key}>
       {/* One reading order: text, editor, footer. From xl the text and footer stack on the
@@ -389,10 +401,7 @@ function Playground({
               {!error && !result && (
                 <p className="font-sans text-sm text-kumo-subtle">
                   {lesson.runnable ? (
-                    <Trans>
-                      実行するとここにレスポンスと console
-                      の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。
-                    </Trans>
+                    idleHint
                   ) : (
                     <Trans>この単元は資料のみです。コードは参考として置いています。</Trans>
                   )}

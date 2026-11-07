@@ -13,9 +13,13 @@ msgstr ""
 msgid "（新しいタブで開く）"
 msgstr "(새 탭에서 열기)"
 
+#: src/pages/Home.tsx:29
+msgid "「動かす」の章ではネットワークが塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "\"실행\" 장은 네트워크가 차단되지만 D1·KV·R2·Durable Object의 상태는 모든 방문자가 공유합니다."
+
 #: src/pages/Home.tsx:24
-msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
-msgstr "\"실행\"은 브라우저 에디터에서 코드를 실행하며 진행하는 장입니다. 네트워크가 차단되어 있어 망가뜨려도 아무 일도 일어나지 않습니다. \"읽기\"는 설계 판단 기준을 정리한 글입니다."
+msgid "「動かす」は、ブラウザのエディタに書いたコードをサーバーで実行しながら進む章です。「読む」は、仕組み・選び方・手順を解説した記事です。"
+msgstr "\"실행\"은 브라우저 에디터에 작성한 코드를 서버에서 실행하는 장, \"읽기\"는 원리·선택 기준·절차를 설명한 글입니다."
 
 #: src/pages/Books.tsx:50
 msgid "← 学ぶ"
@@ -25,9 +29,10 @@ msgstr "← 학습"
 msgid "AI Gateway"
 msgstr ""
 
-#: src/pages/Books.tsx:70
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:82
 msgid "Cloudflare Workers 実践ガイド"
-msgstr "Cloudflare Workers 실전 가이드"
+msgstr "Cloudflare Workers 実践ガイド"
 
 #: src/docs/index.ts:65
 msgid "Containers"
@@ -71,7 +76,7 @@ msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:279
+#: src/components/playground.tsx:280
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +98,7 @@ msgstr "Hono의 라우터와 미들웨어"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:283
+#: src/components/playground.tsx:284
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -101,13 +106,13 @@ msgstr "HTTP {0} · {1}ms"
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate가 무엇을 생략하는지, 컨테이너로 넘어갈 지점"
 
+#: src/lessons/index.ts:120
+msgid "isolate では動かない child_process や、本物のファイルシステム・OS の情報が、コンテナでは普通に使える"
+msgstr "isolate에서는 동작하지 않는 child_process와 실제 파일 시스템, OS 정보를 컨테이너에서는 그대로 쓸 수 있다"
+
 #: src/docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate로 부족할 때의 마지막 수단"
-
-#: src/lessons/index.ts:120
-msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
-msgstr "isolate에 없는 fs, child_process, OS 정보를 컨테이너에서는 그대로 쓸 수 있다"
 
 #: src/lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
@@ -157,7 +162,8 @@ msgstr "SQLite. SQL, 인덱스, 과금되는 '행 수'"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, 그리고 Node·Bun·Deno·Workers"
 
-#: src/pages/Books.tsx:65
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:73
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,15 +179,15 @@ msgstr "Workers의 실행 모델"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "코드를 고쳐 가며 인메모리 상태와 SQLite의 차이를 확인한다"
 
-#: src/components/playground.tsx:311
+#: src/components/playground.tsx:323
 msgid "エディタ"
 msgstr "편집기"
 
-#: src/components/playground.tsx:299
+#: src/components/playground.tsx:311
 msgid "エディタへ移動"
 msgstr "에디터로 이동"
 
-#: src/components/playground.tsx:346
+#: src/components/playground.tsx:358
 msgid "コードエディタ"
 msgstr "코드 에디터"
 
@@ -198,7 +204,7 @@ msgstr "이 사이트의 구조"
 msgid "このページ"
 msgstr "이 페이지"
 
-#: src/components/playground.tsx:397
+#: src/components/playground.tsx:406
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "이 단원은 자료만 있습니다. 코드는 참고용입니다."
 
@@ -210,6 +216,12 @@ msgstr "스토리지"
 msgid "デプロイまで"
 msgstr "배포까지"
 
+#. Shown only when the page language is not Japanese.
+#: src/components/content-shell.tsx:250
+#: src/pages/Books.tsx:63
+msgid "どちらも日本語の本です。"
+msgstr "두 책 모두 일본어입니다."
+
 #: src/docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "왜 클래스인지, actor 모델의 경계는 어디까지인지"
@@ -219,12 +231,12 @@ msgid "ランタイムの深掘り"
 msgstr "런타임 깊이 보기"
 
 #: src/docs/index.ts:24
-msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
-msgstr "라우터의 원리, 미들웨어 합성, 타입과 RPC"
+msgid "ルーターの仕組み、ミドルウェアの合成、ストリーミング"
+msgstr "라우터의 원리, 미들웨어 합성, 스트리밍"
 
 #: src/docs/index.ts:18
-msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
-msgstr "라우팅, 미들웨어, 검증. 작고 빠른 웹 프레임워크"
+msgid "ルーティング、ミドルウェア、型安全な RPC。小さく速い Web フレームワーク"
+msgstr "라우팅, 미들웨어, 타입 안전한 RPC. 작고 빠른 웹 프레임워크"
 
 #: src/docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -239,14 +251,14 @@ msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を�
 msgstr "일관성·크기·과금으로 KV / D1 / R2 / Durable Objects 선택하기"
 
 #: src/lessons/index.ts:130
-msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
-msgstr "임의의 Linux 바이너리를 파이프로 연결한다. FFmpeg 등도 이 연장선이다"
+msgid "任意の Linux コマンドをパイプでつなぐ。FFmpeg などは、イメージに入れれば同じ形で使える"
+msgstr "임의의 Linux 명령어를 파이프로 연결한다. FFmpeg 등도 이미지에 넣으면 같은 방식으로 쓸 수 있다"
 
 #: src/lessons/index.ts:23
 msgid "公開と運用"
 msgstr "공개와 운영"
 
-#: src/components/playground.tsx:317
+#: src/components/playground.tsx:329
 msgid "初期化"
 msgstr "초기화"
 
@@ -284,15 +296,19 @@ msgstr "기초"
 msgid "学ぶ"
 msgstr "학습"
 
-#: src/components/playground.tsx:327
+#: src/components/playground.tsx:339
 msgid "実行"
 msgstr "실행"
 
-#: src/components/playground.tsx:392
-msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "실행하면 여기에 응답과 console 출력이 표시됩니다. 네트워크는 차단되어 있어 망가뜨려도 문제없습니다."
+#: src/components/playground.tsx:298
+msgid "実行するとここに結果が出ます。ネットワークは塞がれています。"
+msgstr "실행하면 여기에 결과가 표시됩니다. 네트워크는 차단되어 있습니다."
 
-#: src/components/playground.tsx:242
+#: src/components/playground.tsx:293
+msgid "実行するとここに結果が出ます。ネットワークは塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "실행하면 여기에 결과가 표시됩니다. 네트워크는 차단되지만 D1·KV·R2·Durable Object의 상태는 모든 방문자가 공유합니다."
+
+#: src/components/playground.tsx:243
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "실행 횟수가 너무 많습니다. 잠시 후 다시 시도하세요."
 
@@ -300,27 +316,27 @@ msgstr "실행 횟수가 너무 많습니다. 잠시 후 다시 시도하세요.
 msgid "実行環境"
 msgstr "실행 환경"
 
-#: src/components/playground.tsx:354
+#: src/components/playground.tsx:366
 msgid "実行結果"
 msgstr "실행 결과"
+
+#: src/pages/Books.tsx:77
+msgid "手軽な入門書。ハンズオンで基本から一歩進んだ使い方まで"
+msgstr "손쉬운 입문서. 실습으로 기본부터 한 단계 나아간 사용법까지"
 
 #: src/pages/Books.tsx:54
 #: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "도서 소개"
 
-#: src/components/content-shell.tsx:250
-#: src/pages/Home.tsx:67
+#: src/components/content-shell.tsx:255
+#: src/pages/Home.tsx:73
 msgid "書籍の紹介 →"
 msgstr "도서 소개 →"
 
 #: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "본문으로 건너뛰기"
-
-#: src/pages/Books.tsx:66
-msgid "本気で使うなら"
-msgstr "본격적으로 쓴다면"
 
 #: src/lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
@@ -335,13 +351,16 @@ msgid "状態の置き場所を選ぶ"
 msgstr "상태를 둘 곳 고르기"
 
 #: src/components/site-header.tsx:33
-#: src/lessons/index.ts:20
-msgid "言語"
-msgstr "언어"
+msgid "表示言語"
+msgstr "표시 언어"
 
-#: src/pages/Books.tsx:71
-msgid "設計・運用まで"
-msgstr "설계·운영까지"
+#: src/lessons/index.ts:20
+msgid "言語とフレームワーク"
+msgstr "언어와 프레임워크"
+
+#: src/pages/Books.tsx:86
+msgid "設計・実装・運用まで"
+msgstr "설계·구현·운영까지"
 
 #: src/components/content-shell.tsx:30
 #: src/components/content-shell.tsx:83

@@ -13,9 +13,13 @@ msgstr ""
 msgid "（新しいタブで開く）"
 msgstr "（在新标签页中打开）"
 
+#: src/pages/Home.tsx:29
+msgid "「動かす」の章ではネットワークが塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "“运行”章节中网络被阻断，但 D1、KV、R2 和 Durable Object 的状态由所有访客共享。"
+
 #: src/pages/Home.tsx:24
-msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
-msgstr "“运行”是在浏览器编辑器中边执行边学习的章节。网络已被阻断，即使弄坏也不会有任何影响。“阅读”是整理设计判断标准的文章。"
+msgid "「動かす」は、ブラウザのエディタに書いたコードをサーバーで実行しながら進む章です。「読む」は、仕組み・選び方・手順を解説した記事です。"
+msgstr "“运行”是把在浏览器编辑器中编写的代码交给服务器执行的章节。“阅读”是讲解原理、选型和步骤的文章。"
 
 #: src/pages/Books.tsx:50
 msgid "← 学ぶ"
@@ -25,9 +29,10 @@ msgstr "← 学习"
 msgid "AI Gateway"
 msgstr ""
 
-#: src/pages/Books.tsx:70
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:82
 msgid "Cloudflare Workers 実践ガイド"
-msgstr "Cloudflare Workers 实践指南"
+msgstr "Cloudflare Workers 実践ガイド"
 
 #: src/docs/index.ts:65
 msgid "Containers"
@@ -71,7 +76,7 @@ msgstr "Dynamic Workers、绑定中继、执行限制"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:279
+#: src/components/playground.tsx:280
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +98,7 @@ msgstr "Hono 的路由器与中间件"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: src/components/playground.tsx:283
+#: src/components/playground.tsx:284
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -101,13 +106,13 @@ msgstr "HTTP {0} · {1}ms"
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate 省略了什么，以及何时改用容器"
 
+#: src/lessons/index.ts:120
+msgid "isolate では動かない child_process や、本物のファイルシステム・OS の情報が、コンテナでは普通に使える"
+msgstr "isolate 中无法使用的 child_process，以及真实的文件系统和系统信息，在容器里都能直接使用"
+
 #: src/docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate 不够用时的最后手段"
-
-#: src/lessons/index.ts:120
-msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
-msgstr "isolate 中没有的 fs、child_process 和系统信息，在容器里都能直接使用"
 
 #: src/lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
@@ -157,7 +162,8 @@ msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
-#: src/pages/Books.tsx:65
+#. Book title. Keep the Japanese original in every language.
+#: src/pages/Books.tsx:73
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,15 +179,15 @@ msgstr "Workers 的执行模型"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "通过改写代码来确认内存状态与 SQLite 的区别"
 
-#: src/components/playground.tsx:311
+#: src/components/playground.tsx:323
 msgid "エディタ"
 msgstr "编辑器"
 
-#: src/components/playground.tsx:299
+#: src/components/playground.tsx:311
 msgid "エディタへ移動"
 msgstr "前往编辑器"
 
-#: src/components/playground.tsx:346
+#: src/components/playground.tsx:358
 msgid "コードエディタ"
 msgstr "代码编辑器"
 
@@ -198,7 +204,7 @@ msgstr "本站的运作方式"
 msgid "このページ"
 msgstr "本页内容"
 
-#: src/components/playground.tsx:397
+#: src/components/playground.tsx:406
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "本章只有资料，代码仅供参考。"
 
@@ -210,6 +216,12 @@ msgstr "存储"
 msgid "デプロイまで"
 msgstr "部署上线"
 
+#. Shown only when the page language is not Japanese.
+#: src/components/content-shell.tsx:250
+#: src/pages/Books.tsx:63
+msgid "どちらも日本語の本です。"
+msgstr "两本书都是日文书。"
+
 #: src/docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "为什么是 class，以及 actor 模型到哪为止"
@@ -219,12 +231,12 @@ msgid "ランタイムの深掘り"
 msgstr "深入运行时"
 
 #: src/docs/index.ts:24
-msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
-msgstr "路由器的原理、中间件组合、类型与 RPC"
+msgid "ルーターの仕組み、ミドルウェアの合成、ストリーミング"
+msgstr "路由器的原理、中间件组合、流式传输"
 
 #: src/docs/index.ts:18
-msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
-msgstr "路由、中间件、校验——小而快的 Web 框架"
+msgid "ルーティング、ミドルウェア、型安全な RPC。小さく速い Web フレームワーク"
+msgstr "路由、中间件、类型安全的 RPC——小而快的 Web 框架"
 
 #: src/docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
@@ -239,14 +251,14 @@ msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を�
 msgstr "按一致性、大小和费用选择 KV / D1 / R2 / Durable Objects"
 
 #: src/lessons/index.ts:130
-msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
-msgstr "用管道串联任意 Linux 二进制程序。FFmpeg 等也是同样的延伸"
+msgid "任意の Linux コマンドをパイプでつなぐ。FFmpeg などは、イメージに入れれば同じ形で使える"
+msgstr "用管道串联任意 Linux 命令。FFmpeg 等工具装进镜像后，也能用同样的方式使用"
 
 #: src/lessons/index.ts:23
 msgid "公開と運用"
 msgstr "发布与运维"
 
-#: src/components/playground.tsx:317
+#: src/components/playground.tsx:329
 msgid "初期化"
 msgstr "重置"
 
@@ -284,15 +296,19 @@ msgstr "基础"
 msgid "学ぶ"
 msgstr "学习"
 
-#: src/components/playground.tsx:327
+#: src/components/playground.tsx:339
 msgid "実行"
 msgstr "运行"
 
-#: src/components/playground.tsx:392
-msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "运行后，响应和 console 输出会显示在这里。网络已被封锁，随便改也不会有问题。"
+#: src/components/playground.tsx:298
+msgid "実行するとここに結果が出ます。ネットワークは塞がれています。"
+msgstr "运行后，结果会显示在这里。网络已被阻断。"
 
-#: src/components/playground.tsx:242
+#: src/components/playground.tsx:293
+msgid "実行するとここに結果が出ます。ネットワークは塞がれていますが、D1・KV・R2・Durable Object の状態は訪問者全員で共有されます。"
+msgstr "运行后，结果会显示在这里。网络已被阻断，但 D1、KV、R2 和 Durable Object 的状态由所有访客共享。"
+
+#: src/components/playground.tsx:243
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "运行次数过多，请稍后再试。"
 
@@ -300,27 +316,27 @@ msgstr "运行次数过多，请稍后再试。"
 msgid "実行環境"
 msgstr "计算"
 
-#: src/components/playground.tsx:354
+#: src/components/playground.tsx:366
 msgid "実行結果"
 msgstr "运行结果"
+
+#: src/pages/Books.tsx:77
+msgid "手軽な入門書。ハンズオンで基本から一歩進んだ使い方まで"
+msgstr "轻松上手的入门书，边做边学，从基础讲到进阶用法"
 
 #: src/pages/Books.tsx:54
 #: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "书籍介绍"
 
-#: src/components/content-shell.tsx:250
-#: src/pages/Home.tsx:67
+#: src/components/content-shell.tsx:255
+#: src/pages/Home.tsx:73
 msgid "書籍の紹介 →"
 msgstr "书籍介绍 →"
 
 #: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "跳到正文"
-
-#: src/pages/Books.tsx:66
-msgid "本気で使うなら"
-msgstr "认真使用的话"
 
 #: src/lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
@@ -335,13 +351,16 @@ msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
 
 #: src/components/site-header.tsx:33
-#: src/lessons/index.ts:20
-msgid "言語"
-msgstr "语言"
+msgid "表示言語"
+msgstr "显示语言"
 
-#: src/pages/Books.tsx:71
-msgid "設計・運用まで"
-msgstr "直至设计与运维"
+#: src/lessons/index.ts:20
+msgid "言語とフレームワーク"
+msgstr "语言与框架"
+
+#: src/pages/Books.tsx:86
+msgid "設計・実装・運用まで"
+msgstr "从设计、实现到运维"
 
 #: src/components/content-shell.tsx:30
 #: src/components/content-shell.tsx:83

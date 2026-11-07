@@ -19,10 +19,16 @@ function LessonsIndex({ locale }: Props) {
         <Text as="h1" variant="heading" size="lg">
           <Trans>学ぶ</Trans>
         </Text>
-        <div className="mt-1 max-w-2xl">
+        <div className="mt-1 max-w-2xl space-y-1">
           <Text as="p" variant="secondary">
             <Trans>
-              「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。
+              「動かす」は、ブラウザのエディタに書いたコードをサーバーで実行しながら進む章です。「読む」は、仕組み・選び方・手順を解説した記事です。
+            </Trans>
+          </Text>
+          <Text as="p" variant="secondary">
+            <Trans>
+              「動かす」の章ではネットワークが塞がれていますが、D1・KV・R2・Durable Object
+              の状態は訪問者全員で共有されます。
             </Trans>
           </Text>
         </div>
