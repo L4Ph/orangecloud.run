@@ -11,11 +11,11 @@ msgstr ""
 msgid "← 読んで学ぶ"
 msgstr "← 阅读"
 
-#: docs/index.ts:48
+#: docs/index.ts:66
 msgid "AI Gateway"
 msgstr ""
 
-#: docs/index.ts:53
+#: docs/index.ts:72
 msgid "Containers"
 msgstr ""
 
@@ -35,11 +35,11 @@ msgstr "在 Docker 镜像里运行 Python，isolate 做不到时的退路"
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:38
+#: docs/index.ts:48
 msgid "Durable Objects と Actor モデル"
 msgstr "Durable Objects 与 Actor 模型"
 
-#: docs/index.ts:64
+#: docs/index.ts:85
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、绑定中继、执行限制"
 
@@ -47,19 +47,19 @@ msgstr "Dynamic Workers、绑定中继、执行限制"
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
-#: docs/index.ts:13
+#: docs/index.ts:24
 msgid "Hono"
 msgstr ""
 
-#: docs/index.ts:18
+#: docs/index.ts:30
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono 的路由器与中间件"
 
-#: docs/index.ts:29
+#: docs/index.ts:43
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate 省略了什么，以及何时改用容器"
 
-#: docs/index.ts:54
+#: docs/index.ts:73
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate 不够用时的最后手段"
 
@@ -79,7 +79,7 @@ msgstr ""
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:43
+#: docs/index.ts:60
 msgid "Queues / Workflows"
 msgstr ""
 
@@ -87,11 +87,11 @@ msgstr ""
 msgid "R2"
 msgstr ""
 
-#: docs/index.ts:24
+#: docs/index.ts:37
 msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
 msgstr "把 Rust 编译成 Wasm 运行，以及为什么必须有构建步骤"
 
-#: docs/index.ts:23
+#: docs/index.ts:36
 msgid "Rust（workers-rs）"
 msgstr "Rust（workers-rs）"
 
@@ -115,7 +115,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
-#: docs/index.ts:63
+#: docs/index.ts:84
 msgid "このサイトの仕組み"
 msgstr "本站的运作方式"
 
@@ -143,11 +143,15 @@ msgstr "本站的运作方式"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "仅作资料（共享沙箱中无法运行队列）"
 
-#: docs/index.ts:58
+#: docs/index.ts:16
+msgid "データと処理"
+msgstr "数据与处理"
+
+#: docs/index.ts:78
 msgid "デプロイまで"
 msgstr "部署上线"
 
-#: docs/index.ts:39
+#: docs/index.ts:49
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "为什么是 class，以及 actor 模型到哪为止"
 
@@ -155,29 +159,37 @@ msgstr "为什么是 class，以及 actor 模型到哪为止"
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "在浏览器编辑器里边运行边学习的章节。网络已关闭，写坏了也不会有事。"
 
-#: docs/index.ts:28
+#: docs/index.ts:15
+msgid "ランタイムとモデル"
+msgstr "运行时与模型"
+
+#: docs/index.ts:42
 msgid "ランタイムの深掘り"
 msgstr "深入运行时"
 
-#: docs/index.ts:19
+#: docs/index.ts:31
 msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 msgstr "路由器的原理、中间件组合、类型与 RPC"
 
-#: docs/index.ts:14
+#: docs/index.ts:25
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "路由、中间件、校验——小而快的 Web 框架"
 
-#: docs/index.ts:49
+#: docs/index.ts:67
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "在模型之前统一做日志、缓存、限流和回退"
 
-#: docs/index.ts:59
+#: docs/index.ts:79
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "登录、密钥、部署，以及上线后的检查"
 
-#: docs/index.ts:34
+#: docs/index.ts:55
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "按一致性、大小和费用选择 KV / D1 / R2 / Durable Objects"
+
+#: docs/index.ts:17
+msgid "公開と運用"
+msgstr "发布与运维"
 
 #: pages/lessons/index.server.ts:20
 #: pages/lessons/index.tsx:17
@@ -196,9 +208,13 @@ msgstr "在动手前后阅读的深入内容。设计判断的依据都在这里
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "语法和运行时都不同，却仍然是同一个 Worker"
 
-#: docs/index.ts:33
+#: docs/index.ts:54
 msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
+
+#: docs/index.ts:14
+msgid "言語とフレームワーク"
+msgstr "语言与框架"
 
 #: pages/docs/index.server.ts:20
 #: pages/docs/index.tsx:15
@@ -217,6 +233,6 @@ msgstr "仅资料"
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "读取快，最终一致。适合缓存和配置"
 
-#: docs/index.ts:44
+#: docs/index.ts:61
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "异步处理，以及可恢复的长时间任务"

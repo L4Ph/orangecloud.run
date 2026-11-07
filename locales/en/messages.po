@@ -11,11 +11,11 @@ msgstr ""
 msgid "← 読んで学ぶ"
 msgstr "← Read"
 
-#: docs/index.ts:48
+#: docs/index.ts:66
 msgid "AI Gateway"
 msgstr ""
 
-#: docs/index.ts:53
+#: docs/index.ts:72
 msgid "Containers"
 msgstr ""
 
@@ -35,11 +35,11 @@ msgstr "Run Python inside a Docker image — the escape hatch for work an isolat
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:38
+#: docs/index.ts:48
 msgid "Durable Objects と Actor モデル"
 msgstr "Durable Objects and the Actor model"
 
-#: docs/index.ts:64
+#: docs/index.ts:85
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, relayed bindings, and run limits"
 
@@ -47,19 +47,19 @@ msgstr "Dynamic Workers, relayed bindings, and run limits"
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "Inference without owning a GPU. Start with a cheap model"
 
-#: docs/index.ts:13
+#: docs/index.ts:24
 msgid "Hono"
 msgstr ""
 
-#: docs/index.ts:18
+#: docs/index.ts:30
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono's router and middleware"
 
-#: docs/index.ts:29
+#: docs/index.ts:43
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "What an isolate leaves out, and when to reach for a container"
 
-#: docs/index.ts:54
+#: docs/index.ts:73
 msgid "isolate で足りないときの最後の手段"
 msgstr "The last resort when isolates are not enough"
 
@@ -79,7 +79,7 @@ msgstr ""
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:43
+#: docs/index.ts:60
 msgid "Queues / Workflows"
 msgstr ""
 
@@ -87,11 +87,11 @@ msgstr ""
 msgid "R2"
 msgstr ""
 
-#: docs/index.ts:24
+#: docs/index.ts:37
 msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
 msgstr "Compile Rust to Wasm — and why a build step is unavoidable"
 
-#: docs/index.ts:23
+#: docs/index.ts:36
 msgid "Rust（workers-rs）"
 msgstr "Rust (workers-rs)"
 
@@ -115,7 +115,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "The Workers execution model"
 
-#: docs/index.ts:63
+#: docs/index.ts:84
 msgid "このサイトの仕組み"
 msgstr "How this site works"
 
@@ -143,11 +143,15 @@ msgstr "How this site works"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "Reference only (queues are not available in the shared sandbox)"
 
-#: docs/index.ts:58
+#: docs/index.ts:16
+msgid "データと処理"
+msgstr "Data and processing"
+
+#: docs/index.ts:78
 msgid "デプロイまで"
 msgstr "Deploying"
 
-#: docs/index.ts:39
+#: docs/index.ts:49
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "Why a class, and how far the actor model goes"
 
@@ -155,29 +159,37 @@ msgstr "Why a class, and how far the actor model goes"
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "Chapters you work through in the browser editor. The network is blocked, so nothing can break."
 
-#: docs/index.ts:28
+#: docs/index.ts:15
+msgid "ランタイムとモデル"
+msgstr "Runtime and model"
+
+#: docs/index.ts:42
 msgid "ランタイムの深掘り"
 msgstr "Inside the runtime"
 
-#: docs/index.ts:19
+#: docs/index.ts:31
 msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 msgstr "How the router works, middleware composition, and types plus RPC"
 
-#: docs/index.ts:14
+#: docs/index.ts:25
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "Routing, middleware, validation — a small, fast web framework"
 
-#: docs/index.ts:49
+#: docs/index.ts:67
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "Logging, caching, limits, and fallbacks in front of the model"
 
-#: docs/index.ts:59
+#: docs/index.ts:79
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "Login, secrets, deploy, and what to check after"
 
-#: docs/index.ts:34
+#: docs/index.ts:55
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "Choosing KV / D1 / R2 / Durable Objects by consistency, size, and cost"
+
+#: docs/index.ts:17
+msgid "公開と運用"
+msgstr "Ship and operate"
 
 #: pages/lessons/index.server.ts:20
 #: pages/lessons/index.tsx:17
@@ -196,9 +208,13 @@ msgstr "Deeper reading around the hands-on chapters. The judgement calls live he
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "A different language and runtime, still the same Worker"
 
-#: docs/index.ts:33
+#: docs/index.ts:54
 msgid "状態の置き場所を選ぶ"
 msgstr "Choosing where state lives"
+
+#: docs/index.ts:14
+msgid "言語とフレームワーク"
+msgstr "Languages and frameworks"
 
 #: pages/docs/index.server.ts:20
 #: pages/docs/index.tsx:15
@@ -217,6 +233,6 @@ msgstr "Reference only"
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "Fast reads with eventual consistency. A home for cache and config"
 
-#: docs/index.ts:44
+#: docs/index.ts:61
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "Async work and long-running jobs that resume"
