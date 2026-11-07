@@ -10,8 +10,18 @@ import aiCode from './code/08-workers-ai.js?raw';
 import pythonCode from './code/python.py?raw';
 import containersCode from './code/containers.py?raw';
 
+export type LessonSection = 'basics' | 'languages' | 'storage' | 'compute';
+
+export const lessonSections: { id: LessonSection; title: MessageDescriptor }[] = [
+  { id: 'basics', title: msg`基礎` },
+  { id: 'languages', title: msg`言語` },
+  { id: 'storage', title: msg`ストレージ` },
+  { id: 'compute', title: msg`実行環境` },
+];
+
 export type Lesson = {
   id: string;
+  section: LessonSection;
   title: MessageDescriptor;
   summary: MessageDescriptor;
   code: string;
@@ -25,6 +35,7 @@ export type Lesson = {
 export const lessons: Lesson[] = [
   {
     id: 'engines',
+    section: 'basics',
     title: msg`JavaScript エンジンとランタイム`,
     summary: msg`V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers`,
     code: enginesCode,
@@ -32,6 +43,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'workers',
+    section: 'basics',
     title: msg`Workers の実行モデル`,
     summary: msg`isolate、状態を持たない、制限、課金`,
     code: workersCode,
@@ -39,6 +51,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'python',
+    section: 'languages',
     title: msg`Python`,
     summary: msg`構文もランタイムも違う言語が、同じ Worker として動く`,
     code: pythonCode,
@@ -47,6 +60,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'kv',
+    section: 'storage',
     title: msg`KV`,
     summary: msg`速い読み取りと結果整合。キャッシュや設定の置き場`,
     code: kvCode,
@@ -54,6 +68,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'd1',
+    section: 'storage',
     title: msg`D1`,
     summary: msg`SQLite。SQL、索引、課金される「行数」`,
     code: d1Code,
@@ -61,13 +76,23 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'r2',
+    section: 'storage',
     title: msg`R2`,
     summary: msg`S3 互換のオブジェクトストレージ。転送無料`,
     code: r2Code,
     runnable: true,
   },
   {
+    id: 'durable-objects',
+    section: 'storage',
+    title: msg`Durable Objects`,
+    summary: msg`名前ごとに 1 つの実体。状態と直列化`,
+    code: doCode,
+    runnable: true,
+  },
+  {
     id: 'containers',
+    section: 'compute',
     title: msg`Containers で実行する`,
     summary: msg`Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道`,
     code: containersCode,
@@ -76,14 +101,8 @@ export const lessons: Lesson[] = [
     runnable: true,
   },
   {
-    id: 'durable-objects',
-    title: msg`Durable Objects`,
-    summary: msg`名前ごとに 1 つの実体。状態と直列化`,
-    code: doCode,
-    runnable: true,
-  },
-  {
     id: 'workers-ai',
+    section: 'compute',
     title: msg`Workers AI`,
     summary: msg`GPU を持たずに推論。まずは安いモデルから`,
     code: aiCode,

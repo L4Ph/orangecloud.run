@@ -1,4 +1,4 @@
-import { Link } from '@void/react';
+import { Link } from '@cloudflare/kumo/components/link';
 import { routeUrl } from 'void/routes';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { docSections, docs } from '../../docs';
@@ -29,21 +29,20 @@ function DocsIndex({ locale }: Props) {
                 {i18n._(section.title)}
               </Text>
             </div>
-            <ul className="space-y-2">
+            <ul className="grid gap-3 sm:grid-cols-2">
               {docs
                 .filter((doc) => doc.section === section.id)
                 .map((doc) => (
                   <li key={doc.slug}>
                     <Link
                       href={routeUrl('/docs/:slug', { params: { slug: doc.slug } })}
-                      className="block rounded-lg border border-kumo-line bg-kumo-base px-4 py-3 hover:bg-kumo-tint"
+                      variant="plain"
+                      className="flex h-full w-full flex-col items-start gap-1 rounded-lg bg-kumo-base px-4 pt-3 pb-4 text-left ring ring-kumo-line hover:bg-kumo-tint"
                     >
                       <Text variant="heading">{i18n._(doc.title)}</Text>
-                      <div className="mt-1">
-                        <Text as="p" variant="secondary">
-                          {i18n._(doc.summary)}
-                        </Text>
-                      </div>
+                      <Text as="span" variant="secondary">
+                        {i18n._(doc.summary)}
+                      </Text>
                     </Link>
                   </li>
                 ))}

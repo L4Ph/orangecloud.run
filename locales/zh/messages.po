@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh\n"
 
-#: pages/docs/[slug].tsx:20
+#: pages/docs/[slug].tsx:21
 msgid "← 読んで学ぶ"
 msgstr "← 阅读"
 
@@ -19,19 +19,19 @@ msgstr ""
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:71
+#: lessons/index.ts:88
 msgid "Containers で実行する"
 msgstr "在 Containers 中运行"
 
-#: lessons/index.ts:57
+#: lessons/index.ts:72
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:72
+#: lessons/index.ts:89
 msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
 msgstr "在 Docker 镜像里运行 Python，isolate 做不到时的退路"
 
-#: lessons/index.ts:80
+#: lessons/index.ts:98
 msgid "Durable Objects"
 msgstr ""
 
@@ -43,7 +43,7 @@ msgstr "Durable Objects 与 Actor 模型"
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、绑定中继、执行限制"
 
-#: lessons/index.ts:88
+#: lessons/index.ts:107
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
@@ -63,19 +63,19 @@ msgstr "isolate 省略了什么，以及何时改用容器"
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate 不够用时的最后手段"
 
-#: lessons/index.ts:36
+#: lessons/index.ts:48
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate、无共享状态、限制、计费"
 
-#: lessons/index.ts:28
+#: lessons/index.ts:39
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
 
-#: lessons/index.ts:50
+#: lessons/index.ts:64
 msgid "KV"
 msgstr ""
 
-#: lessons/index.ts:42
+#: lessons/index.ts:55
 msgid "Python"
 msgstr ""
 
@@ -83,7 +83,7 @@ msgstr ""
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:64
+#: lessons/index.ts:80
 msgid "R2"
 msgstr ""
 
@@ -95,23 +95,23 @@ msgstr "把 Rust 编译成 Wasm 运行，以及为什么必须有构建步骤"
 msgid "Rust（workers-rs）"
 msgstr "Rust（workers-rs）"
 
-#: lessons/index.ts:65
+#: lessons/index.ts:81
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "兼容 S3 的对象存储。出网流量免费"
 
-#: lessons/index.ts:58
+#: lessons/index.ts:73
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 
-#: lessons/index.ts:29
+#: lessons/index.ts:40
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
-#: lessons/index.ts:87
+#: lessons/index.ts:106
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:35
+#: lessons/index.ts:47
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
@@ -143,6 +143,10 @@ msgstr "本站的运作方式"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "仅作资料（共享沙箱中无法运行队列）"
 
+#: lessons/index.ts:18
+msgid "ストレージ"
+msgstr "存储"
+
 #: docs/index.ts:16
 msgid "データと処理"
 msgstr "数据与处理"
@@ -155,7 +159,7 @@ msgstr "部署上线"
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "为什么是 class，以及 actor 模型到哪为止"
 
-#: pages/lessons/index.tsx:20
+#: pages/lessons/index.tsx:22
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "在浏览器编辑器里边运行边学习的章节。网络已关闭，写坏了也不会有事。"
 
@@ -192,19 +196,27 @@ msgid "公開と運用"
 msgstr "发布与运维"
 
 #: pages/lessons/index.server.ts:20
-#: pages/lessons/index.tsx:17
+#: pages/lessons/index.tsx:18
 msgid "動かして学ぶ"
 msgstr "动手学"
 
-#: lessons/index.ts:81
+#: lessons/index.ts:99
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
 
-#: pages/docs/index.tsx:18
+#: lessons/index.ts:16
+msgid "基礎"
+msgstr "基础"
+
+#: lessons/index.ts:19
+msgid "実行環境"
+msgstr "计算"
+
+#: pages/docs/index.tsx:20
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "在动手前后阅读的深入内容。设计判断的依据都在这里。"
 
-#: lessons/index.ts:43
+#: lessons/index.ts:56
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "语法和运行时都不同，却仍然是同一个 Worker"
 
@@ -212,24 +224,28 @@ msgstr "语法和运行时都不同，却仍然是同一个 Worker"
 msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
 
+#: lessons/index.ts:17
+msgid "言語"
+msgstr "语言"
+
 #: docs/index.ts:14
 msgid "言語とフレームワーク"
 msgstr "语言与框架"
 
 #: pages/docs/index.server.ts:20
-#: pages/docs/index.tsx:15
+#: pages/docs/index.tsx:16
 msgid "読んで学ぶ"
 msgstr "阅读学"
 
-#: lessons/index.ts:91
+#: lessons/index.ts:110
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
 
 #: pages/lessons/index.tsx:41
-msgid "資料のみ"
-msgstr "仅资料"
+#~ msgid "資料のみ"
+#~ msgstr "仅资料"
 
-#: lessons/index.ts:51
+#: lessons/index.ts:65
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "读取快，最终一致。适合缓存和配置"
 
