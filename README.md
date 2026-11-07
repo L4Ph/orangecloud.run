@@ -26,7 +26,7 @@ npm run check   # format, lint (type-aware), type check
 - `src/components/` — the header, editor, article and other shared components
 - `src/lib/` — catalogs, locale handling, markdown, and the code that runs the editor's input
 - `src/durable-objects/` — the Durable Object classes, including the container one
-- `lessons/`, `docs/`, `locales/` — content and translations (see Content)
+- `src/lessons/`, `src/docs/`, `src/locales/` — content and translations (see Content)
 
 ## Routes
 
@@ -41,11 +41,11 @@ The sandbox reaches D1, KV, R2, AI and the counter through the `WorkerEntrypoint
 
 ## Content
 
-- `lessons/index.ts` — chapter metadata and snippets
-- `lessons/docs/{locale}/*.md` — chapter notes
-- `lessons/code/*` — snippets the playground runs
-- `docs/index.ts`, `docs/content/{locale}/*.md` — articles
-- `locales/{locale}/messages.po` — UI strings
+- `src/lessons/index.ts` — chapter metadata and snippets
+- `src/lessons/docs/{locale}/*.md` — chapter notes
+- `src/lessons/code/*` — snippets the playground runs
+- `src/docs/index.ts`, `src/docs/content/{locale}/*.md` — articles
+- `src/locales/{locale}/messages.po` — UI strings
 
 ## Containers
 

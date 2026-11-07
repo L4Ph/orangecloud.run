@@ -9,13 +9,19 @@ export default defineConfig({
   plugins: [tailwindcss(), lingui({ macroTransform: true }), react(), cloudflare(), ssrPlugin()],
   server: { port: 5173, strictPort: true },
   lint: {
-    ignorePatterns: ["dist/**", ".cloudflare/**", ".wrangler/**", "locales/**", "lessons/code/**"],
+    ignorePatterns: [
+      "dist/**",
+      ".cloudflare/**",
+      ".wrangler/**",
+      "src/locales/**",
+      "src/lessons/code/**",
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
     },
   },
   fmt: {
-    ignorePatterns: ["dist/**", ".cloudflare/**", ".wrangler/**", "locales/**"],
+    ignorePatterns: ["dist/**", ".cloudflare/**", ".wrangler/**", "src/locales/**"],
   },
 });

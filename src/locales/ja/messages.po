@@ -21,7 +21,7 @@ msgstr "「動かす」はブラウザのエディタで実行しながら進む
 msgid "← 学ぶ"
 msgstr "← 学ぶ"
 
-#: docs/index.ts:59
+#: src/docs/index.ts:59
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
@@ -29,43 +29,43 @@ msgstr "AI Gateway"
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 実践ガイド"
 
-#: docs/index.ts:65
+#: src/docs/index.ts:65
 msgid "Containers"
 msgstr "Containers"
 
-#: lessons/index.ts:119
+#: src/lessons/index.ts:119
 msgid "Containers で Node.js を動かす"
 msgstr "Containers で Node.js を動かす"
 
-#: lessons/index.ts:129
+#: src/lessons/index.ts:129
 msgid "Containers でシェルを動かす"
 msgstr "Containers でシェルを動かす"
 
-#: lessons/index.ts:109
+#: src/lessons/index.ts:109
 msgid "Containers で実行する"
 msgstr "Containers で実行する"
 
-#: lessons/index.ts:76
+#: src/lessons/index.ts:76
 msgid "D1"
 msgstr "D1"
 
-#: lessons/index.ts:110
+#: src/lessons/index.ts:110
 msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
 msgstr "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
 
-#: lessons/index.ts:100
+#: src/lessons/index.ts:100
 msgid "Durable Object を自分で書く"
 msgstr "Durable Object を自分で書く"
 
-#: lessons/index.ts:92
+#: src/lessons/index.ts:92
 msgid "Durable Objects"
 msgstr "Durable Objects"
 
-#: docs/index.ts:41
+#: src/docs/index.ts:41
 msgid "Durable Objects と Actor モデル"
 msgstr "Durable Objects と Actor モデル"
 
-#: docs/index.ts:78
+#: src/docs/index.ts:78
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
@@ -79,15 +79,15 @@ msgstr "exit {0} · {1}ms"
 msgid "GitHub のリポジトリ"
 msgstr "GitHub のリポジトリ"
 
-#: lessons/index.ts:140
+#: src/lessons/index.ts:140
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "GPU を持たずに推論。まずは安いモデルから"
 
-#: docs/index.ts:17
+#: src/docs/index.ts:17
 msgid "Hono"
 msgstr "Hono"
 
-#: docs/index.ts:23
+#: src/docs/index.ts:23
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono のルーターとミドルウェア"
 
@@ -97,23 +97,23 @@ msgstr "Hono のルーターとミドルウェア"
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
-#: docs/index.ts:36
+#: src/docs/index.ts:36
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate が何を省略しているか、コンテナとの分岐"
 
-#: docs/index.ts:66
+#: src/docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate で足りないときの最後の手段"
 
-#: lessons/index.ts:120
+#: src/lessons/index.ts:120
 msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
 msgstr "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
 
-#: lessons/index.ts:52
+#: src/lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate、状態を持たない、制限、課金"
 
-#: lessons/index.ts:43
+#: src/lessons/index.ts:43
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript エンジンとランタイム"
 
@@ -121,39 +121,39 @@ msgstr "JavaScript エンジンとランタイム"
 msgid "JS がはじめてなら最初に"
 msgstr "JS がはじめてなら最初に"
 
-#: lessons/index.ts:68
+#: src/lessons/index.ts:68
 msgid "KV"
 msgstr "KV"
 
-#: lessons/index.ts:59
+#: src/lessons/index.ts:59
 msgid "Python"
 msgstr "Python"
 
-#: docs/index.ts:53
+#: src/docs/index.ts:53
 msgid "Queues / Workflows"
 msgstr "Queues / Workflows"
 
-#: lessons/index.ts:84
+#: src/lessons/index.ts:84
 msgid "R2"
 msgstr "R2"
 
-#: docs/index.ts:30
+#: src/docs/index.ts:30
 msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
 msgstr "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
 
-#: docs/index.ts:29
+#: src/docs/index.ts:29
 msgid "Rust（workers-rs）"
 msgstr "Rust（workers-rs）"
 
-#: lessons/index.ts:85
+#: src/lessons/index.ts:85
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "S3 互換のオブジェクトストレージ。転送無料"
 
-#: lessons/index.ts:77
+#: src/lessons/index.ts:77
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite。SQL、索引、課金される「行数」"
 
-#: lessons/index.ts:44
+#: src/lessons/index.ts:44
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 
@@ -161,15 +161,15 @@ msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node�
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
-#: lessons/index.ts:139
+#: src/lessons/index.ts:139
 msgid "Workers AI"
 msgstr "Workers AI"
 
-#: lessons/index.ts:51
+#: src/lessons/index.ts:51
 msgid "Workers の実行モデル"
 msgstr "Workers の実行モデル"
 
-#: lessons/index.ts:101
+#: src/lessons/index.ts:101
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 
@@ -189,7 +189,7 @@ msgstr "コードエディタ"
 msgid "このサイトで足りなくなったら、本で通して学べます。"
 msgstr "このサイトで足りなくなったら、本で通して学べます。"
 
-#: docs/index.ts:77
+#: src/docs/index.ts:77
 msgid "このサイトの仕組み"
 msgstr "このサイトの仕組み"
 
@@ -202,47 +202,47 @@ msgstr "このページ"
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
-#: lessons/index.ts:21
+#: src/lessons/index.ts:21
 msgid "ストレージ"
 msgstr "ストレージ"
 
-#: docs/index.ts:71
+#: src/docs/index.ts:71
 msgid "デプロイまで"
 msgstr "デプロイまで"
 
-#: docs/index.ts:42
+#: src/docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "なぜ class なのか、どこまでが actor なのか"
 
-#: docs/index.ts:35
+#: src/docs/index.ts:35
 msgid "ランタイムの深掘り"
 msgstr "ランタイムの深掘り"
 
-#: docs/index.ts:24
+#: src/docs/index.ts:24
 msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 msgstr "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 
-#: docs/index.ts:18
+#: src/docs/index.ts:18
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 
-#: docs/index.ts:60
+#: src/docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 
-#: docs/index.ts:72
+#: src/docs/index.ts:72
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "ログイン、秘密値、デプロイ、公開後の確認"
 
-#: docs/index.ts:48
+#: src/docs/index.ts:48
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 
-#: lessons/index.ts:130
+#: src/lessons/index.ts:130
 msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
 msgstr "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
 
-#: lessons/index.ts:23
+#: src/lessons/index.ts:23
 msgid "公開と運用"
 msgstr "公開と運用"
 
@@ -267,7 +267,7 @@ msgstr "前提知識"
 msgid "動かす"
 msgstr "動かす"
 
-#: lessons/index.ts:93
+#: src/lessons/index.ts:93
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "名前ごとに 1 つの実体。状態と直列化"
 
@@ -275,7 +275,7 @@ msgstr "名前ごとに 1 つの実体。状態と直列化"
 msgid "型が読めないと先に進みにくい"
 msgstr "型が読めないと先に進みにくい"
 
-#: lessons/index.ts:19
+#: src/lessons/index.ts:19
 msgid "基礎"
 msgstr "基礎"
 
@@ -296,7 +296,7 @@ msgstr "実行するとここにレスポンスと console の出力が出ます
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 
-#: lessons/index.ts:22
+#: src/lessons/index.ts:22
 msgid "実行環境"
 msgstr "実行環境"
 
@@ -322,7 +322,7 @@ msgstr "本文へ移動"
 msgid "本気で使うなら"
 msgstr "本気で使うなら"
 
-#: lessons/index.ts:60
+#: src/lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "構文もランタイムも違う言語が、同じ Worker として動く"
 
@@ -330,12 +330,12 @@ msgstr "構文もランタイムも違う言語が、同じ Worker として動�
 msgid "次"
 msgstr "次"
 
-#: docs/index.ts:47
+#: src/docs/index.ts:47
 msgid "状態の置き場所を選ぶ"
 msgstr "状態の置き場所を選ぶ"
 
-#: lessons/index.ts:20
 #: src/components/site-header.tsx:33
+#: src/lessons/index.ts:20
 msgid "言語"
 msgstr "言語"
 
@@ -348,15 +348,15 @@ msgstr "設計・運用まで"
 msgid "読む"
 msgstr "読む"
 
-#: lessons/index.ts:143
+#: src/lessons/index.ts:143
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 
-#: lessons/index.ts:69
+#: src/lessons/index.ts:69
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "速い読み取りと結果整合。キャッシュや設定の置き場"
 
-#: docs/index.ts:54
+#: src/docs/index.ts:54
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "非同期処理と、再開できる長時間ジョブ"
 

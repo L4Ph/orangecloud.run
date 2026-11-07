@@ -1,4 +1,4 @@
-import type { Locale } from "../src/lib/locales";
+import type { Locale } from "../lib/locales";
 
 const docs = import.meta.glob("./docs/*/*.md", {
   query: "?raw",

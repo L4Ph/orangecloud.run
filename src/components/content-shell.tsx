@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, type ReactNode } from "react";
 import { Link } from "@cloudflare/kumo/components/link";
 import { ArrowLeftIcon, ArrowRightIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { lessonSections } from "../../lessons";
+import { lessonSections } from "../lessons";
 import { catalog, catalogSections, entryOf, neighbours } from "../lib/catalog";
 import { SiteHeader } from "./site-header";
 import type { Locale } from "../lib/locales";

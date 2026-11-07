@@ -5,69 +5,69 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
-"Language: ko\n"
+"Language: en\n"
 
 #: src/components/content-shell.tsx:42
 #: src/components/site-header.tsx:56
 #: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
-msgstr "(새 탭에서 열기)"
+msgstr "(opens in a new tab)"
 
 #: src/pages/Home.tsx:24
 msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
-msgstr "\"실행\"은 브라우저 에디터에서 코드를 실행하며 진행하는 장입니다. 네트워크가 차단되어 있어 망가뜨려도 아무 일도 일어나지 않습니다. \"읽기\"는 설계 판단 기준을 정리한 글입니다."
+msgstr "\"Run\" chapters let you execute code in a browser editor. The network is blocked, so nothing breaks if you make a mistake. \"Read\" pages are articles on how to make design decisions."
 
 #: src/pages/Books.tsx:50
 msgid "← 学ぶ"
-msgstr "← 학습"
+msgstr "← Learn"
 
-#: docs/index.ts:59
+#: src/docs/index.ts:59
 msgid "AI Gateway"
 msgstr ""
 
 #: src/pages/Books.tsx:70
 msgid "Cloudflare Workers 実践ガイド"
-msgstr "Cloudflare Workers 실전 가이드"
+msgstr "Cloudflare Workers Practical Guide"
 
-#: docs/index.ts:65
+#: src/docs/index.ts:65
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:119
+#: src/lessons/index.ts:119
 msgid "Containers で Node.js を動かす"
-msgstr "Containers에서 Node.js 실행하기"
+msgstr "Run Node.js in Containers"
 
-#: lessons/index.ts:129
+#: src/lessons/index.ts:129
 msgid "Containers でシェルを動かす"
-msgstr "Containers에서 셸 실행하기"
+msgstr "Run shell scripts in Containers"
 
-#: lessons/index.ts:109
+#: src/lessons/index.ts:109
 msgid "Containers で実行する"
-msgstr "Containers에서 실행하기"
+msgstr "Running code in Containers"
 
-#: lessons/index.ts:76
+#: src/lessons/index.ts:76
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:110
+#: src/lessons/index.ts:110
 msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
-msgstr "Docker 이미지 안에서 Python 실행. isolate로 불가능한 작업의 출구"
+msgstr "Run Python inside a Docker image — the escape hatch for work an isolate cannot do"
 
-#: lessons/index.ts:100
+#: src/lessons/index.ts:100
 msgid "Durable Object を自分で書く"
-msgstr "Durable Object를 직접 작성하기"
+msgstr "Write your own Durable Object"
 
-#: lessons/index.ts:92
+#: src/lessons/index.ts:92
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:41
+#: src/docs/index.ts:41
 msgid "Durable Objects と Actor モデル"
-msgstr "Durable Objects와 Actor 모델"
+msgstr "Durable Objects and the Actor model"
 
-#: docs/index.ts:78
+#: src/docs/index.ts:78
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
-msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
+msgstr "Dynamic Workers, relayed bindings, and run limits"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
@@ -77,19 +77,19 @@ msgstr "exit {0} · {1}ms"
 
 #: src/components/site-header.tsx:56
 msgid "GitHub のリポジトリ"
-msgstr "GitHub 저장소"
+msgstr "GitHub repository"
 
-#: lessons/index.ts:140
+#: src/lessons/index.ts:140
 msgid "GPU を持たずに推論。まずは安いモデルから"
-msgstr "GPU 없이 하는 추론. 우선 저렴한 모델부터"
+msgstr "Inference without owning a GPU. Start with a cheap model"
 
-#: docs/index.ts:17
+#: src/docs/index.ts:17
 msgid "Hono"
 msgstr ""
 
-#: docs/index.ts:23
+#: src/docs/index.ts:23
 msgid "Hono のルーターとミドルウェア"
-msgstr "Hono의 라우터와 미들웨어"
+msgstr "Hono's router and middleware"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
@@ -97,273 +97,273 @@ msgstr "Hono의 라우터와 미들웨어"
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
-#: docs/index.ts:36
+#: src/docs/index.ts:36
 msgid "isolate が何を省略しているか、コンテナとの分岐"
-msgstr "isolate가 무엇을 생략하는지, 컨테이너로 넘어갈 지점"
+msgstr "What an isolate leaves out, and when to reach for a container"
 
-#: docs/index.ts:66
+#: src/docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
-msgstr "isolate로 부족할 때의 마지막 수단"
+msgstr "The last resort when isolates are not enough"
 
-#: lessons/index.ts:120
+#: src/lessons/index.ts:120
 msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
-msgstr "isolate에 없는 fs, child_process, OS 정보를 컨테이너에서는 그대로 쓸 수 있다"
+msgstr "fs, child_process and OS details that an isolate lacks work normally in a container"
 
-#: lessons/index.ts:52
+#: src/lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
-msgstr "isolate, 상태 없음, 제한, 과금"
+msgstr "Isolates, no shared state, limits, billing"
 
-#: lessons/index.ts:43
+#: src/lessons/index.ts:43
 msgid "JavaScript エンジンとランタイム"
-msgstr "JavaScript 엔진과 런타임"
+msgstr "JavaScript engines and runtimes"
 
 #: src/components/content-shell.tsx:241
 msgid "JS がはじめてなら最初に"
-msgstr "JS가 처음이라면 먼저"
+msgstr "Start here if JS is new to you"
 
-#: lessons/index.ts:68
+#: src/lessons/index.ts:68
 msgid "KV"
 msgstr ""
 
-#: lessons/index.ts:59
+#: src/lessons/index.ts:59
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:53
+#: src/docs/index.ts:53
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:84
+#: src/lessons/index.ts:84
 msgid "R2"
 msgstr ""
 
-#: docs/index.ts:30
+#: src/docs/index.ts:30
 msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
-msgstr "Rust를 Wasm으로 컴파일해 실행하기, 빌드가 필요한 이유"
+msgstr "Compile Rust to Wasm — and why a build step is unavoidable"
 
-#: docs/index.ts:29
+#: src/docs/index.ts:29
 msgid "Rust（workers-rs）"
-msgstr "Rust(workers-rs)"
+msgstr "Rust (workers-rs)"
 
-#: lessons/index.ts:85
+#: src/lessons/index.ts:85
 msgid "S3 互換のオブジェクトストレージ。転送無料"
-msgstr "S3 호환 객체 스토리지. 전송 무료"
+msgstr "S3-compatible object storage. Egress is free"
 
-#: lessons/index.ts:77
+#: src/lessons/index.ts:77
 msgid "SQLite。SQL、索引、課金される「行数」"
-msgstr "SQLite. SQL, 인덱스, 과금되는 '행 수'"
+msgstr "SQLite. SQL, indexes, and the rows you are billed for"
 
-#: lessons/index.ts:44
+#: src/lessons/index.ts:44
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
-msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, 그리고 Node·Bun·Deno·Workers"
+msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, plus Node, Bun, Deno, and Workers"
 
 #: src/pages/Books.tsx:65
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
-#: lessons/index.ts:139
+#: src/lessons/index.ts:139
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:51
+#: src/lessons/index.ts:51
 msgid "Workers の実行モデル"
-msgstr "Workers의 실행 모델"
+msgstr "The Workers execution model"
 
-#: lessons/index.ts:101
+#: src/lessons/index.ts:101
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
-msgstr "코드를 고쳐 가며 인메모리 상태와 SQLite의 차이를 확인한다"
+msgstr "See the difference between in-memory state and SQLite by editing code"
 
 #: src/components/playground.tsx:311
 msgid "エディタ"
-msgstr "편집기"
+msgstr "Editor"
 
 #: src/components/playground.tsx:299
 msgid "エディタへ移動"
-msgstr "에디터로 이동"
+msgstr "Go to the editor"
 
 #: src/components/playground.tsx:346
 msgid "コードエディタ"
-msgstr "코드 에디터"
+msgstr "Code editor"
 
 #: src/pages/Books.tsx:59
 msgid "このサイトで足りなくなったら、本で通して学べます。"
-msgstr "이 사이트로 부족하면 책으로 처음부터 끝까지 배울 수 있습니다."
+msgstr "When this site is not enough, these books teach it end to end."
 
-#: docs/index.ts:77
+#: src/docs/index.ts:77
 msgid "このサイトの仕組み"
-msgstr "이 사이트의 구조"
+msgstr "How this site works"
 
 #: src/pages/Doc.tsx:46
 #: src/pages/Doc.tsx:49
 msgid "このページ"
-msgstr "이 페이지"
+msgstr "On this page"
 
 #: src/components/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
-msgstr "이 단원은 자료만 있습니다. 코드는 참고용입니다."
+msgstr "This chapter is reading only. The code is there for reference."
 
-#: lessons/index.ts:21
+#: src/lessons/index.ts:21
 msgid "ストレージ"
-msgstr "스토리지"
+msgstr "Storage"
 
-#: docs/index.ts:71
+#: src/docs/index.ts:71
 msgid "デプロイまで"
-msgstr "배포까지"
+msgstr "Deploying"
 
-#: docs/index.ts:42
+#: src/docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
-msgstr "왜 클래스인지, actor 모델의 경계는 어디까지인지"
+msgstr "Why a class, and how far the actor model goes"
 
-#: docs/index.ts:35
+#: src/docs/index.ts:35
 msgid "ランタイムの深掘り"
-msgstr "런타임 깊이 보기"
+msgstr "Inside the runtime"
 
-#: docs/index.ts:24
+#: src/docs/index.ts:24
 msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
-msgstr "라우터의 원리, 미들웨어 합성, 타입과 RPC"
+msgstr "How the router works, middleware composition, and types plus RPC"
 
-#: docs/index.ts:18
+#: src/docs/index.ts:18
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
-msgstr "라우팅, 미들웨어, 검증. 작고 빠른 웹 프레임워크"
+msgstr "Routing, middleware, validation — a small, fast web framework"
 
-#: docs/index.ts:60
+#: src/docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
-msgstr "모델 앞에서 로그·캐시·제한·폴백"
+msgstr "Logging, caching, limits, and fallbacks in front of the model"
 
-#: docs/index.ts:72
+#: src/docs/index.ts:72
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
-msgstr "로그인, 시크릿, 배포, 공개 후 확인"
+msgstr "Login, secrets, deploy, and what to check after"
 
-#: docs/index.ts:48
+#: src/docs/index.ts:48
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
-msgstr "일관성·크기·과금으로 KV / D1 / R2 / Durable Objects 선택하기"
+msgstr "Choosing KV / D1 / R2 / Durable Objects by consistency, size, and cost"
 
-#: lessons/index.ts:130
+#: src/lessons/index.ts:130
 msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
-msgstr "임의의 Linux 바이너리를 파이프로 연결한다. FFmpeg 등도 이 연장선이다"
+msgstr "Pipe any Linux binaries together. FFmpeg and friends are an extension of this"
 
-#: lessons/index.ts:23
+#: src/lessons/index.ts:23
 msgid "公開と運用"
-msgstr "공개와 운영"
+msgstr "Ship and operate"
 
 #: src/components/playground.tsx:317
 msgid "初期化"
-msgstr "초기화"
+msgstr "Reset"
 
 #: src/components/content-shell.tsx:205
 msgid "前"
-msgstr "이전"
+msgstr "Previous"
 
 #: src/components/content-shell.tsx:227
 msgid "前後の章"
-msgstr "이전·다음 장"
+msgstr "Previous and next"
 
 #: src/components/content-shell.tsx:236
 msgid "前提知識"
-msgstr "사전 지식"
+msgstr "Prerequisites"
 
 #: src/components/content-shell.tsx:30
 #: src/components/content-shell.tsx:83
 msgid "動かす"
-msgstr "실행"
+msgstr "Run"
 
-#: lessons/index.ts:93
+#: src/lessons/index.ts:93
 msgid "名前ごとに 1 つの実体。状態と直列化"
-msgstr "이름마다 하나의 실체. 상태와 직렬화"
+msgstr "One instance per name. State and serialization"
 
 #: src/components/content-shell.tsx:245
 msgid "型が読めないと先に進みにくい"
-msgstr "타입을 읽지 못하면 진행하기 어렵습니다"
+msgstr "Hard to go further without reading types"
 
-#: lessons/index.ts:19
+#: src/lessons/index.ts:19
 msgid "基礎"
-msgstr "기초"
+msgstr "Basics"
 
 #: src/pages/Home.tsx:20
 #: src/server.tsx:30
 msgid "学ぶ"
-msgstr "학습"
+msgstr "Learn"
 
 #: src/components/playground.tsx:327
 msgid "実行"
-msgstr "실행"
+msgstr "Run"
 
 #: src/components/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "실행하면 여기에 응답과 console 출력이 표시됩니다. 네트워크는 차단되어 있어 망가뜨려도 문제없습니다."
+msgstr "The response and console output appear here after you run. The network is blocked, so nothing breaks."
 
 #: src/components/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
-msgstr "실행 횟수가 너무 많습니다. 잠시 후 다시 시도하세요."
+msgstr "Too many runs. Wait a moment and try again."
 
-#: lessons/index.ts:22
+#: src/lessons/index.ts:22
 msgid "実行環境"
-msgstr "실행 환경"
+msgstr "Compute"
 
 #: src/components/playground.tsx:354
 msgid "実行結果"
-msgstr "실행 결과"
+msgstr "Run output"
 
 #: src/pages/Books.tsx:54
 #: src/server.tsx:39
 msgid "書籍の紹介"
-msgstr "도서 소개"
+msgstr "Books"
 
 #: src/components/content-shell.tsx:250
 #: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
-msgstr "도서 소개 →"
+msgstr "Books →"
 
 #: src/components/site-header.tsx:18
 msgid "本文へ移動"
-msgstr "본문으로 건너뛰기"
+msgstr "Skip to content"
 
 #: src/pages/Books.tsx:66
 msgid "本気で使うなら"
-msgstr "본격적으로 쓴다면"
+msgstr "For serious use"
 
-#: lessons/index.ts:60
+#: src/lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
-msgstr "문법도 런타임도 다르지만 같은 Worker로 동작"
+msgstr "A different language and runtime, still the same Worker"
 
 #: src/components/content-shell.tsx:205
 msgid "次"
-msgstr "다음"
+msgstr "Next"
 
-#: docs/index.ts:47
+#: src/docs/index.ts:47
 msgid "状態の置き場所を選ぶ"
-msgstr "상태를 둘 곳 고르기"
+msgstr "Choosing where state lives"
 
-#: lessons/index.ts:20
 #: src/components/site-header.tsx:33
+#: src/lessons/index.ts:20
 msgid "言語"
-msgstr "언어"
+msgstr "Languages"
 
 #: src/pages/Books.tsx:71
 msgid "設計・運用まで"
-msgstr "설계·운영까지"
+msgstr "Through design and operations"
 
 #: src/components/content-shell.tsx:30
 #: src/components/content-shell.tsx:83
 msgid "読む"
-msgstr "읽기"
+msgstr "Read"
 
-#: lessons/index.ts:143
+#: src/lessons/index.ts:143
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
-msgstr "AI 호출 비용은 이 사이트가 부담합니다. 로컬 개발에서만 Cloudflare 로그인이 필요합니다."
+msgstr "This site pays for the AI calls. Only local development needs a Cloudflare login."
 
-#: lessons/index.ts:69
+#: src/lessons/index.ts:69
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
-msgstr "빠른 읽기와 최종 일관성. 캐시와 설정의 자리"
+msgstr "Fast reads with eventual consistency. A home for cache and config"
 
-#: docs/index.ts:54
+#: src/docs/index.ts:54
 msgid "非同期処理と、再開できる長時間ジョブ"
-msgstr "비동기 처리와 재개 가능한 장기 작업"
+msgstr "Async work and long-running jobs that resume"
 
 #: src/components/content-shell.tsx:54
 msgid "章と記事"
-msgstr "장과 글"
+msgstr "Chapters and articles"
 
 #: src/components/content-shell.tsx:144
 msgid "章と記事の一覧"
-msgstr "장과 글 목록"
+msgstr "All chapters and articles"

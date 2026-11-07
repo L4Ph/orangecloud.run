@@ -1,4 +1,4 @@
-import type { Locale } from "../src/lib/locales";
+import type { Locale } from "../lib/locales";
 
 const bodies = import.meta.glob("./content/*/*.md", {
   query: "?raw",
