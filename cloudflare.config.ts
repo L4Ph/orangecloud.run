@@ -1,12 +1,14 @@
 import { bindings, defineConfig, defineContainer, exports } from "cf/config";
 import * as entrypoint from "./src/server.tsx" with { type: "cf-worker" };
 
-// Python, Node.js and shell lessons run in this image.
+// Python, Node.js and shell lessons run in this image. SandboxV1 picks the image and the size
+// when it starts the container, which is the "durable-object" scheduling policy. The application
+// that exists in the account has this policy and this name, and neither can change after it is
+// created: `cf deploy` stops if the name here differs from the one attached to SandboxV1.
 const sandbox = defineContainer({
   name: "void-sandbox-v1",
-  image: { dockerfile: "./Dockerfile.sandbox" },
-  instanceType: "lite",
-  maxInstances: 2,
+  schedulingPolicy: "durable-object",
+  images: { default: { dockerfile: "./Dockerfile.sandbox" } },
 });
 
 export default defineConfig({
