@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { fetch as apiFetch } from "void/client";
+import { fetch as apiFetch, FetchError } from "void/client";
 import { I18nPage } from "./i18n-page";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Button } from "@cloudflare/kumo/components/button";
 import { Link } from "@cloudflare/kumo/components/link";
 import { ArrowDownIcon, PlayIcon } from "@phosphor-icons/react";
 import { lessons } from "../lessons";
-import { Turnstile } from "./turnstile";
 import type { Locale } from "./locales";
 import { ChapterFooter, ChapterHeader, ContentShell } from "./content-shell";
 import { MarkdownArticle } from "./markdown-article";
@@ -19,7 +18,6 @@ type RunResult = {
   logs: string[];
   ms: number;
   error?: string;
-  errorCode?: "turnstile";
 };
 
 // Only the lesson's language is fetched, so a shell lesson never downloads the JS parser.
@@ -207,10 +205,6 @@ function Playground({
   const [result, setResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
-  const [widgetKey, setWidgetKey] = useState(0);
-  // The widget only exists while we wait for one, so nothing can sit over the page.
-  const [awaitingToken, setAwaitingToken] = useState(false);
 
   useEffect(() => {
     setCode(lesson.code);
@@ -224,7 +218,7 @@ function Playground({
   }, [locale]);
 
   const execute = useCallback(
-    async (value: string, turnstileToken: string | null) => {
+    async (value: string) => {
       setPending(true);
       setError(null);
       try {
@@ -245,29 +239,26 @@ function Playground({
                 : lesson.language === "python"
                   ? { lang: "python" as const }
                   : {}),
-            ...(turnstileToken ? { token: turnstileToken } : {}),
           },
           timeout: 20_000,
         });
-        if (data.errorCode === "turnstile" && !turnstileToken) {
-          // No pass cookie yet: ask Turnstile once, then retry with its token.
-          setAwaitingToken(true);
-        } else if (data.errorCode === "turnstile") {
-          setResult(null);
-          setError(t`ボット対策の確認に失敗しました。もう一度お試しください。`);
-        } else if (data.error) {
+        if (data.error) {
           setResult(null);
           setError(data.error);
         } else {
           setResult(data);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setResult(null);
+        setError(
+          err instanceof FetchError && err.status === 429
+            ? t`実行回数が多すぎます。少し待ってからもう一度お試しください。`
+            : err instanceof Error
+              ? err.message
+              : String(err),
+        );
       } finally {
         setPending(false);
-        // Turnstile tokens are single-use, so start over with a fresh widget.
-        setToken(null);
-        setWidgetKey((key) => key + 1);
       }
     },
     [lesson.language, lesson.runner, t],
@@ -275,17 +266,8 @@ function Playground({
 
   const run = useCallback(() => {
     if (!lesson.runnable || pending) return;
-    // The server already trusts this browser for a while, so send no token and
-    // only fall back to the widget when it asks for one.
-    void execute(code, token);
-  }, [code, execute, lesson.runnable, pending, token]);
-
-  // The widget answered: run with the token, then unmount it.
-  useEffect(() => {
-    if (!awaitingToken || !token) return;
-    setAwaitingToken(false);
-    void execute(code, token);
-  }, [awaitingToken, token, code, execute]);
+    void execute(code);
+  }, [code, execute, lesson.runnable, pending]);
 
   const key = `lesson-${lesson.id}`;
   const consoleId = useId();
@@ -310,8 +292,6 @@ function Playground({
 
   return (
     <ContentShell locale={locale} activeKey={key}>
-      {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
-
       {/* One reading order: text, editor, footer. From xl the text and footer stack on the
           left while the editor stays pinned on the right, so it never leaves the window. */}
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] xl:grid-rows-[auto_1fr] xl:items-start">

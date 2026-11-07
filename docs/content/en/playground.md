@@ -40,5 +40,5 @@ For example, in the case of KV, a Durable Object placed in the parent environmen
 ## Multi-Tenant Execution Defense Lines
 
 1. **Prevention of Implicit Cache Contamination**: Whitespace and line breaks within the code are normalized before hash values are calculated to prevent unintended cache splitting.
-2. **Bot Blocking via Turnstile**: Cloudflare Turnstile is validated before the execution endpoint to prevent overload attacks by automated scripts.
+2. **Overload Prevention via Rate Limiting**: Calls to the execution endpoint are limited per client IP (containers get a tighter limit) to prevent overload attacks by automated scripts. The limits are approximate and counted separately in each Cloudflare location.
 3. **Cost Barrier**: Dynamic Workers are billed based on "the number of unique Workers generated per day." The design ensures that the number of unique Workers subject to billing is kept to a minimum by having many users share the initial state of the educational code.

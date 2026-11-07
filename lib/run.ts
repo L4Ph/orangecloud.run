@@ -7,6 +7,8 @@ declare global {
     LESSON_COUNTER: DurableObjectNamespace;
     LESSON_USER_DO: DurableObjectNamespace;
     DB: D1Database;
+    RUN_LIMITER: RateLimit;
+    CONTAINER_LIMITER: RateLimit;
   }
 }
 
@@ -16,7 +18,6 @@ export type RunResult = {
   logs: string[];
   ms: number;
   error?: string;
-  errorCode?: "turnstile";
 };
 
 // console is captured inside the sandbox; the wrapper always answers JSON so

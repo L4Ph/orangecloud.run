@@ -40,5 +40,5 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 ## 多租户执行的防线
 
 1. **防止隐式缓存污染**：在计算哈希值前对代码中的空格和换行符进行规范化处理，以防止非预期的缓存分裂。
-2. **通过 Turnstile 拦截机器人**：在执行端点之前进行 Cloudflare Turnstile 验证，防止自动化脚本发起的过载攻击。
+2. **通过速率限制防止过载**：按客户端 IP 限制执行端点的调用次数（容器的限制更严格），防止自动化脚本发起的过载攻击。上限按 Cloudflare 的各个位置分别统计，只是近似值。
 3. **成本防线**：Dynamic Workers 根据“每天生成的唯一 Worker 数量”计费。通过让多名用户共享教材代码的初始状态，实现了将计费对象的唯一 Worker 数量降至最低的设计。

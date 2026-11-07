@@ -71,7 +71,7 @@ msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:301
+#: lib/playground.tsx:282
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +93,7 @@ msgstr "Hono のルーターとミドルウェア"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:305
+#: lib/playground.tsx:286
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -173,15 +173,15 @@ msgstr "Workers の実行モデル"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 
-#: lib/playground.tsx:335
+#: lib/playground.tsx:314
 msgid "エディタ"
 msgstr "エディタ"
 
-#: lib/playground.tsx:323
+#: lib/playground.tsx:302
 msgid "エディタへ移動"
 msgstr "エディタへ移動"
 
-#: lib/playground.tsx:370
+#: lib/playground.tsx:349
 msgid "コードエディタ"
 msgstr "コードエディタ"
 
@@ -198,7 +198,7 @@ msgstr "このサイトの仕組み"
 msgid "このページ"
 msgstr "このページ"
 
-#: lib/playground.tsx:421
+#: lib/playground.tsx:400
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
@@ -213,10 +213,6 @@ msgstr "デプロイまで"
 #: docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "なぜ class なのか、どこまでが actor なのか"
-
-#: lib/playground.tsx:257
-msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
-msgstr "ボット対策の確認に失敗しました。もう一度お試しください。"
 
 #: docs/index.ts:35
 msgid "ランタイムの深掘り"
@@ -250,7 +246,7 @@ msgstr "任意の Linux バイナリをパイプでつなぐ。FFmpeg なども�
 msgid "公開と運用"
 msgstr "公開と運用"
 
-#: lib/playground.tsx:341
+#: lib/playground.tsx:320
 msgid "初期化"
 msgstr "初期化"
 
@@ -288,19 +284,23 @@ msgstr "基礎"
 msgid "学ぶ"
 msgstr "学ぶ"
 
-#: lib/playground.tsx:351
+#: lib/playground.tsx:330
 msgid "実行"
 msgstr "実行"
 
-#: lib/playground.tsx:416
+#: lib/playground.tsx:395
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+
+#: lib/playground.tsx:254
+msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
+msgstr "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 
 #: lessons/index.ts:22
 msgid "実行環境"
 msgstr "実行環境"
 
-#: lib/playground.tsx:378
+#: lib/playground.tsx:357
 msgid "実行結果"
 msgstr "実行結果"
 

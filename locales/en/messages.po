@@ -71,7 +71,7 @@ msgstr "Dynamic Workers, relayed bindings, and run limits"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:301
+#: lib/playground.tsx:282
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +93,7 @@ msgstr "Hono's router and middleware"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:305
+#: lib/playground.tsx:286
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -173,15 +173,15 @@ msgstr "The Workers execution model"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "See the difference between in-memory state and SQLite by editing code"
 
-#: lib/playground.tsx:335
+#: lib/playground.tsx:314
 msgid "エディタ"
 msgstr "Editor"
 
-#: lib/playground.tsx:323
+#: lib/playground.tsx:302
 msgid "エディタへ移動"
 msgstr "Go to the editor"
 
-#: lib/playground.tsx:370
+#: lib/playground.tsx:349
 msgid "コードエディタ"
 msgstr "Code editor"
 
@@ -198,7 +198,7 @@ msgstr "How this site works"
 msgid "このページ"
 msgstr "On this page"
 
-#: lib/playground.tsx:421
+#: lib/playground.tsx:400
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reading only. The code is there for reference."
 
@@ -213,10 +213,6 @@ msgstr "Deploying"
 #: docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "Why a class, and how far the actor model goes"
-
-#: lib/playground.tsx:257
-msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
-msgstr "Bot check failed. Try again."
 
 #: docs/index.ts:35
 msgid "ランタイムの深掘り"
@@ -250,7 +246,7 @@ msgstr "Pipe any Linux binaries together. FFmpeg and friends are an extension of
 msgid "公開と運用"
 msgstr "Ship and operate"
 
-#: lib/playground.tsx:341
+#: lib/playground.tsx:320
 msgid "初期化"
 msgstr "Reset"
 
@@ -288,19 +284,23 @@ msgstr "Basics"
 msgid "学ぶ"
 msgstr "Learn"
 
-#: lib/playground.tsx:351
+#: lib/playground.tsx:330
 msgid "実行"
 msgstr "Run"
 
-#: lib/playground.tsx:416
+#: lib/playground.tsx:395
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "The response and console output appear here after you run. The network is blocked, so nothing breaks."
+
+#: lib/playground.tsx:254
+msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
+msgstr "Too many runs. Wait a moment and try again."
 
 #: lessons/index.ts:22
 msgid "実行環境"
 msgstr "Compute"
 
-#: lib/playground.tsx:378
+#: lib/playground.tsx:357
 msgid "実行結果"
 msgstr "Run output"
 

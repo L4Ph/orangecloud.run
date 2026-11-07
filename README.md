@@ -38,5 +38,4 @@ The Containers chapters run Python, Node.js and shell scripts in a Docker image 
 ```sh
 npx void connect --platform cloudflare   # pick the account (also enables local Workers AI)
 npx void deploy
-npx void secret put TURNSTILE_SECRET
 ```

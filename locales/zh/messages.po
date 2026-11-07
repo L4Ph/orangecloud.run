@@ -71,7 +71,7 @@ msgstr "Dynamic Workers、绑定中继、执行限制"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:301
+#: lib/playground.tsx:282
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +93,7 @@ msgstr "Hono 的路由器与中间件"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:305
+#: lib/playground.tsx:286
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -173,15 +173,15 @@ msgstr "Workers 的执行模型"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "通过改写代码来确认内存状态与 SQLite 的区别"
 
-#: lib/playground.tsx:335
+#: lib/playground.tsx:314
 msgid "エディタ"
 msgstr "编辑器"
 
-#: lib/playground.tsx:323
+#: lib/playground.tsx:302
 msgid "エディタへ移動"
 msgstr "前往编辑器"
 
-#: lib/playground.tsx:370
+#: lib/playground.tsx:349
 msgid "コードエディタ"
 msgstr "代码编辑器"
 
@@ -198,7 +198,7 @@ msgstr "本站的运作方式"
 msgid "このページ"
 msgstr "本页内容"
 
-#: lib/playground.tsx:421
+#: lib/playground.tsx:400
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "本章只有资料，代码仅供参考。"
 
@@ -213,10 +213,6 @@ msgstr "部署上线"
 #: docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "为什么是 class，以及 actor 模型到哪为止"
-
-#: lib/playground.tsx:257
-msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
-msgstr "机器人验证失败，请重试。"
 
 #: docs/index.ts:35
 msgid "ランタイムの深掘り"
@@ -250,7 +246,7 @@ msgstr "用管道串联任意 Linux 二进制程序。FFmpeg 等也是同样的�
 msgid "公開と運用"
 msgstr "发布与运维"
 
-#: lib/playground.tsx:341
+#: lib/playground.tsx:320
 msgid "初期化"
 msgstr "重置"
 
@@ -288,19 +284,23 @@ msgstr "基础"
 msgid "学ぶ"
 msgstr "学习"
 
-#: lib/playground.tsx:351
+#: lib/playground.tsx:330
 msgid "実行"
 msgstr "运行"
 
-#: lib/playground.tsx:416
+#: lib/playground.tsx:395
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "运行后，响应和 console 输出会显示在这里。网络已被封锁，随便改也不会有问题。"
+
+#: lib/playground.tsx:254
+msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
+msgstr "运行次数过多，请稍后再试。"
 
 #: lessons/index.ts:22
 msgid "実行環境"
 msgstr "计算"
 
-#: lib/playground.tsx:378
+#: lib/playground.tsx:357
 msgid "実行結果"
 msgstr "运行结果"
 
