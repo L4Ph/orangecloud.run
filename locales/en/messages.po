@@ -19,11 +19,19 @@ msgstr ""
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:45
+#: lessons/index.ts:71
+msgid "Containers で実行する"
+msgstr "Running code in Containers"
+
+#: lessons/index.ts:57
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:59
+#: lessons/index.ts:72
+msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
+msgstr "Run Python inside a Docker image — the escape hatch for work an isolate cannot do"
+
+#: lessons/index.ts:80
 msgid "Durable Objects"
 msgstr ""
 
@@ -31,7 +39,7 @@ msgstr ""
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, relayed bindings, and run limits"
 
-#: lessons/index.ts:67
+#: lessons/index.ts:88
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "Inference without owning a GPU. Start with a cheap model"
 
@@ -51,43 +59,47 @@ msgstr "What an isolate leaves out, and when to reach for a container"
 msgid "isolate で足りないときの最後の手段"
 msgstr "The last resort when isolates are not enough"
 
-#: lessons/index.ts:32
+#: lessons/index.ts:36
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "Isolates, no shared state, limits, billing"
 
-#: lessons/index.ts:24
+#: lessons/index.ts:28
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript engines and runtimes"
 
-#: lessons/index.ts:38
+#: lessons/index.ts:50
 msgid "KV"
+msgstr ""
+
+#: lessons/index.ts:42
+msgid "Python"
 msgstr ""
 
 #: docs/index.ts:33
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:52
+#: lessons/index.ts:64
 msgid "R2"
 msgstr ""
 
-#: lessons/index.ts:53
+#: lessons/index.ts:65
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "S3-compatible object storage. Egress is free"
 
-#: lessons/index.ts:46
+#: lessons/index.ts:58
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite. SQL, indexes, and the rows you are billed for"
 
-#: lessons/index.ts:25
+#: lessons/index.ts:29
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, plus Node, Bun, Deno, and Workers"
 
-#: lessons/index.ts:66
+#: lessons/index.ts:87
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:31
+#: lessons/index.ts:35
 msgid "Workers の実行モデル"
 msgstr "The Workers execution model"
 
@@ -156,13 +168,17 @@ msgstr "Choosing KV / D1 / R2 / Durable Objects by consistency, size, and cost"
 msgid "動かして学ぶ"
 msgstr "Run and learn"
 
-#: lessons/index.ts:60
+#: lessons/index.ts:81
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "One instance per name. State and serialization"
 
 #: pages/docs/index.tsx:20
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "Deeper reading around the hands-on chapters. The judgement calls live here."
+
+#: lessons/index.ts:43
+msgid "構文もランタイムも違う言語が、同じ Worker として動く"
+msgstr "A different language and runtime, still the same Worker"
 
 #: docs/index.ts:28
 msgid "状態の置き場所を選ぶ"
@@ -173,7 +189,7 @@ msgstr "Choosing where state lives"
 msgid "読んで学ぶ"
 msgstr "Read and learn"
 
-#: lessons/index.ts:70
+#: lessons/index.ts:91
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "This site pays for the AI calls. Only local development needs a Cloudflare login."
 
@@ -181,7 +197,7 @@ msgstr "This site pays for the AI calls. Only local development needs a Cloudfla
 msgid "資料のみ"
 msgstr "Reference only"
 
-#: lessons/index.ts:39
+#: lessons/index.ts:51
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "Fast reads with eventual consistency. A home for cache and config"
 

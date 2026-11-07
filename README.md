@@ -29,6 +29,10 @@ npm run smoke   # execute every lesson snippet against the dev server
 - `docs/index.ts`, `docs/content/{locale}/*.md` — articles
 - `locales/{locale}/messages.po` — UI strings
 
+## Containers
+
+The Containers chapter runs Python in a Docker image (`Dockerfile.sandbox`). Run Docker locally to use it.
+
 ## Deploy
 
 ```sh

@@ -77,6 +77,7 @@ export const POST = defineHandler.withValidator({
       .min(1)
       .max(64 * 1024),
     token: z.string().min(1).max(2048).optional(),
+    lang: z.enum(['javascript', 'python', 'container']).optional(),
   }),
 })(async (c, { body }): Promise<RunResult | Response> => {
   const passed = await hasValidPass(c.req.header('cookie'));
@@ -117,6 +118,7 @@ export const POST = defineHandler.withValidator({
   const result = await runInSandbox(
     { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER },
     body.code,
+    body.lang,
   );
 
   if (!setCookie) return result;

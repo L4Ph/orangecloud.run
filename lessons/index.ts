@@ -7,13 +7,17 @@ import d1Code from './code/04-d1.js?raw';
 import r2Code from './code/05-r2.js?raw';
 import doCode from './code/06-do.js?raw';
 import aiCode from './code/08-workers-ai.js?raw';
+import pythonCode from './code/python.py?raw';
+import containersCode from './code/containers.py?raw';
 
 export type Lesson = {
   id: string;
   title: MessageDescriptor;
   summary: MessageDescriptor;
   code: string;
-  language?: 'javascript' | 'shell';
+  language?: 'javascript' | 'shell' | 'python';
+  /** Where the code runs: a Dynamic Worker (default) or a container. */
+  runner?: 'container';
   runnable: boolean;
   hint?: MessageDescriptor;
 };
@@ -31,6 +35,14 @@ export const lessons: Lesson[] = [
     title: msg`Workers の実行モデル`,
     summary: msg`isolate、状態を持たない、制限、課金`,
     code: workersCode,
+    runnable: true,
+  },
+  {
+    id: 'python',
+    title: msg`Python`,
+    summary: msg`構文もランタイムも違う言語が、同じ Worker として動く`,
+    code: pythonCode,
+    language: 'python',
     runnable: true,
   },
   {
@@ -52,6 +64,15 @@ export const lessons: Lesson[] = [
     title: msg`R2`,
     summary: msg`S3 互換のオブジェクトストレージ。転送無料`,
     code: r2Code,
+    runnable: true,
+  },
+  {
+    id: 'containers',
+    title: msg`Containers で実行する`,
+    summary: msg`Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道`,
+    code: containersCode,
+    language: 'python',
+    runner: 'container',
     runnable: true,
   },
   {

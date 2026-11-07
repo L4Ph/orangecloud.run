@@ -30,7 +30,7 @@ function CodeEditor({
 }: {
   value: string;
   onChange: (next: string) => void;
-  language: 'javascript' | 'shell';
+  language: 'javascript' | 'shell' | 'python';
   onRun: () => void;
 }) {
   const host = useRef<HTMLDivElement>(null);
@@ -50,6 +50,7 @@ function CodeEditor({
         import('monaco-editor/editor/editor.worker?worker'),
         import('monaco-editor/languages/definitions/javascript/register'),
         import('monaco-editor/languages/definitions/shell/register'),
+        import('monaco-editor/languages/definitions/python/register'),
       ]);
       if (disposed || !host.current) return;
 
@@ -163,7 +164,15 @@ function Playground({
       try {
         const data: RunResult = await apiFetch('/api/run', {
           method: 'POST',
-          body: turnstileToken ? { code: value, token: turnstileToken } : { code: value },
+          body: {
+            code: value,
+            ...(lesson.runner === 'container'
+              ? { lang: 'container' as const }
+              : lesson.language === 'python'
+                ? { lang: 'python' as const }
+                : {}),
+            ...(turnstileToken ? { token: turnstileToken } : {}),
+          },
           timeout: 20_000,
         });
         if (data.errorCode === 'turnstile' && !turnstileToken) {
@@ -187,7 +196,7 @@ function Playground({
         setWidgetKey((key) => key + 1);
       }
     },
-    [t],
+    [lesson.language, lesson.runner, t],
   );
 
   const run = useCallback(() => {
@@ -298,9 +307,15 @@ function Playground({
             {result && (
               <>
                 <p className="mb-1.5 text-xs text-kumo-subtle">
-                  <Trans>
-                    HTTP {result.status} · {result.ms}ms
-                  </Trans>
+                  {lesson.runner === 'container' ? (
+                    <Trans>
+                      exit {result.status} · {result.ms}ms
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      HTTP {result.status} · {result.ms}ms
+                    </Trans>
+                  )}
                 </p>
                 <pre className="mb-2 rounded-md bg-kumo-recessed p-3 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap text-kumo-default">
                   {result.body}

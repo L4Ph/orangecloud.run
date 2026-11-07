@@ -19,11 +19,19 @@ msgstr ""
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:45
+#: lessons/index.ts:71
+msgid "Containers で実行する"
+msgstr "在 Containers 中运行"
+
+#: lessons/index.ts:57
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:59
+#: lessons/index.ts:72
+msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
+msgstr "在 Docker 镜像里运行 Python，isolate 做不到时的退路"
+
+#: lessons/index.ts:80
 msgid "Durable Objects"
 msgstr ""
 
@@ -31,7 +39,7 @@ msgstr ""
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、绑定中继、执行限制"
 
-#: lessons/index.ts:67
+#: lessons/index.ts:88
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
@@ -51,43 +59,47 @@ msgstr "isolate 省略了什么，以及何时改用容器"
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate 不够用时的最后手段"
 
-#: lessons/index.ts:32
+#: lessons/index.ts:36
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate、无共享状态、限制、计费"
 
-#: lessons/index.ts:24
+#: lessons/index.ts:28
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
 
-#: lessons/index.ts:38
+#: lessons/index.ts:50
 msgid "KV"
+msgstr ""
+
+#: lessons/index.ts:42
+msgid "Python"
 msgstr ""
 
 #: docs/index.ts:33
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:52
+#: lessons/index.ts:64
 msgid "R2"
 msgstr ""
 
-#: lessons/index.ts:53
+#: lessons/index.ts:65
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "兼容 S3 的对象存储。出网流量免费"
 
-#: lessons/index.ts:46
+#: lessons/index.ts:58
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 
-#: lessons/index.ts:25
+#: lessons/index.ts:29
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
-#: lessons/index.ts:66
+#: lessons/index.ts:87
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:31
+#: lessons/index.ts:35
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
@@ -156,13 +168,17 @@ msgstr "按一致性、大小和费用选择 KV / D1 / R2 / Durable Objects"
 msgid "動かして学ぶ"
 msgstr "动手学"
 
-#: lessons/index.ts:60
+#: lessons/index.ts:81
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
 
 #: pages/docs/index.tsx:20
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "在动手前后阅读的深入内容。设计判断的依据都在这里。"
+
+#: lessons/index.ts:43
+msgid "構文もランタイムも違う言語が、同じ Worker として動く"
+msgstr "语法和运行时都不同，却仍然是同一个 Worker"
 
 #: docs/index.ts:28
 msgid "状態の置き場所を選ぶ"
@@ -173,7 +189,7 @@ msgstr "选择状态的存放位置"
 msgid "読んで学ぶ"
 msgstr "阅读学"
 
-#: lessons/index.ts:70
+#: lessons/index.ts:91
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
 
@@ -181,7 +197,7 @@ msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloud
 msgid "資料のみ"
 msgstr "仅资料"
 
-#: lessons/index.ts:39
+#: lessons/index.ts:51
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "读取快，最终一致。适合缓存和配置"
 

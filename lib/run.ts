@@ -73,17 +73,65 @@ type SandboxEnv = {
   DB: D1Database;
 };
 
-export async function runInSandbox(env: SandboxEnv, code: string): Promise<RunResult> {
+export type RunLang = 'javascript' | 'python' | 'container';
+
+import { getSandbox } from 'void/sandbox';
+
+// Containers are a separate runtime: a real filesystem, real binaries, no isolate.
+async function runInContainer(code: string): Promise<RunResult> {
+  const started = performance.now();
+  const elapsed = () => Math.round(performance.now() - started);
+
+  try {
+    const sandbox = await getSandbox('lesson-container');
+    const file = `run-${crypto.randomUUID()}.py`;
+    await sandbox.files.writeFile(`/workspace/${file}`, code);
+    const result = await sandbox.run(['python3', file], {
+      cwd: '/workspace',
+      signal: AbortSignal.timeout(20_000),
+    });
+    await sandbox.files.remove(`/workspace/${file}`).catch(() => {});
+
+    const stdout = new TextDecoder().decode(result.stdout);
+    const stderr = new TextDecoder().decode(result.stderr);
+    return {
+      status: result.exitCode,
+      body: [stdout, stderr].filter(Boolean).join('\n').slice(0, 16_000),
+      logs: [],
+      ms: elapsed(),
+    };
+  } catch (error) {
+    return {
+      status: 0,
+      body: '',
+      logs: [],
+      error: error instanceof Error ? error.message : String(error),
+      ms: elapsed(),
+    };
+  }
+}
+
+export async function runInSandbox(
+  env: SandboxEnv,
+  code: string,
+  lang: RunLang = 'javascript',
+): Promise<RunResult> {
+  if (lang === 'container') return runInContainer(code);
   const started = performance.now();
   const elapsed = () => Math.round(performance.now() - started);
 
   try {
     const wrapped = wrap();
-    const id = `run-${WRAPPER_VERSION}-${hash(normalize(code))}`;
+    const python = lang === 'python';
+    const id = `${python ? 'py' : 'run'}-${WRAPPER_VERSION}-${hash(normalize(code))}`;
+    const modules: Record<string, string> = python
+      ? { 'worker.py': code }
+      : { 'index.js': wrapped, 'user.js': code };
     const worker = env.LOADER.get(id, () => ({
       compatibilityDate: '2026-02-24',
-      mainModule: 'index.js',
-      modules: { 'index.js': wrapped, 'user.js': code },
+      compatibilityFlags: python ? ['python_workers'] : undefined,
+      mainModule: python ? 'worker.py' : 'index.js',
+      modules,
       env: {
         KV: stub(env.LESSON_KV, 'lesson-kv'),
         STORAGE: stub(env.LESSON_R2, 'lesson-r2'),
@@ -95,6 +143,16 @@ export async function runInSandbox(env: SandboxEnv, code: string): Promise<RunRe
       limits: { cpuMs: 100, subRequests: 0 },
     }));
     const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
+
+    if (python) {
+      return {
+        status: response.status,
+        body: await response.text(),
+        logs: [],
+        ms: elapsed(),
+      };
+    }
+
     const result = await response.json<Partial<RunResult>>();
     return {
       status: result.status ?? 0,
