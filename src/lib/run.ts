@@ -47,10 +47,13 @@ const LESSON_SCOPE = { prefix: "playground/" };
 // re-run costs nothing. Normalise only what cannot change behaviour.
 const normalize = (code: string) => code.replace(/\r\n/g, "\n").replace(/\n+$/, "");
 
-const hash = (text: string) => {
-  let h = 5381;
-  for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
-  return (h >>> 0).toString(36);
+// The id picks which code runs: a Worker that is already loaded under an id is reused without
+// looking at the code. A 32-bit hash is easy to collide on purpose, so use 128 bits of SHA-256.
+const hash = async (text: string) => {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest).subarray(0, 16)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 };
 
 type SandboxEnv = Pick<Cloudflare.Env, "LOADER">;
@@ -103,7 +106,7 @@ async function runInDurableObject(code: string): Promise<RunResult> {
     const supervisors = exports.LessonUserDoDurableObject;
     const { status, body } = await supervisors
       .get(supervisors.idFromName("lesson-user-do"))
-      .run(`do-${hash(normalize(code))}`, code);
+      .run(`do-${await hash(normalize(code))}`, code);
     return { status, body, logs: [], ms: Math.round(performance.now() - started) };
   } catch (error) {
     return {
@@ -130,7 +133,7 @@ export async function runInSandbox(
   try {
     const wrapped = wrap();
     const python = lang === "python";
-    const id = `${python ? "py" : "run"}-${WRAPPER_VERSION}-${hash(normalize(code))}`;
+    const id = `${python ? "py" : "run"}-${WRAPPER_VERSION}-${await hash(normalize(code))}`;
     const modules: Record<string, string> = python
       ? { "worker.py": code }
       : { "index.js": wrapped, "user.js": code };
