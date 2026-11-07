@@ -1,6 +1,8 @@
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { I18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { LinkProvider } from '@cloudflare/kumo';
+import { AppLink } from './app-link';
 import { catalogs } from './catalogs';
 import type { Locale } from './locales';
 import './app.css';
@@ -27,5 +29,9 @@ export function I18nPage({ locale, children }: { locale: Locale; children: React
     return () => media.removeEventListener('change', apply);
   }, []);
 
-  return <I18nProvider i18n={i18n}>{children}</I18nProvider>;
+  return (
+    <I18nProvider i18n={i18n}>
+      <LinkProvider component={AppLink}>{children}</LinkProvider>
+    </I18nProvider>
+  );
 }

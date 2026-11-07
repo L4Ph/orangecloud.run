@@ -4,6 +4,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { docSections, docs } from '../../docs';
 import { DocsShell } from '../../lib/docs-shell';
 import { I18nPage } from '../../lib/i18n-page';
+import { Text } from '@cloudflare/kumo/components/text';
 import type { Props } from './index.server';
 
 function DocsIndex({ locale }: Props) {
@@ -11,17 +12,23 @@ function DocsIndex({ locale }: Props) {
 
   return (
     <DocsShell locale={locale}>
-      <h1 className="text-2xl font-semibold text-kumo-strong">
+      <Text as="h1" variant="heading" size="lg">
         <Trans>読んで学ぶ</Trans>
-      </h1>
-      <p className="mt-2 text-sm text-kumo-subtle">
-        <Trans>手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。</Trans>
-      </p>
+      </Text>
+      <div className="mt-1">
+        <Text as="p" variant="secondary">
+          <Trans>手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。</Trans>
+        </Text>
+      </div>
 
       <div className="mt-8 space-y-8">
         {docSections.map((section) => (
           <section key={section.id}>
-            <h2 className="mb-2 text-xs font-medium text-kumo-subtle">{i18n._(section.title)}</h2>
+            <div className="mb-2">
+              <Text variant="secondary" size="xs">
+                {i18n._(section.title)}
+              </Text>
+            </div>
             <ul className="space-y-2">
               {docs
                 .filter((doc) => doc.section === section.id)
@@ -31,12 +38,12 @@ function DocsIndex({ locale }: Props) {
                       href={routeUrl('/docs/:slug', { params: { slug: doc.slug } })}
                       className="block rounded-lg border border-kumo-line bg-kumo-base px-4 py-3 hover:bg-kumo-tint"
                     >
-                      <span className="block text-sm font-medium text-kumo-strong">
-                        {i18n._(doc.title)}
-                      </span>
-                      <span className="mt-1 block text-sm text-kumo-subtle">
-                        {i18n._(doc.summary)}
-                      </span>
+                      <Text variant="heading">{i18n._(doc.title)}</Text>
+                      <div className="mt-1">
+                        <Text as="p" variant="secondary">
+                          {i18n._(doc.summary)}
+                        </Text>
+                      </div>
                     </Link>
                   </li>
                 ))}
