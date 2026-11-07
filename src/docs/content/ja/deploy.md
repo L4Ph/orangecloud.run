@@ -1,6 +1,6 @@
 # エッジへのデプロイと運用
 
-ローカルのシミュレータ（Miniflare）で動作を確認したコードを、世界数百箇所のエッジデータセンターへ展開する。Cloudflare の公式 CLI である **cf**（ベータ）を通じて、設定ファイルとビルド成果物を世界規模のネットワークへ同期させる。従来の Wrangler も使えるが、新規プロジェクトは `cf` を前提にする。
+ローカルのシミュレータ（Miniflare）で動作を確認したコードを、世界数百箇所のエッジデータセンターへ展開する。Cloudflare の公式 CLI である **cf**（ベータ）を通じて、設定ファイルとビルド成果物を世界規模のネットワークへ同期させる。cf はベータなので、コマンドや設定が変わりうる。Wrangler も使え、公式の入門ガイドは今も Wrangler を前提にしている。このサイトでは cf を使う。
 
 ## 開発とデプロイの基本サイクル
 
@@ -11,7 +11,7 @@ cf auth login
 # ローカルエミュレータによる動作確認（高速なフィードバック）
 cf dev
 
-# エッジネットワークへの本番デプロイ（通常数秒で全世界に伝播）
+# エッジネットワークへの本番デプロイ
 cf deploy
 ```
 
@@ -19,11 +19,11 @@ cf deploy
 
 ## 機密情報と外部リソースの接続
 
-コードベース内に API キーや署名用シークレットを直接コミットする行為は厳禁である。環境変数には「公開されても良い静的設定（`vars`）」と「暗号化して保存すべき機密情報（`secrets`）」の明確な境界が存在する。
+コードベース内に API キーや署名用シークレットを直接コミットする行為は厳禁である。環境変数には「公開されても良い静的設定（`bindings.text()` / `bindings.json()`）」と「暗号化して保存すべき機密情報（`bindings.secret()` で宣言するシークレット）」の明確な境界が存在する。
 
 ```sh
 # 暗号化シークレットの登録（ダッシュボード上でも値は隠蔽される）
-npx wrangler secret put STRIPE_API_KEY --name my-worker
+cf workers secrets update STRIPE_API_KEY --worker my-worker --type secret_text --text <SECRET_VALUE>
 
 # D1 を作るコマンドは説明文から探せる
 cf cli search "create a D1 database"
@@ -32,13 +32,13 @@ cf cli search "create a D1 database"
 cf d1 migrations apply <DATABASE_ID>
 ```
 
-`cf` はシークレットを 1 件ずつ登録するコマンドをまだ持たない。当面は `npx wrangler secret put` を使うか、`cf deploy --secrets-file <PATH>` でまとめて渡す。
+`cf` で 1 件ずつ登録するには `cf workers secrets update` を使う。`wrangler secret put` と同じ API を呼ぶが、値を引数で渡すため、シェルの履歴に残る。値を標準入力から渡したいときは `npx wrangler secret put` を使う。デプロイと一緒にまとめて渡すなら `cf deploy --secrets-file <PATH>`（JSON か .env）を使う。.env の `$VAR` は展開されるので、`$` を含む値は `\$` と書く。
 
 各種リソースへの接続設定はプロジェクトルートの `cloudflare.config.ts` に型付きで記述する（`bindings.d1()` などのビルダーを使う）。ローカル開発時もこの定義を読むため、本番と同じ `env.DB` や `env.KV` のインターフェースで開発を継続できる。
 
 ## デプロイ前に検証すべき境界線
 
-- **シークレットの分離**: API トークンや秘密鍵が設定ファイルの `vars` 項目やソースコードに平文で残っていないか。
-- **バインディング名の完全一致**: ソースコード上で参照している `env` プロパティ名と、設定ファイル内の `binding` 定義名に差異がないか。
-- **CPU 制限時間の考慮**: 外部データ処理や重厚なループ処理が、プランの制限時間（無料枠 10ms、有料枠 30 秒）を超過して強制終了を招く恐れはないか。
+- **シークレットの分離**: API トークンや秘密鍵が、`cloudflare.config.ts` の `bindings.text()` / `bindings.json()` やソースコードに平文で残っていないか。
+- **バインディング名の完全一致**: ソースコード上で参照している `env` プロパティ名と、`cloudflare.config.ts` の `env` に書いたキー名に差異がないか。
+- **CPU 制限時間の考慮**: 外部データ処理や重厚なループ処理が、プランの制限時間（無料枠 10ms、有料枠は既定 30 秒で最大 5 分）を超過して強制終了を招く恐れはないか。
 - **テールログによる監視体制**: デプロイ直後の実トラフィックの挙動は、エッジからの標準出力ログをリアルタイムに監視して確かめる。`cf` はまだ対応していないため、`npx wrangler tail <WORKER_NAME>` を使う。

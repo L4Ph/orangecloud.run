@@ -1,8 +1,8 @@
 # Rust와 WebAssembly(workers-rs)
 
-암호 알고리즘 구현, 복잡한 바이너리 프로토콜 파서, 이미지 픽셀의 직접 조작 등 계산 집약적인 작업에서 V8의 JIT 컴파일에 의존하는 JavaScript는 가비지 컬렉션(GC) 정지 시간과 메모리 오버헤드라는 장벽에 부딪힌다.
+복잡한 바이너리 프로토콜 파서, 이미지 픽셀의 직접 조작 등 계산 집약적인 작업에서는 Rust를 WebAssembly로 컴파일해 사용하는 선택지가 있다.
 
-Cloudflare Workers는 **WebAssembly(Wasm)**에 대한 최상급 지원을 제공한다. 공식 `workers-rs` 크레이트를 사용하면 타입 안전성과 메모리 안전성을 극한까지 높인 Rust 코드를 Wasm 바이트코드로 컴파일하여, isolate 내부에서 네이티브에 가까운 속도로 실행할 수 있다.
+Workers는 JavaScript, TypeScript, Python과 함께 Rust를 최상급(first-class) 지원 언어로 꼽는다. 공식 `workers-rs` 크레이트를 사용하면 Rust 코드를 **WebAssembly(Wasm)** 바이트코드로 컴파일하여 isolate 내부에서 실행할 수 있다.
 
 ## 최소한의 구성
 
@@ -17,7 +17,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = "0.7"
+worker = "0.8"
 ```
 
 ```rust
@@ -35,6 +35,9 @@ async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
 Rust 소스 코드를 Workers 실행 바이너리로 변환하려면 공식 도구인 `worker-build`를 사용한다.
 
 ```sh
+# Wasm 타겟 추가(최초 1회)
+rustup target add wasm32-unknown-unknown
+
 # 빌드 도구 설치
 cargo install worker-build
 
@@ -42,12 +45,14 @@ cargo install worker-build
 worker-build --release
 
 # 에지 네트워크에 배포
-cf deploy
+npx wrangler deploy
 ```
 
-`worker-build`는 Rust 컴파일러(`rustc`)를 통해 `wasm32-unknown-unknown` 타겟의 바이너리를 빌드하고, V8과의 경계를 담당하는 JavaScript 래퍼(`wasm-bindgen`에서 유래한 심)를 `build/worker/shim.mjs`에 출력한다. 설정 파일의 `worker.entrypoint` 프로퍼티는 이 심 파일을 지정한다.
+`worker-build`는 Rust 컴파일러(`rustc`)를 통해 `wasm32-unknown-unknown` 타겟의 바이너리를 빌드하고, `wasm-bindgen`의 글루 코드를 esbuild로 묶은 `build/index.js`와 Wasm 바이너리인 `build/index_bg.wasm`을 출력한다. `build/worker/shim.mjs`는 예전 이름과의 호환용으로, `index.js`를 다시 export할 뿐이다.
+
+Rust Worker는 공식 절차에서 Wrangler로 배포한다. `wrangler.toml`의 `main`에 `build/index.js`를 지정하고 `[build] command`에서 `worker-build`를 호출한다. cf beta.28의 `cf deploy`는 위의 `Cargo.toml` 그대로는 "No Cloudflare dev server is installed"라는 메시지와 함께 멈춘다.
 
 ## JavaScript와의 영역 구분 경계
 
-- **Rust / Wasm이 압도적으로 우위인 영역**: CPU 바운드의 무거운 연산 처리(데이터 압축, 토큰나이저, 암호 처리, 기하 계산), C/C++나 Rust의 성숙한 크레이트 생태계를 그대로 재사용하고 싶은 상황.
-- **JavaScript가 유리한 영역**: 주요 처리가 외부 Web API 페치나 D1/KV로부터의 데이터 취득 대기인 I/O 바운드 작업. Wasm 바이너리의 압축 해제 비용이나 경계 넘기(FFI)의 오버헤드가 존재하므로, 순수 I/O 파이프라인에서는 JavaScript의 초기화가 더 빠르고 풋프린트도 작다.
+- **Rust / Wasm이 적합한 영역**: CPU 바운드의 무거운 연산 처리(데이터 압축, 토큰나이저, 기하 계산), 그리고 `wasm32-unknown-unknown`으로 컴파일할 수 있는 Rust 크레이트를 그대로 사용하고 싶은 상황. Tokio나 async_std 같은 런타임은 사용할 수 없다.
+- **JavaScript가 유리한 영역**: 주요 처리가 외부 Web API 페치나 D1/KV로부터의 데이터 취득 대기인 I/O 바운드 작업. Wasm을 사용하는 Worker는 동등한 JavaScript Worker보다 커지기 쉽고, 클수록 시작하는 데 시간이 걸린다. Worker 크기는 압축 전 크기 기준 64 MiB까지, 시작은 1초 이내라는 상한도 있다. 순수 I/O 처리에서는 JavaScript가 크기가 더 작고 시작도 빠른 편이다.

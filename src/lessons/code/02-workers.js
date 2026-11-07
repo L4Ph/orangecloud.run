@@ -13,13 +13,12 @@ export default {
     // waitUntil: Continue background tasks after returning the response
     ctx.waitUntil(Promise.resolve().then(() => console.log("post-response task complete")));
 
-    return Response.json(
-      {
-        hits,
-        url: request.url,
-        userAgent: request.headers.get("user-agent"),
-      },
-      { headers: { "x-demo": "workers-runtime" } },
-    );
+    return Response.json({
+      hits,
+      url: request.url,
+      // エディタでは null（エディタが送るリクエストにはヘッダーがない）
+      // null in the editor (the request the editor sends has no headers)
+      userAgent: request.headers.get("user-agent"),
+    });
   },
 };

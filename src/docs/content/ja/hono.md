@@ -1,8 +1,8 @@
 # Hono
 
-Node.js 黎明期を支えた Express などのフレームワークは、OS の `net.Socket` や Node 固有の `http.IncomingMessage` に深く依存していた。そのため、それらの遺産を持たない Cloudflare Workers のような Web 標準準拠のエッジ環境へそのまま持ち込むことはできない。
+Node.js 黎明期を支えた Express などのフレームワークは、Node.js の `net.Socket` や `http.IncomingMessage` に深く依存していた。Workers が渡すのは Web 標準の `Request` / `Response` である。Express も、Node.js 互換の API（`nodejs_compat`。compatibility date が 2026-08-04 以降なら既定で有効）と `cloudflare:node` の `httpServerHandler` を使えば動くが（公式チュートリアルがある）、Node.js 互換の層が前提になる。
 
-Hono は、ブラウザやエッジランタイムが標準装備する **`Request` と `Response` オブジェクトのみを前提に設計された Web フレームワーク**である。Node.js、Bun、Deno、Cloudflare Workers を問わず、同一のコードベースが依存関係なしに極小フットプリントで動作する。
+Hono は、ブラウザやエッジランタイムが標準装備する **`Request` と `Response` オブジェクトのみを前提に設計された Web フレームワーク**である。Cloudflare Workers、Deno、Bun などで同じコードが動く。Hono は当初 Node.js 向けには設計されていなかったが、Node.js アダプター（`@hono/node-server`）を使えば Node.js でも動く。Hono 自体は依存パッケージを持たず、`hono/tiny` プリセットは 12kB 未満である。
 
 ## 最小限の構成
 
@@ -30,11 +30,11 @@ app.route("/api/v1", apiRoutes);
 ```
 
 - `:param` 形式によるパスパラメータの抽出と、`*` によるワイルドカードキャッチに対応する。
-- 静的パス、パラメータ付きパス、ワイルドカードが混在する場合、定義順序に関わらず最も具体的なパスが優先してマッチする。
+- 同じパスに合致するハンドラとミドルウェアは、登録した順に実行される。`Response` を返したハンドラで処理は止まるので、`/users/me` のような特殊なパスは `/users/:id` より先に、フォールバックの `*` は最後に書く。
 
 ## コンテキストを通じた入出力操作
 
-引数 `c`（Context）を通じて、型安全なリクエストのパースとレスポンス生成を行う。
+引数 `c`（Context）から、リクエストの読み取りとレスポンスの生成を行う。入力に型が付くのは `hono/validator` などのバリデータを通した値だけで、`c.req.json()` は Hono v4 では `any` を返す。
 
 ```ts
 // リクエスト情報の取り出し
@@ -51,7 +51,7 @@ return c.json({ status: "ok", data: bodyJson }, 201);
 ## ミドルウェアパイプラインの結合
 
 ```ts
-// グローバルな実行時間計測ミドルウェア
+// グローバルな実行時間計測ミドルウェア。Workers に配備すると performance.now() は I/O の後にしか進まない
 app.use("*", async (c, next) => {
   const start = performance.now();
   await next();
@@ -59,7 +59,7 @@ app.use("*", async (c, next) => {
   c.header("server-timing", `total;dur=${duration.toFixed(2)}`);
 });
 
-// 認証チェックと早期離脱
+// 早期離脱の例（ヘッダーの有無を見るだけ。認証には hono/bearer-auth などを使う）
 app.use("/admin/*", async (c, next) => {
   if (!c.req.header("authorization")) {
     return c.text("unauthorized", 401);
@@ -72,14 +72,14 @@ app.use("/admin/*", async (c, next) => {
 
 ## 型安全な RPC（Remote Procedure Call）
 
-Hono の最大の強みの一つは、サーバー側のルート定義からクライアント側の RPC クライアントの型を自動導出できる点にある。
+Hono では、サーバー側のルート定義からクライアント側の RPC クライアントの型を自動で導出できる。
 
 ```ts
 // サーバー側（ルートの型定義を公開）
 const api = new Hono().get("/posts/:id", (c) => c.json({ id: c.req.param("id"), title: "Demo" }));
 export type AppType = typeof api;
 
-// クライアント側（URL 文字列を一切書かずに完全型補完で呼び出す）
+// クライアント側（ベース URL 以外の URL 文字列を書かずに、型補完を効かせて呼び出す）
 import { hc } from "hono/client";
 const client = hc<AppType>("https://example.com");
 const response = await client.posts[":id"].$get({ param: { id: "42" } });

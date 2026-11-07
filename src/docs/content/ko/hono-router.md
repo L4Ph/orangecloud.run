@@ -6,10 +6,10 @@
 
 Hono는 `SmartRouter`라는 총괄 계층을 가지며, 등록된 라우트의 특성에 따라 최적의 라우팅 엔진을 자동으로 선택한다.
 
-- **RegExpRouter**: 등록된 모든 경로를 단일한 긴 정규 표현식으로 컴파일하여, 한 번의 정규 표현식 매칭으로 대상 핸들러를 식별한다. 수십~수백 개의 라우트에 대해서도 상수 시간에 가까운 압도적인 속도로 분기를 완료한다.
-- **TrieRouter**: 트리 구조를 사용하여 URL 세그먼트를 한 글자씩 탐색한다. 와일드카드나 정규 표현식 캡처가 복잡하게 얽힌 라우트군에서 안정적인 폴백으로 기능한다.
+- **RegExpRouter**: 등록된 모든 경로를 하나의 큰 정규 표현식으로 만들어, 한 번의 매칭으로 대상 핸들러를 식별한다. Hono 공식 문서는 이를 JavaScript에서 가장 빠른 라우터라고 설명한다. 다만 모든 패턴을 지원하지는 않으므로 보통 다른 라우터와 조합해 사용한다.
+- **TrieRouter**: `/`로 구분한 세그먼트마다 트라이 트리를 따라간다. 모든 패턴을 지원하므로 RegExpRouter가 처리하지 못하는 라우트가 있을 때의 폴백이 된다.
 
-매칭 우선순위는 배열의 등록 순서가 아니다. 완전 일치하는 정적 세그먼트가 가장 강하게 평가되고, 다음으로 경로 파라미터, 가장 우선순위가 낮은 것으로서 와일드카드(`*`) 순으로 평가된다. 따라서 `/users/me`라는 특수 엔드포인트가 먼저 등록된 `/users/:id`로 잘못 흡수되는 일은 구조상 발생하지 않는다.
+매칭 우선순위는 등록 순서이다. 일치하는 핸들러와 미들웨어는 등록한 순서대로 실행되며, `Response`를 반환한 곳에서 멈춘다. 따라서 `/users/:id`를 먼저 등록하면 `/users/me`에 대한 요청도 그 핸들러가 처리하므로, 특수한 경로를 먼저 등록한다. SmartRouter가 정하는 것은 매칭에 쓸 라우터뿐이다. 첫 매칭 시점에 모든 라우트를 등록할 수 있는 첫 번째 라우터(RegExpRouter, 등록할 수 없으면 TrieRouter)로 결정된다.
 
 ## 미들웨어 합성 메커니즘
 
@@ -17,26 +17,25 @@ Hono는 `SmartRouter`라는 총괄 계층을 가지며, 등록된 라우트의 �
 
 ```ts
 const timing = async (c, next) => {
-  const start = performance.now();
-  try {
-    await next(); // 다음 미들웨어 또는 최종 핸들러로 처리 이양
-  } finally {
-    const elapsed = performance.now() - start;
-    c.header("server-timing", `work;dur=${elapsed}`);
-  }
+  const start = performance.now(); // Workers에서는 I/O 이후에만 진행된다
+  await next(); // 다음 미들웨어 또는 최종 핸들러로 처리 이양
+  const elapsed = performance.now() - start;
+  c.header("server-timing", `work;dur=${elapsed}`);
 };
 ```
 
-- 후처리에서 예외가 발생하더라도 확실하게 클린업을 수행할 수 있도록, `try / finally` 구문으로 `await next()`를 감싸는 것이 견고한 패턴이다.
+- 하류의 핸들러나 미들웨어가 예외를 던져도 Hono가 이를 잡아 `app.onError()`에 전달한다(없으면 500으로 만든다). 따라서 `await next()`는 예외를 던지지 않으며 `try / finally`로 감쌀 필요가 없다. 잡힌 예외는 `c.error`로 읽을 수 있다.
 - `c.set(key, value)`와 `c.get(key)`를 사용함으로써, 인증 미들웨어에서 복호화한 사용자 정보 등을 후속 핸들러로 안전하게 전달할 수 있다. 이 컨텍스트 변수에는 TypeScript의 제네릭으로 엄격한 타입을 적용할 수 있다.
 
 ## 스트리밍 전송 제어
 
-대규모 언어 모델의 순차적 출력이나 대용량 파일의 실시간 전송에는 표준 응답 버퍼링 대신 스트리밍 헬퍼를 사용한다.
+대규모 언어 모델의 순차적 출력처럼 만들어지는 대로 순서대로 보내고 싶을 때는 `hono/streaming`의 스트리밍 헬퍼를 사용한다.
 
 ```ts
+import { streamSSE, streamText } from "hono/streaming";
+
 // 텍스트 청크 스트리밍
-return c.streamText(async (stream) => {
+return streamText(c, async (stream) => {
   for (const token of textTokens) {
     await stream.write(token);
     await stream.sleep(20);
@@ -44,9 +43,9 @@ return c.streamText(async (stream) => {
 });
 
 // Server-Sent Events(SSE) 송출
-return c.streamSSE(async (stream) => {
+return streamSSE(c, async (stream) => {
   await stream.writeSSE({ data: JSON.stringify({ event: "ping" }) });
 });
 ```
 
-스트림 내부에서 `stream.onAbort()` 리스너를 등록해 두면, 클라이언트가 브라우저 탭을 닫는 등으로 통신을 끊는 순간 이를 감지하여, 불필요한 상위 API 소비나 계산 리소스 낭비를 즉시 중단할 수 있다.
+스트림 내부에서 `stream.onAbort()`에 콜백을 등록해 두면, 클라이언트가 브라우저 탭을 닫는 등으로 연결을 끊었을 때 상위 API 호출이나 계산을 중단하는 처리를 실행할 수 있다.

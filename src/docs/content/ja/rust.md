@@ -1,8 +1,8 @@
 # Rust と WebAssembly（workers-rs）
 
-暗号アルゴリズムの実装、複雑なバイナリプロトコルのパーサー、画像ピクセルの直接操作など、計算集約型のタスクにおいて、V8 の JIT コンパイルに頼った JavaScript はガベージコレクション（GC）の停止時間やメモリオーバーヘッドの壁に直面する。
+複雑なバイナリプロトコルのパーサーや、画像ピクセルの直接操作など、計算集約型のタスクでは、Rust を WebAssembly にコンパイルして使う選択肢がある。
 
-Cloudflare Workers は、**WebAssembly（Wasm）** の第一級サポートを備えている。公式の `workers-rs` クレートを用いることで、型安全性とメモリ安全性を極限まで高めた Rust コードを Wasm バイトコードへコンパイルし、isolate 内部でネイティブに近い速度で実行できる。
+Workers は、JavaScript、TypeScript、Python と並んで Rust を第一級サポートの言語としている。公式の `workers-rs` クレートを使うと、Rust のコードを **WebAssembly（Wasm）** のバイトコードへコンパイルして、isolate の内部で実行できる。
 
 ## 最小限の構成
 
@@ -17,7 +17,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = "0.7"
+worker = "0.8"
 ```
 
 ```rust
@@ -35,6 +35,9 @@ async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
 Rust ソースコードから Workers 実行バイナリへの変換には、公式ツールである `worker-build` を使用する。
 
 ```sh
+# Wasm ターゲットの追加（初回のみ）
+rustup target add wasm32-unknown-unknown
+
 # ビルドツールの導入
 cargo install worker-build
 
@@ -42,12 +45,14 @@ cargo install worker-build
 worker-build --release
 
 # エッジネットワークへのデプロイ
-cf deploy
+npx wrangler deploy
 ```
 
-`worker-build` は Rust コンパイラ（`rustc`）を介して `wasm32-unknown-unknown` ターゲットのバイナリをビルドし、V8 との境界を取り持つ JavaScript ラッパー（`wasm-bindgen` 由来のシム）を `build/worker/shim.mjs` へ出力する。設定ファイルの `worker.entrypoint` プロパティはこのシムファイルを指定する。
+`worker-build` は Rust コンパイラ（`rustc`）を介して `wasm32-unknown-unknown` ターゲットのバイナリをビルドし、`wasm-bindgen` のグルーコードを esbuild でまとめた `build/index.js` と、Wasm バイナリの `build/index_bg.wasm` を出力する。`build/worker/shim.mjs` は旧名との互換用で、`index.js` を再エクスポートするだけである。
+
+Rust の Worker は、公式の手順では Wrangler でデプロイする。`wrangler.toml` の `main` に `build/index.js` を指定し、`[build] command` で `worker-build` を呼ぶ。cf beta.28 の `cf deploy` は、上の `Cargo.toml` のままでは "No Cloudflare dev server is installed" で止まる。
 
 ## JavaScript との棲み分けの境界線
 
-- **Rust / Wasm が圧倒的に優位な領域**: CPU バウンドの重厚な演算処理（データ圧縮、トークナイザー、暗号処理、幾何計算）、C/C++ や Rust の成熟したクレートエコシステムをそのまま再利用したい局面。
-- **JavaScript が有利な領域**: 主な処理が外部 Web API のフェッチや D1/KV からのデータ取得待ちである I/O バウンドなタスク。Wasm バイナリの展開コストや境界越え（FFI）のオーバーヘッドが存在するため、純粋な I/O パイプラインでは JavaScript の方が初期化が速くフットプリントも小さく収まる。
+- **Rust / Wasm が向く領域**: CPU バウンドの重い演算処理（データ圧縮、トークナイザー、幾何計算）や、`wasm32-unknown-unknown` にコンパイルできる Rust のクレートをそのまま使いたい局面。Tokio や async_std のランタイムは使えない。
+- **JavaScript が有利な領域**: 主な処理が外部 Web API のフェッチや D1/KV からのデータ取得待ちである I/O バウンドなタスク。Wasm を使う Worker は、同等の JavaScript の Worker より大きくなりやすく、大きいほど起動に時間がかかる。Worker のサイズは非圧縮で 64 MiB まで、起動は 1 秒以内という上限もある。純粋な I/O の処理では、JavaScript の方がサイズが小さく、起動も速くなりやすい。

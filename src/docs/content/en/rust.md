@@ -1,8 +1,8 @@
 # Rust and WebAssembly (workers-rs)
 
-For compute-intensive tasks—such as implementing cryptographic algorithms, parsing complex binary protocols, or directly manipulating image pixels—JavaScript relying on V8's JIT compilation faces hurdles in garbage collection (GC) stall times and memory overhead.
+For compute-intensive tasks such as parsing complex binary protocols or directly manipulating image pixels, compiling Rust to WebAssembly is an option.
 
-Cloudflare Workers provides first-class support for **WebAssembly (Wasm)**. Using the official `workers-rs` crate, you can compile Rust code—with extreme type and memory safety—into Wasm bytecode and execute it at near-native speeds within an isolate.
+Workers lists Rust as a first-class supported language, alongside JavaScript, TypeScript, and Python. With the official `workers-rs` crate, you can compile Rust code into **WebAssembly (Wasm)** bytecode and run it inside an isolate.
 
 ## Minimal Configuration
 
@@ -17,7 +17,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = "0.7"
+worker = "0.8"
 ```
 
 ```rust
@@ -35,6 +35,9 @@ async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
 To convert Rust source code into a Workers executable binary, use the official `worker-build` tool.
 
 ```sh
+# Add the Wasm target (first time only)
+rustup target add wasm32-unknown-unknown
+
 # Install the build tool
 cargo install worker-build
 
@@ -42,12 +45,14 @@ cargo install worker-build
 worker-build --release
 
 # Deploy to the edge network
-cf deploy
+npx wrangler deploy
 ```
 
-`worker-build` builds a binary for the `wasm32-unknown-unknown` target via the Rust compiler (`rustc`) and outputs a JavaScript wrapper (a shim derived from `wasm-bindgen`) that acts as a boundary with V8 to `build/worker/shim.mjs`. The `worker.entrypoint` property in the configuration file specifies this shim file.
+`worker-build` builds a binary for the `wasm32-unknown-unknown` target via the Rust compiler (`rustc`) and outputs `build/index.js`, the `wasm-bindgen` glue code bundled with esbuild, and `build/index_bg.wasm`, the Wasm binary. `build/worker/shim.mjs` exists only for compatibility with the old name and just re-exports `index.js`.
+
+For a Rust Worker, the official procedure deploys with Wrangler. Set `main` in `wrangler.toml` to `build/index.js`, and call `worker-build` from `[build] command`. In cf beta.28, `cf deploy` stops with "No Cloudflare dev server is installed" for a project with the `Cargo.toml` above.
 
 ## Boundary for Separation from JavaScript
 
-- **Areas where Rust / Wasm have an overwhelming advantage**: CPU-bound, heavy-duty computational processing (data compression, tokenizers, cryptographic processing, geometric calculations), and scenarios where you want to reuse the mature crate ecosystems of C/C++ or Rust as-is.
-- **Areas where JavaScript is advantageous**: I/O-bound tasks where the primary processing involves fetching external Web APIs or waiting for data retrieval from D1/KV. Due to the deployment costs and boundary-crossing (FFI) overhead of Wasm binaries, JavaScript offers faster initialization and a smaller footprint for pure I/O pipelines.
+- **Areas where Rust / Wasm fit**: CPU-bound, heavy computational processing (data compression, tokenizers, geometric calculations), and scenarios where you want to use Rust crates that compile to `wasm32-unknown-unknown` as they are. Runtimes such as Tokio and async_std cannot be used.
+- **Areas where JavaScript is advantageous**: I/O-bound tasks where the primary processing involves fetching external Web APIs or waiting for data retrieval from D1/KV. A Worker that uses Wasm tends to be larger than an equivalent JavaScript Worker, and the larger it is, the longer it takes to start. There are also limits of 64 MiB uncompressed for Worker size and 1 second for startup. For pure I/O processing, JavaScript tends to be smaller and faster to start.

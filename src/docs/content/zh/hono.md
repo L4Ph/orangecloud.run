@@ -1,8 +1,8 @@
 # Hono
 
-支撑 Node.js 黎明期的 Express 等框架，深切依赖于操作系统的 `net.Socket` 以及 Node 特有的 `http.IncomingMessage`。因此，这些框架无法直接引入到像 Cloudflare Workers 这样不具备相关遗产的 Web 标准符合的边缘环境中。
+支撑 Node.js 黎明期的 Express 等框架，深度依赖 Node.js 的 `net.Socket` 和 `http.IncomingMessage`。Workers 传递给代码的是 Web 标准的 `Request` / `Response`。Express 也可以运行，需要使用 Node.js 兼容 API（`nodejs_compat`，compatibility date 为 2026-08-04 或之后时默认启用）和 `cloudflare:node` 的 `httpServerHandler`（官方提供了教程），但这以 Node.js 兼容层为前提。
 
-Hono 是一个**仅以浏览器和边缘运行时标配的 `Request` 和 `Response` 对象为前提而设计的 Web 框架**。无论是 Node.js、Bun、Deno 还是 Cloudflare Workers，同一套代码库即可在无需依赖的情况下以极小的占用规模运行。
+Hono 是一个**仅以浏览器和边缘运行时标配的 `Request` 和 `Response` 对象为前提而设计的 Web 框架**。同一套代码可以在 Cloudflare Workers、Deno、Bun 等环境中运行。Hono 起初并不是为 Node.js 设计的，但借助 Node.js 适配器（`@hono/node-server`），它也可以在 Node.js 上运行。Hono 本身没有依赖，`hono/tiny` 预设小于 12kB。
 
 ## 最小化配置
 
@@ -30,11 +30,11 @@ app.route("/api/v1", apiRoutes);
 ```
 
 - 支持 `:param` 形式的路径参数提取以及 `*` 的通配符捕获。
-- 当静态路径、带参数的路径和通配符混用时，无论定义顺序如何，最具体的路径将优先匹配。
+- 匹配同一路径的处理器和中间件按注册顺序执行。处理到返回 `Response` 的处理器时即停止，因此 `/users/me` 这样的特殊路径应写在 `/users/:id` 之前，作为兜底的 `*` 写在最后。
 
 ## 通过上下文进行输入输出操作
 
-通过参数 `c`（Context）实现类型安全的请求解析与响应生成。
+通过参数 `c`（Context）读取请求并生成响应。只有经过 `hono/validator` 等验证器的输入才有类型，`c.req.json()` 在 Hono v4 中返回 `any`。
 
 ```ts
 // 提取请求信息
@@ -51,7 +51,7 @@ return c.json({ status: "ok", data: bodyJson }, 201);
 ## 中间件流水线的组合
 
 ```ts
-// 全局执行时间计时中间件
+// 全局执行时间计时中间件。部署到 Workers 后，performance.now() 只会在发生 I/O 之后才前进
 app.use("*", async (c, next) => {
   const start = performance.now();
   await next();
@@ -59,7 +59,7 @@ app.use("*", async (c, next) => {
   c.header("server-timing", `total;dur=${duration.toFixed(2)}`);
 });
 
-// 认证检查与提前退出
+// 提前退出的示例（只检查请求头是否存在；认证请使用 hono/bearer-auth 等）
 app.use("/admin/*", async (c, next) => {
   if (!c.req.header("authorization")) {
     return c.text("unauthorized", 401);
@@ -72,14 +72,14 @@ app.use("/admin/*", async (c, next) => {
 
 ## 类型安全的 RPC（Remote Procedure Call）
 
-Hono 最大的优势之一在于，能够从服务器端的路由定义自动推导出客户端 RPC 客户端的类型。
+在 Hono 中，可以从服务器端的路由定义自动推导出客户端 RPC 客户端的类型。
 
 ```ts
 // 服务器端（公开路由的类型定义）
 const api = new Hono().get("/posts/:id", (c) => c.json({ id: c.req.param("id"), title: "Demo" }));
 export type AppType = typeof api;
 
-// 客户端（无需编写任何 URL 字符串，通过全自动补全调用）
+// 客户端（除基础 URL 外无需编写任何 URL 字符串，借助类型补全进行调用）
 import { hc } from "hono/client";
 const client = hc<AppType>("https://example.com");
 const response = await client.posts[":id"].$get({ param: { id: "42" } });

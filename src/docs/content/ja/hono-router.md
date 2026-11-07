@@ -6,10 +6,10 @@
 
 Hono は `SmartRouter` という統括層を持ち、登録されたルートの特性に応じて最適なルーティングエンジンを自動選択する。
 
-- **RegExpRouter**: 登録された全パスを単一の長大な正規表現へとコンパイルし、1 回の正規表現マッチングで対象ハンドラを特定する。数十〜数百のルートに対しても定数時間に近い圧倒的な速度で分岐を完了する。
-- **TrieRouter**: トライ木構造を用いて URL セグメントを一文字ずつ探索する。ワイルドカードや正規表現キャプチャが複雑に入り組んだルート群において安定したフォールバックとして機能する。
+- **RegExpRouter**: 登録された全パスを 1 つの大きな正規表現にして、1 回のマッチで対象ハンドラを特定する。Hono の公式ドキュメントは、これを JavaScript で最速のルーターとしている。ただし全パターンには対応しないため、通常は他のルーターと組み合わせて使う。
+- **TrieRouter**: `/` で区切ったセグメントごとにトライ木をたどる。すべてのパターンに対応するので、RegExpRouter が扱えないルートがあるときのフォールバックになる。
 
-マッチングの優先順位は配列の登録順ではない。完全一致の静的セグメントが最も強く、次いでパスパラメータ、最も優先度が低いものとしてワイルドカード（`*`）の順で評価される。したがって `/users/me` という特殊エンドポイントが、先に登録された `/users/:id` に誤って吸い込まれる事故は構造上発生しない。
+マッチングの優先順位は登録順である。合致したハンドラとミドルウェアは登録した順に実行され、`Response` を返したところで止まる。したがって `/users/:id` を先に登録すると、`/users/me` へのリクエストもそちらのハンドラで処理されるので、特殊なパスは先に登録する。SmartRouter が決めるのは、照合に使うルーターだけである。最初のマッチ時に、全ルートを登録できる最初のルーター（RegExpRouter、登録できなければ TrieRouter）に決まる。
 
 ## ミドルウェアの合成メカニズム
 
@@ -17,26 +17,25 @@ Hono は `SmartRouter` という統括層を持ち、登録されたルートの
 
 ```ts
 const timing = async (c, next) => {
-  const start = performance.now();
-  try {
-    await next(); // 次のミドルウェアまたは最終ハンドラへ処理を移譲
-  } finally {
-    const elapsed = performance.now() - start;
-    c.header("server-timing", `work;dur=${elapsed}`);
-  }
+  const start = performance.now(); // Workers では I/O の後にしか進まない
+  await next(); // 次のミドルウェアまたは最終ハンドラへ処理を移譲
+  const elapsed = performance.now() - start;
+  c.header("server-timing", `work;dur=${elapsed}`);
 };
 ```
 
-- 後処理で例外が発生した場合でも確実にクリーンアップを行えるよう、`try / finally` 構文で `await next()` を囲むのが堅牢なパターンである。
+- 下流のハンドラやミドルウェアが例外を投げても、Hono が捕まえて `app.onError()` に渡す（なければ 500 にする）。このため `await next()` は例外を投げず、`try / finally` で囲む必要はない。捕まえた例外は `c.error` で読める。
 - `c.set(key, value)` と `c.get(key)` を用いることで、認証ミドルウェアで復号したユーザー情報などを後続のハンドラへ安全に伝達できる。このコンテキスト変数には TypeScript のジェネリクスで厳密な型を適用できる。
 
 ## ストリーミング伝送の制御
 
-大規模言語モデルの逐次出力や、大容量ファイルのリアルタイム転送には、標準のレスポンスバッファリングではなくストリーミングヘルパーを用いる。
+大規模言語モデルの逐次出力のように、できた分から順に送りたいときは、`hono/streaming` のストリーミングヘルパーを使う。
 
 ```ts
+import { streamSSE, streamText } from "hono/streaming";
+
 // テキストチャンクのストリーミング
-return c.streamText(async (stream) => {
+return streamText(c, async (stream) => {
   for (const token of textTokens) {
     await stream.write(token);
     await stream.sleep(20);
@@ -44,9 +43,9 @@ return c.streamText(async (stream) => {
 });
 
 // Server-Sent Events（SSE）の送出
-return c.streamSSE(async (stream) => {
+return streamSSE(c, async (stream) => {
   await stream.writeSSE({ data: JSON.stringify({ event: "ping" }) });
 });
 ```
 
-ストリームの内部で `stream.onAbort()` リスナーを登録しておけば、クライアントがブラウザのタブを閉じるなどして通信を切断した瞬間に検知し、無駄な上流 API 消費や計算リソースの浪費を即座に中断できる。
+ストリームの内部で `stream.onAbort()` にコールバックを登録しておけば、クライアントがブラウザのタブを閉じるなどして通信を切断したときに、上流 API の呼び出しや計算を止める処理を実行できる。
