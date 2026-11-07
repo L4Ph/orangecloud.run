@@ -1,6 +1,6 @@
-import { DurableObject } from 'cloudflare:workers';
-import { defineDurableObject } from 'void/durable';
-import { ai } from 'void/ai';
+import { DurableObject } from "cloudflare:workers";
+import { defineDurableObject } from "void/durable";
+import { ai } from "void/ai";
 
 // The Ai binding is not transferable into a Dynamic Worker; proxy it.
 class AiFacade extends DurableObject {
@@ -10,8 +10,8 @@ class AiFacade extends DurableObject {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (/Not available|authentication|unauthorized/i.test(message)) {
-        console.error('ai binding unavailable:', message);
-        throw new Error('Workers AI is unavailable right now. Try again in a moment.');
+        console.error("ai binding unavailable:", message);
+        throw new Error("Workers AI is unavailable right now. Try again in a moment.");
       }
       throw error;
     }
@@ -19,7 +19,7 @@ class AiFacade extends DurableObject {
 }
 
 export const AiFacadeResource = defineDurableObject({
-  name: 'lesson-ai',
+  name: "lesson-ai",
   class: AiFacade,
 });
 export default AiFacadeResource;

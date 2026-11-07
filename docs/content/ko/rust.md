@@ -42,10 +42,10 @@ cargo install worker-build
 worker-build --release
 
 # 에지 네트워크에 배포
-npx wrangler deploy
+cf deploy
 ```
 
-`worker-build`는 Rust 컴파일러(`rustc`)를 통해 `wasm32-unknown-unknown` 타겟의 바이너리를 빌드하고, V8과의 경계를 담당하는 JavaScript 래퍼(`wasm-bindgen`에서 유래한 심)를 `build/worker/shim.mjs`에 출력한다. 설정 파일의 `main` 프로퍼티는 이 심 파일을 지정한다.
+`worker-build`는 Rust 컴파일러(`rustc`)를 통해 `wasm32-unknown-unknown` 타겟의 바이너리를 빌드하고, V8과의 경계를 담당하는 JavaScript 래퍼(`wasm-bindgen`에서 유래한 심)를 `build/worker/shim.mjs`에 출력한다. 설정 파일의 `worker.entrypoint` 프로퍼티는 이 심 파일을 지정한다.
 
 ## JavaScript와의 영역 구분 경계
 

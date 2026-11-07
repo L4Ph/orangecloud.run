@@ -7,339 +7,366 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh\n"
 
-#: pages/docs/[slug].tsx:21
-msgid "← 読んで学ぶ"
-msgstr "← 阅读"
+#: lib/content-shell.tsx:42
+#: pages/books.tsx:35
+msgid "（新しいタブで開く）"
+msgstr "（在新标签页中打开）"
 
-#: docs/index.ts:66
+#: pages/index.tsx:22
+msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
+msgstr "“运行”是在浏览器编辑器中边执行边学习的章节。网络已被阻断，即使弄坏也不会有任何影响。“阅读”是整理设计判断标准的文章。"
+
+#: pages/books.tsx:48
+msgid "← 学ぶ"
+msgstr "← 学习"
+
+#: docs/index.ts:59
 msgid "AI Gateway"
 msgstr ""
 
-#: lib/site-header.tsx:38
+#: lib/site-header.tsx:25
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "边运行边学 Cloudflare Workers"
 
-#: lib/playground.tsx:425
+#: pages/books.tsx:68
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 实践指南"
 
-#: docs/index.ts:72
+#: docs/index.ts:65
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:96
+#: lessons/index.ts:119
+msgid "Containers で Node.js を動かす"
+msgstr "在 Containers 中运行 Node.js"
+
+#: lessons/index.ts:129
+msgid "Containers でシェルを動かす"
+msgstr "在 Containers 中运行 Shell"
+
+#: lessons/index.ts:109
 msgid "Containers で実行する"
 msgstr "在 Containers 中运行"
 
-#: lessons/index.ts:72
+#: lessons/index.ts:76
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:97
+#: lessons/index.ts:110
 msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
 msgstr "在 Docker 镜像里运行 Python，isolate 做不到时的退路"
 
-#: lessons/index.ts:88
+#: lessons/index.ts:100
+msgid "Durable Object を自分で書く"
+msgstr "自己编写 Durable Object"
+
+#: lessons/index.ts:92
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:48
+#: docs/index.ts:41
 msgid "Durable Objects と Actor モデル"
 msgstr "Durable Objects 与 Actor 模型"
 
-#: docs/index.ts:85
+#: docs/index.ts:78
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、绑定中继、执行限制"
 
+#: lib/playground.tsx:295
+msgid "Esc → Tab でエディタの外へ"
+msgstr "Esc → Tab 离开编辑器"
+
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:328
+#: lib/playground.tsx:256
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
-#: lessons/index.ts:107
+#: lessons/index.ts:140
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
-#: docs/index.ts:24
+#: docs/index.ts:17
 msgid "Hono"
 msgstr ""
 
-#: docs/index.ts:30
+#: docs/index.ts:23
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono 的路由器与中间件"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:332
+#: lib/playground.tsx:260
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
-#: docs/index.ts:43
+#: docs/index.ts:36
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate 省略了什么，以及何时改用容器"
 
-#: docs/index.ts:73
+#: docs/index.ts:66
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate 不够用时的最后手段"
 
-#: lessons/index.ts:48
+#: lessons/index.ts:120
+msgid "isolate にない fs・child_process・OS の情報が、コンテナでは普通に使える"
+msgstr "isolate 中没有的 fs、child_process 和系统信息，在容器里都能直接使用"
+
+#: lessons/index.ts:52
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate、无共享状态、限制、计费"
 
-#: lessons/index.ts:39
+#: lessons/index.ts:43
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
 
-#: lib/playground.tsx:401
+#: lib/content-shell.tsx:241
 msgid "JS がはじめてなら最初に"
 msgstr "刚接触 JS 就从这里开始"
 
-#: lessons/index.ts:64
+#: lessons/index.ts:68
 msgid "KV"
 msgstr ""
 
-#: lessons/index.ts:55
+#: lessons/index.ts:59
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:60
+#: docs/index.ts:53
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:80
+#: lessons/index.ts:84
 msgid "R2"
 msgstr ""
 
-#: docs/index.ts:37
+#: docs/index.ts:30
 msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
 msgstr "把 Rust 编译成 Wasm 运行，以及为什么必须有构建步骤"
 
-#: docs/index.ts:36
+#: docs/index.ts:29
 msgid "Rust（workers-rs）"
 msgstr "Rust（workers-rs）"
 
-#: lessons/index.ts:81
+#: lessons/index.ts:85
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "兼容 S3 的对象存储。出网流量免费"
 
-#: lessons/index.ts:73
+#: lessons/index.ts:77
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 
-#: lessons/index.ts:40
+#: lessons/index.ts:44
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
-#: lib/playground.tsx:415
+#: pages/books.tsx:63
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
-#: lessons/index.ts:106
+#: lessons/index.ts:139
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:47
+#: lessons/index.ts:51
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
-#: lib/playground.tsx:268
+#: lessons/index.ts:101
+msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
+msgstr "通过改写代码来确认内存状态与 SQLite 的区别"
+
+#: lib/playground.tsx:290
 msgid "エディタ"
 msgstr "编辑器"
 
-#: lib/playground.tsx:306
-msgid "コードエディタ"
-msgstr "代码编辑器"
+#: lib/playground.tsx:278
+msgid "エディタへ移動"
+msgstr "前往编辑器"
 
-#: docs/index.ts:84
+#: lib/playground.tsx:328
+msgid "コードエディタ。Esc のあと Tab でエディタの外へ移動します。"
+msgstr "代码编辑器。按 Esc 再按 Tab 可移出编辑器。"
+
+#: pages/books.tsx:57
+msgid "このサイトで足りなくなったら、本で通して学べます。"
+msgstr "如果本站不够用，可以通过书籍系统学习。"
+
+#: docs/index.ts:77
 msgid "このサイトの仕組み"
 msgstr "本站的运作方式"
 
-#: lib/docs-shell.tsx:82
+#: pages/docs/[slug].tsx:38
+#: pages/docs/[slug].tsx:41
 msgid "このページ"
 msgstr "本页内容"
 
-#: lib/playground.tsx:358
+#: lib/playground.tsx:379
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "本章只有资料，代码仅供参考。"
 
-#: lessons/index.ts:18
+#: lessons/index.ts:21
 msgid "ストレージ"
 msgstr "存储"
 
-#: docs/index.ts:16
-msgid "データと処理"
-msgstr "数据与处理"
-
-#: docs/index.ts:78
+#: docs/index.ts:71
 msgid "デプロイまで"
 msgstr "部署上线"
 
-#: docs/index.ts:49
+#: docs/index.ts:42
 msgid "なぜ class なのか、どこまでが actor なのか"
 msgstr "为什么是 class，以及 actor 模型到哪为止"
 
-#: pages/lessons/index.tsx:22
-msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
-msgstr "在浏览器编辑器里边运行边学习的章节。网络已关闭，写坏了也不会有事。"
-
-#: lib/playground.tsx:189
+#: lib/playground.tsx:212
 msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
 msgstr "机器人验证失败，请重试。"
 
-#: docs/index.ts:15
-msgid "ランタイムとモデル"
-msgstr "运行时与模型"
-
-#: docs/index.ts:42
+#: docs/index.ts:35
 msgid "ランタイムの深掘り"
 msgstr "深入运行时"
 
-#: docs/index.ts:31
+#: docs/index.ts:24
 msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 msgstr "路由器的原理、中间件组合、类型与 RPC"
 
-#: docs/index.ts:25
+#: docs/index.ts:18
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "路由、中间件、校验——小而快的 Web 框架"
 
-#: docs/index.ts:67
+#: docs/index.ts:60
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "在模型之前统一做日志、缓存、限流和回退"
 
-#: docs/index.ts:79
+#: docs/index.ts:72
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "登录、密钥、部署，以及上线后的检查"
 
-#: docs/index.ts:55
+#: docs/index.ts:48
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "按一致性、大小和费用选择 KV / D1 / R2 / Durable Objects"
 
-#: docs/index.ts:17
+#: lessons/index.ts:130
+msgid "任意の Linux バイナリをパイプでつなぐ。FFmpeg などもこの延長"
+msgstr "用管道串联任意 Linux 二进制程序。FFmpeg 等也是同样的延伸"
+
+#: lessons/index.ts:23
 msgid "公開と運用"
 msgstr "发布与运维"
 
-#: lib/playground.tsx:290
+#: lib/playground.tsx:299
 msgid "初期化"
 msgstr "重置"
 
-#: lib/playground.tsx:378
-msgid "前の章"
-msgstr "上一章"
+#: lib/content-shell.tsx:205
+msgid "前"
+msgstr "上一个"
 
-#: lib/playground.tsx:394
+#: lib/content-shell.tsx:227
+msgid "前後の章"
+msgstr "上一章与下一章"
+
+#: lib/content-shell.tsx:236
 msgid "前提知識"
 msgstr "前置知识"
 
-#: lib/site-header.tsx:42
-#: pages/lessons/index.server.ts:20
-#: pages/lessons/index.tsx:18
-msgid "動かして学ぶ"
-msgstr "动手学"
+#: lib/content-shell.tsx:30
+#: lib/content-shell.tsx:83
+msgid "動かす"
+msgstr "运行"
 
-#: lessons/index.ts:89
+#: lessons/index.ts:93
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
 
-#: lib/playground.tsx:407
+#: lib/content-shell.tsx:245
 msgid "型が読めないと先に進みにくい"
 msgstr "读不懂类型就很难继续"
 
-#: lessons/index.ts:16
+#: lessons/index.ts:19
 msgid "基礎"
 msgstr "基础"
 
-#: lib/site-header.tsx:40
-msgid "学び方"
-msgstr "学习方式"
+#: pages/index.server.ts:20
+#: pages/index.tsx:18
+msgid "学ぶ"
+msgstr "学习"
 
-#: lib/playground.tsx:284
+#: lib/playground.tsx:309
 msgid "実行"
 msgstr "运行"
 
-#: lib/playground.tsx:353
+#: lib/playground.tsx:374
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "运行后，响应和 console 输出会显示在这里。网络已被封锁，随便改也不会有问题。"
 
-#: lessons/index.ts:19
+#: lessons/index.ts:22
 msgid "実行環境"
 msgstr "计算"
 
-#: lib/playground.tsx:313
+#: lib/playground.tsx:336
 msgid "実行結果"
 msgstr "运行结果"
 
-#: pages/docs/index.tsx:20
-msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
-msgstr "在动手前后阅读的深入内容。设计判断的依据都在这里。"
+#: pages/books.server.ts:20
+#: pages/books.tsx:52
+msgid "書籍の紹介"
+msgstr "书籍介绍"
 
-#: lib/site-header.tsx:34
+#: lib/content-shell.tsx:250
+#: pages/index.tsx:65
+msgid "書籍の紹介 →"
+msgstr "书籍介绍 →"
+
+#: lib/site-header.tsx:17
 msgid "本文へ移動"
 msgstr "跳到正文"
 
-#: lib/playground.tsx:417
+#: pages/books.tsx:64
 msgid "本気で使うなら"
 msgstr "认真使用的话"
 
-#: lessons/index.ts:56
+#: lessons/index.ts:60
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "语法和运行时都不同，却仍然是同一个 Worker"
 
-#: lib/playground.tsx:389
-msgid "次の章"
-msgstr "下一章"
+#: lib/content-shell.tsx:205
+msgid "次"
+msgstr "下一个"
 
-#: docs/index.ts:54
+#: docs/index.ts:47
 msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
 
-#: lessons/index.ts:17
-#: lib/site-header.tsx:53
+#: lessons/index.ts:20
+#: lib/site-header.tsx:32
 msgid "言語"
 msgstr "语言"
 
-#: docs/index.ts:14
-msgid "言語とフレームワーク"
-msgstr "语言与框架"
-
-#: lib/docs-shell.tsx:27
-msgid "記事"
-msgstr "文章"
-
-#: lib/docs-shell.tsx:71
-msgid "記事の一覧"
-msgstr "文章列表"
-
-#: lib/playground.tsx:427
+#: pages/books.tsx:69
 msgid "設計・運用まで"
 msgstr "直至设计与运维"
 
-#: lib/site-header.tsx:45
-#: pages/docs/index.server.ts:20
-#: pages/docs/index.tsx:16
-msgid "読んで学ぶ"
-msgstr "阅读学"
+#: lib/content-shell.tsx:30
+#: lib/content-shell.tsx:83
+msgid "読む"
+msgstr "阅读"
 
-#: lessons/index.ts:110
+#: lessons/index.ts:143
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
 
-#: lib/playground.tsx:367
-msgid "資料"
-msgstr "资料"
-
-#: lessons/index.ts:65
+#: lessons/index.ts:69
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "读取快，最终一致。适合缓存和配置"
 
-#: docs/index.ts:61
+#: docs/index.ts:54
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "异步处理，以及可恢复的长时间任务"
 
-#: lib/playground.tsx:254
-msgid "章"
-msgstr "章节"
+#: lib/content-shell.tsx:54
+msgid "章と記事"
+msgstr "章节与文章"
 
-#: lib/playground.tsx:371
-msgid "章の移動"
-msgstr "章节导航"
+#: lib/content-shell.tsx:144
+msgid "章と記事の一覧"
+msgstr "章节与文章列表"

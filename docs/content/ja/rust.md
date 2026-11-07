@@ -42,10 +42,10 @@ cargo install worker-build
 worker-build --release
 
 # エッジネットワークへのデプロイ
-npx wrangler deploy
+cf deploy
 ```
 
-`worker-build` は Rust コンパイラ（`rustc`）を介して `wasm32-unknown-unknown` ターゲットのバイナリをビルドし、V8 との境界を取り持つ JavaScript ラッパー（`wasm-bindgen` 由来のシム）を `build/worker/shim.mjs` へ出力する。設定ファイルの `main` プロパティはこのシムファイルを指定する。
+`worker-build` は Rust コンパイラ（`rustc`）を介して `wasm32-unknown-unknown` ターゲットのバイナリをビルドし、V8 との境界を取り持つ JavaScript ラッパー（`wasm-bindgen` 由来のシム）を `build/worker/shim.mjs` へ出力する。設定ファイルの `worker.entrypoint` プロパティはこのシムファイルを指定する。
 
 ## JavaScript との棲み分けの境界線
 

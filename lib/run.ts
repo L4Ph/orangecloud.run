@@ -5,6 +5,7 @@ declare global {
     LESSON_R2: DurableObjectNamespace;
     LESSON_AI: DurableObjectNamespace;
     LESSON_COUNTER: DurableObjectNamespace;
+    LESSON_USER_DO: DurableObjectNamespace;
     DB: D1Database;
   }
 }
@@ -15,7 +16,7 @@ export type RunResult = {
   logs: string[];
   ms: number;
   error?: string;
-  errorCode?: 'turnstile';
+  errorCode?: "turnstile";
 };
 
 // console is captured inside the sandbox; the wrapper always answers JSON so
@@ -52,7 +53,7 @@ export default {
 // Dynamic Workers bill per unique (id, code) per day, so the id is derived from
 // the code: every learner running an unedited snippet shares one worker, and a
 // re-run costs nothing. Normalise only what cannot change behaviour.
-const normalize = (code: string) => code.replace(/\r\n/g, '\n').replace(/\n+$/, '');
+const normalize = (code: string) => code.replace(/\r\n/g, "\n").replace(/\n+$/, "");
 
 const hash = (text: string) => {
   let h = 5381;
@@ -70,24 +71,34 @@ type SandboxEnv = {
   LESSON_R2: DurableObjectNamespace;
   LESSON_AI: DurableObjectNamespace;
   LESSON_COUNTER: DurableObjectNamespace;
+  LESSON_USER_DO: DurableObjectNamespace;
   DB: D1Database;
 };
 
-export type RunLang = 'javascript' | 'python' | 'container';
+export type RunLang = "javascript" | "python" | "container" | "durable-object";
 
-import { getSandbox } from 'void/sandbox';
+import { getSandbox } from "void/sandbox";
 
 // Containers are a separate runtime: a real filesystem, real binaries, no isolate.
-async function runInContainer(code: string): Promise<RunResult> {
+export type ContainerRuntime = "python" | "node" | "sh";
+
+const RUNTIMES: Record<ContainerRuntime, { ext: string; cmd: string }> = {
+  python: { ext: "py", cmd: "python3" },
+  node: { ext: "mjs", cmd: "node" },
+  sh: { ext: "sh", cmd: "sh" },
+};
+
+async function runInContainer(code: string, runtime: ContainerRuntime): Promise<RunResult> {
+  const { ext, cmd } = RUNTIMES[runtime];
   const started = performance.now();
   const elapsed = () => Math.round(performance.now() - started);
 
   try {
-    const sandbox = await getSandbox('lesson-container');
-    const file = `run-${crypto.randomUUID()}.py`;
+    const sandbox = await getSandbox("lesson-container");
+    const file = `run-${crypto.randomUUID()}.${ext}`;
     await sandbox.files.writeFile(`/workspace/${file}`, code);
-    const result = await sandbox.run(['python3', file], {
-      cwd: '/workspace',
+    const result = await sandbox.run([cmd, file], {
+      cwd: "/workspace",
       signal: AbortSignal.timeout(20_000),
     });
     await sandbox.files.remove(`/workspace/${file}`).catch(() => {});
@@ -96,14 +107,14 @@ async function runInContainer(code: string): Promise<RunResult> {
     const stderr = new TextDecoder().decode(result.stderr);
     return {
       status: result.exitCode,
-      body: [stdout, stderr].filter(Boolean).join('\n').slice(0, 16_000),
+      body: [stdout, stderr].filter(Boolean).join("\n").slice(0, 16_000),
       logs: [],
       ms: elapsed(),
     };
   } catch (error) {
     return {
       status: 0,
-      body: '',
+      body: "",
       logs: [],
       error: error instanceof Error ? error.message : String(error),
       ms: elapsed(),
@@ -111,38 +122,62 @@ async function runInContainer(code: string): Promise<RunResult> {
   }
 }
 
+// A learner-written Durable Object class, run as a facet of a supervisor DO.
+// The id changes with the code, so an edit restarts the facet (in-memory state
+// resets) while its SQLite storage stays.
+async function runInDurableObject(env: SandboxEnv, code: string): Promise<RunResult> {
+  const started = performance.now();
+  try {
+    const supervisor = stub(env.LESSON_USER_DO, "lesson-user-do") as unknown as {
+      run(id: string, code: string): Promise<{ status: number; body: string }>;
+    };
+    const { status, body } = await supervisor.run(`do-${hash(normalize(code))}`, code);
+    return { status, body, logs: [], ms: Math.round(performance.now() - started) };
+  } catch (error) {
+    return {
+      status: 0,
+      body: "",
+      logs: [],
+      error: error instanceof Error ? error.message : String(error),
+      ms: Math.round(performance.now() - started),
+    };
+  }
+}
+
 export async function runInSandbox(
   env: SandboxEnv,
   code: string,
-  lang: RunLang = 'javascript',
+  lang: RunLang = "javascript",
+  runtime: ContainerRuntime = "python",
 ): Promise<RunResult> {
-  if (lang === 'container') return runInContainer(code);
+  if (lang === "container") return runInContainer(code, runtime);
+  if (lang === "durable-object") return runInDurableObject(env, code);
   const started = performance.now();
   const elapsed = () => Math.round(performance.now() - started);
 
   try {
     const wrapped = wrap();
-    const python = lang === 'python';
-    const id = `${python ? 'py' : 'run'}-${WRAPPER_VERSION}-${hash(normalize(code))}`;
+    const python = lang === "python";
+    const id = `${python ? "py" : "run"}-${WRAPPER_VERSION}-${hash(normalize(code))}`;
     const modules: Record<string, string> = python
-      ? { 'worker.py': code }
-      : { 'index.js': wrapped, 'user.js': code };
+      ? { "worker.py": code }
+      : { "index.js": wrapped, "user.js": code };
     const worker = env.LOADER.get(id, () => ({
-      compatibilityDate: '2026-02-24',
-      compatibilityFlags: python ? ['python_workers'] : undefined,
-      mainModule: python ? 'worker.py' : 'index.js',
+      compatibilityDate: "2026-02-24",
+      compatibilityFlags: python ? ["python_workers"] : undefined,
+      mainModule: python ? "worker.py" : "index.js",
       modules,
       env: {
-        KV: stub(env.LESSON_KV, 'lesson-kv'),
-        STORAGE: stub(env.LESSON_R2, 'lesson-r2'),
-        AI: stub(env.LESSON_AI, 'lesson-ai'),
-        COUNTER: stub(env.LESSON_COUNTER, 'lesson-counter'),
+        KV: stub(env.LESSON_KV, "lesson-kv"),
+        STORAGE: stub(env.LESSON_R2, "lesson-r2"),
+        AI: stub(env.LESSON_AI, "lesson-ai"),
+        COUNTER: stub(env.LESSON_COUNTER, "lesson-counter"),
         DB: env.DB,
       },
       globalOutbound: null,
       limits: { cpuMs: 100, subRequests: 0 },
     }));
-    const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
+    const response = await worker.getEntrypoint().fetch(new Request("https://sandbox.internal/"));
 
     if (python) {
       return {
@@ -156,7 +191,7 @@ export async function runInSandbox(
     const result = await response.json<Partial<RunResult>>();
     return {
       status: result.status ?? 0,
-      body: result.body ?? '',
+      body: result.body ?? "",
       logs: result.logs ?? [],
       error: result.error,
       ms: elapsed(),
@@ -164,7 +199,7 @@ export async function runInSandbox(
   } catch (error) {
     return {
       status: 0,
-      body: '',
+      body: "",
       logs: [],
       error: error instanceof Error ? error.message : String(error),
       ms: elapsed(),

@@ -13,25 +13,25 @@ npm run dev
 
 ```sh
 npm run check   # format, lint (type-aware), type check
-npm run smoke   # execute every lesson snippet against the dev server
 ```
 
 ## Routes
 
-- `/lessons` — hands-on chapters, `/lessons/:id` opens the editor
-- `/docs` — long-form articles, `/docs/:slug`
+- `/` — index of chapters (run) and articles (read)
+- `/lessons/:id` — chapter with the editor
+- `/docs/:slug` — long-form articles
 
 ## Content
 
 - `lessons/index.ts` — chapter metadata and snippets
 - `lessons/docs/{locale}/*.md` — chapter notes
-- `lessons/code/*.js` — snippets the playground runs
+- `lessons/code/*` — snippets the playground runs
 - `docs/index.ts`, `docs/content/{locale}/*.md` — articles
 - `locales/{locale}/messages.po` — UI strings
 
 ## Containers
 
-The Containers chapter runs Python in a Docker image (`Dockerfile.sandbox`). Run Docker locally to use it.
+The Containers chapters run Python, Node.js and shell scripts in a Docker image (`Dockerfile.sandbox`). Run Docker locally to use it.
 
 ## Deploy
 

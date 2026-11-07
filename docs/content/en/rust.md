@@ -42,10 +42,10 @@ cargo install worker-build
 worker-build --release
 
 # Deploy to the edge network
-npx wrangler deploy
+cf deploy
 ```
 
-`worker-build` builds a binary for the `wasm32-unknown-unknown` target via the Rust compiler (`rustc`) and outputs a JavaScript wrapper (a shim derived from `wasm-bindgen`) that acts as a boundary with V8 to `build/worker/shim.mjs`. The `main` property in the configuration file specifies this shim file.
+`worker-build` builds a binary for the `wasm32-unknown-unknown` target via the Rust compiler (`rustc`) and outputs a JavaScript wrapper (a shim derived from `wasm-bindgen`) that acts as a boundary with V8 to `build/worker/shim.mjs`. The `worker.entrypoint` property in the configuration file specifies this shim file.
 
 ## Boundary for Separation from JavaScript
 

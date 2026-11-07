@@ -1,11 +1,11 @@
-import { useEffect, useMemo, type ReactNode } from 'react';
-import { I18n } from '@lingui/core';
-import { I18nProvider } from '@lingui/react';
-import { LinkProvider } from '@cloudflare/kumo';
-import { AppLink } from './app-link';
-import { catalogs } from './catalogs';
-import type { Locale } from './locales';
-import './app.css';
+import { useEffect, useMemo, type ReactNode } from "react";
+import { I18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
+import { LinkProvider } from "@cloudflare/kumo";
+import { AppLink } from "./app-link";
+import { catalogs } from "./catalogs";
+import type { Locale } from "./locales";
+import "./app.css";
 
 export function I18nPage({ locale, children }: { locale: Locale; children: ReactNode }) {
   const i18n = useMemo(
@@ -20,13 +20,13 @@ export function I18nPage({ locale, children }: { locale: Locale; children: React
 
   // Kumo switches themes with data-mode; keep it in step with the OS.
   useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
-      document.documentElement.dataset.mode = media.matches ? 'dark' : 'light';
+      document.documentElement.dataset.mode = media.matches ? "dark" : "light";
     };
     apply();
-    media.addEventListener('change', apply);
-    return () => media.removeEventListener('change', apply);
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
   }, []);
 
   return (

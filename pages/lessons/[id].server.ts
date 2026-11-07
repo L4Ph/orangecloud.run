@@ -1,13 +1,13 @@
-import { defineHandler, defineHead, type InferProps } from 'void';
-import { I18n } from '@lingui/core';
-import { requestLocale } from '../../lib/request-locale';
-import { catalogs } from '../../lib/catalogs';
-import { lessons } from '../../lessons';
-import { lessonDoc } from '../../lessons/docs';
-import { parseDoc } from '../../lib/markdown-source';
+import { defineHandler, defineHead, type InferProps } from "void";
+import { I18n } from "@lingui/core";
+import { requestLocale } from "../../lib/request-locale";
+import { catalogs } from "../../lib/catalogs";
+import { lessons } from "../../lessons";
+import { lessonDoc } from "../../lessons/docs";
+import { parseDoc } from "../../lib/markdown-source";
 
 export const loader = defineHandler((c) => {
-  const lesson = lessons.find((item) => item.id === c.req.param('id'));
+  const lesson = lessons.find((item) => item.id === c.req.param("id"));
   if (!lesson) return c.notFound();
 
   const locale = requestLocale(c);
@@ -28,9 +28,9 @@ export const head = defineHead<Props>((_c, props) => {
     title: lesson ? i18n._(lesson.title) : undefined,
     meta: lesson
       ? [
-          { name: 'description', content: i18n._(lesson.summary) },
-          { property: 'og:title', content: i18n._(lesson.title) },
-          { property: 'og:description', content: i18n._(lesson.summary) },
+          { name: "description", content: i18n._(lesson.summary) },
+          { property: "og:title", content: i18n._(lesson.title) },
+          { property: "og:description", content: i18n._(lesson.summary) },
         ]
       : undefined,
     htmlAttrs: { lang: props.locale },

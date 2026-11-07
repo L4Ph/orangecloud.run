@@ -1,18 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { fetch as apiFetch } from 'void/client';
-import { useRouter } from '@void/react';
-import { I18nPage } from './i18n-page';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Button } from '@cloudflare/kumo/components/button';
-import { Link } from '@cloudflare/kumo/components/link';
-import { Select } from '@cloudflare/kumo/components/select';
-import { ArrowLeftIcon, ArrowRightIcon, PlayIcon } from '@phosphor-icons/react';
-import { lessons } from '../lessons';
-import { Turnstile } from './turnstile';
-import type { Locale } from './locales';
-import { SiteHeader } from './site-header';
-import { MarkdownArticle } from './markdown-article';
-import type { MarkdownDocument } from '@tanstack/markdown';
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { fetch as apiFetch } from "void/client";
+import { I18nPage } from "./i18n-page";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { Button } from "@cloudflare/kumo/components/button";
+import { Link } from "@cloudflare/kumo/components/link";
+import { ArrowDownIcon, PlayIcon } from "@phosphor-icons/react";
+import { lessons } from "../lessons";
+import { Turnstile } from "./turnstile";
+import type { Locale } from "./locales";
+import { ChapterFooter, ChapterHeader, ContentShell } from "./content-shell";
+import { MarkdownArticle } from "./markdown-article";
+import type { MarkdownDocument } from "@tanstack/markdown";
 
 type RunResult = {
   status: number;
@@ -20,7 +18,7 @@ type RunResult = {
   logs: string[];
   ms: number;
   error?: string;
-  errorCode?: 'turnstile';
+  errorCode?: "turnstile";
 };
 
 function CodeEditor({
@@ -32,13 +30,13 @@ function CodeEditor({
 }: {
   value: string;
   onChange: (next: string) => void;
-  language: 'javascript' | 'shell' | 'python';
+  language: "javascript" | "shell" | "python";
   label: string;
   onRun: () => void;
 }) {
   const [ready, setReady] = useState(false);
   const host = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<import('monaco-editor').editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<import("monaco-editor").editor.IStandaloneCodeEditor | null>(null);
   const onChangeRef = useRef(onChange);
   const onRunRef = useRef(onRun);
   onChangeRef.current = onChange;
@@ -46,15 +44,15 @@ function CodeEditor({
 
   useEffect(() => {
     let disposed = false;
-    let subscription: { dispose: () => void } | null = null;
+    const disposables: { dispose: () => void }[] = [];
 
     void (async () => {
       const [monaco, editorWorker] = await Promise.all([
-        import('monaco-editor/editor/editor.api'),
-        import('monaco-editor/editor/editor.worker?worker'),
-        import('monaco-editor/languages/definitions/javascript/register'),
-        import('monaco-editor/languages/definitions/shell/register'),
-        import('monaco-editor/languages/definitions/python/register'),
+        import("monaco-editor/editor/editor.api"),
+        import("monaco-editor/editor/editor.worker?worker"),
+        import("monaco-editor/languages/definitions/javascript/register"),
+        import("monaco-editor/languages/definitions/shell/register"),
+        import("monaco-editor/languages/definitions/python/register"),
       ]);
       if (disposed || !host.current) return;
 
@@ -62,36 +60,54 @@ function CodeEditor({
         getWorker: () => new editorWorker.default(),
       };
 
-      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const scheme = window.matchMedia("(prefers-color-scheme: dark)");
       const editor = monaco.editor.create(host.current, {
         value,
         language,
-        theme: dark ? 'vs-dark' : 'vs',
+        theme: scheme.matches ? "vs-dark" : "vs",
         fontSize: 13,
         lineHeight: 20,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
-        wordWrap: 'on',
+        wordWrap: "on",
         automaticLayout: true,
         tabSize: 2,
         padding: { top: 14, bottom: 14 },
-        renderLineHighlight: 'none',
-        smoothScrolling: true,
+        renderLineHighlight: "none",
+        smoothScrolling: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         ariaLabel: label,
       });
       editorRef.current = editor;
       setReady(true);
-      subscription = editor.onDidChangeModelContent(() => {
-        onChangeRef.current(editor.getValue());
-      });
+      disposables.push(
+        editor.onDidChangeModelContent(() => {
+          onChangeRef.current(editor.getValue());
+        }),
+      );
       editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
         onRunRef.current();
       });
+
+      // Tab indents here, which would trap keyboard users: Esc hands Tab back to the page
+      // until the editor loses focus. Open widgets keep their own Esc.
+      editor.addCommand(
+        monaco.KeyCode.Escape,
+        () => editor.updateOptions({ tabFocusMode: true }),
+        "!suggestWidgetVisible && !findWidgetVisible && !parameterHintsVisible && !renameInputVisible",
+      );
+      disposables.push(
+        editor.onDidBlurEditorText(() => editor.updateOptions({ tabFocusMode: false })),
+      );
+
+      // The rest of the page follows the OS theme; keep the editor in step.
+      const syncTheme = () => monaco.editor.setTheme(scheme.matches ? "vs-dark" : "vs");
+      scheme.addEventListener("change", syncTheme);
+      disposables.push({ dispose: () => scheme.removeEventListener("change", syncTheme) });
     })();
 
     return () => {
       disposed = true;
-      subscription?.dispose();
+      disposables.forEach((item) => item.dispose());
       editorRef.current?.dispose();
       editorRef.current = null;
     };
@@ -107,7 +123,7 @@ function CodeEditor({
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
-    void import('monaco-editor/editor/editor.api').then((monaco) => {
+    void import("monaco-editor/editor/editor.api").then((monaco) => {
       const model = editor.getModel();
       if (model) monaco.editor.setModelLanguage(model, language);
     });
@@ -136,7 +152,6 @@ function Playground({
   doc: MarkdownDocument;
 }) {
   const { t, i18n } = useLingui();
-  const router = useRouter();
   const lessonIndex = Math.max(
     0,
     lessons.findIndex((item) => item.id === lessonId),
@@ -168,23 +183,31 @@ function Playground({
       setPending(true);
       setError(null);
       try {
-        const data: RunResult = await apiFetch('/api/run', {
-          method: 'POST',
+        const data: RunResult = await apiFetch("/api/run", {
+          method: "POST",
           body: {
             code: value,
-            ...(lesson.runner === 'container'
-              ? { lang: 'container' as const }
-              : lesson.language === 'python'
-                ? { lang: 'python' as const }
-                : {}),
+            ...(lesson.runner === "durable-object"
+              ? { lang: "durable-object" as const }
+              : lesson.runner === "container"
+                ? {
+                    lang: "container" as const,
+                    runtime:
+                      ({ python: "python", shell: "sh" } as const)[
+                        lesson.language as "python" | "shell"
+                      ] ?? ("node" as const),
+                  }
+                : lesson.language === "python"
+                  ? { lang: "python" as const }
+                  : {}),
             ...(turnstileToken ? { token: turnstileToken } : {}),
           },
           timeout: 20_000,
         });
-        if (data.errorCode === 'turnstile' && !turnstileToken) {
+        if (data.errorCode === "turnstile" && !turnstileToken) {
           // No pass cookie yet: ask Turnstile once, then retry with its token.
           setAwaitingToken(true);
-        } else if (data.errorCode === 'turnstile') {
+        } else if (data.errorCode === "turnstile") {
           setResult(null);
           setError(t`ボット対策の確認に失敗しました。もう一度お試しください。`);
         } else if (data.error) {
@@ -219,221 +242,151 @@ function Playground({
     void execute(code, token);
   }, [awaitingToken, token, code, execute]);
 
-  const navigate = useCallback(
-    (nextLessonId: string, nextLocale?: Locale) => {
-      const lang = nextLocale ?? new URLSearchParams(window.location.search).get('lang');
-      void router.visit({
-        pathname: '/lessons/:id',
-        params: { id: nextLessonId },
-        query: lang ? { lang } : undefined,
-      });
-    },
-    [router],
-  );
+  const key = `lesson-${lesson.id}`;
+  const consoleId = useId();
+  const consoleBody = useRef<HTMLDivElement>(null);
 
-  const go = useCallback(
-    (delta: number) => {
-      const next = lessons[Math.min(lessons.length - 1, Math.max(0, lessonIndex + delta))];
-      navigate(next.id);
-    },
-    [lessonIndex, navigate],
-  );
+  // A new run starts at the top of the output.
+  useEffect(() => {
+    consoleBody.current?.scrollTo({ top: 0 });
+  }, [result, error]);
 
-  const chapterItems = useMemo(
-    () =>
-      Object.fromEntries(
-        lessons.map((item, index) => [item.id, `${index + 1}. ${i18n._(item.title)}`]),
-      ),
-    [i18n],
-  );
+  const statusLine = result ? (
+    lesson.runner === "container" ? (
+      <Trans>
+        exit {result.status} · {result.ms}ms
+      </Trans>
+    ) : (
+      <Trans>
+        HTTP {result.status} · {result.ms}ms
+      </Trans>
+    )
+  ) : null;
 
   return (
-    <div className="isolate flex h-dvh flex-col overflow-hidden bg-kumo-canvas text-sm text-kumo-default">
-      <SiteHeader locale={locale}>
-        <Select
-          aria-label={t`章`}
-          className="min-w-0 flex-1 sm:w-[260px] sm:flex-none"
-          size="sm"
-          value={lesson.id}
-          onValueChange={(next) => {
-            if (next) navigate(next);
-          }}
-          items={chapterItems}
-        />
-      </SiteHeader>
-
+    <ContentShell locale={locale} activeKey={key}>
       {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
 
-      <main
-        id="main"
-        className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_minmax(0,1fr)] max-lg:block max-lg:overflow-auto"
-      >
-        <section className="flex min-h-0 min-w-0 flex-col" aria-label={t`エディタ`}>
-          <div className="flex shrink-0 items-start justify-between gap-4 px-5 pt-4 pb-3 max-sm:flex-col">
-            <div className="min-w-0">
-              <h1 className="text-lg leading-tight font-semibold text-kumo-strong">
-                {i18n._(lesson.title)}
-              </h1>
-              <p className="mt-1 text-sm text-kumo-subtle">{i18n._(lesson.summary)}</p>
-            </div>
-            <div className="flex shrink-0 gap-2">
+      {/* One reading order: text, editor, footer. From xl the text and footer stack on the
+          left while the editor stays pinned on the right, so it never leaves the window. */}
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] xl:grid-rows-[auto_1fr] xl:items-start">
+        <div className="min-w-0 xl:col-start-1 xl:row-start-1">
+          <ChapterHeader activeKey={key}>
+            <p className="mt-2 xl:hidden">
+              <Link href="#editor" className="inline-flex min-h-10 items-center gap-1">
+                <ArrowDownIcon aria-hidden size={14} />
+                <Trans>エディタへ移動</Trans>
+              </Link>
+            </p>
+          </ChapterHeader>
+          <MarkdownArticle document={doc} className="mt-8" />
+        </div>
+
+        {/* The editor shows about 20 lines (20 × 20px plus padding) and the console gets the
+            rest of the panel. The panel's height depends only on the window, never on the
+            code or the output, and each part scrolls inside itself. */}
+        <section
+          id="editor"
+          aria-label={t`エディタ`}
+          className="flex h-[min(calc(100dvh-4rem),46rem)] scroll-mt-20 flex-col overflow-hidden rounded-lg bg-kumo-base ring ring-kumo-line xl:sticky xl:top-22 xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:h-[min(calc(100dvh-7.5rem),52rem)]"
+        >
+          <div className="flex shrink-0 items-center gap-2 border-b border-kumo-line px-3 py-2">
+            <p className="text-xs text-kumo-subtle max-md:hidden [@media(hover:none)]:hidden">
+              <Trans>Esc → Tab でエディタの外へ</Trans>
+            </p>
+            <div className="ml-auto flex items-center gap-2">
+              <Button variant="secondary" size="sm" onClick={() => setCode(lesson.code)}>
+                <Trans>初期化</Trans>
+              </Button>
               <Button
                 variant="primary"
+                size="sm"
                 icon={<PlayIcon size={16} />}
                 loading={pending}
                 onClick={run}
                 disabled={!lesson.runnable}
               >
                 <Trans>実行</Trans>
-                <kbd className="ml-2 font-sans text-xs opacity-80 [@media(hover:none)]:hidden">
+                <kbd className="ml-2 font-sans text-xs [@media(hover:none)]:hidden">
                   ⌘/Ctrl+Enter
                 </kbd>
-              </Button>
-              <Button variant="secondary" onClick={() => setCode(lesson.code)}>
-                <Trans>初期化</Trans>
               </Button>
             </div>
           </div>
 
           {lesson.hint && (
-            <p className="mx-5 mb-3 rounded-md bg-kumo-recessed px-3 py-2 text-xs text-kumo-subtle">
+            <p className="mx-3 mt-3 shrink-0 rounded-md bg-kumo-recessed px-3 py-2 text-xs text-kumo-subtle">
               {i18n._(lesson.hint)}
             </p>
           )}
 
-          <div className="min-h-0 flex-1 border-t border-kumo-line max-lg:h-[45vh] max-lg:flex-none">
+          <div className="min-h-40 shrink grow-0 basis-[428px] overscroll-contain">
             <CodeEditor
               value={code}
               onChange={setCode}
-              language={lesson.language ?? 'javascript'}
-              label={t`コードエディタ`}
+              language={lesson.language ?? "javascript"}
+              label={t`コードエディタ。Esc のあと Tab でエディタの外へ移動します。`}
               onRun={run}
             />
           </div>
 
-          <div
-            role="status"
-            aria-label={t`実行結果`}
-            className="max-h-[42%] shrink-0 overflow-auto border-t border-kumo-line bg-kumo-base px-5 py-3 max-lg:max-h-none"
-          >
-            {error && (
-              <pre
-                role="alert"
-                className="mb-2 text-xs break-words whitespace-pre-wrap text-kumo-danger"
-              >
-                {error}
-              </pre>
-            )}
-            {result && (
-              <>
-                <p className="mb-1.5 text-xs text-kumo-subtle">
-                  {lesson.runner === 'container' ? (
+          <div className="flex min-h-40 flex-1 flex-col border-t border-kumo-line">
+            <div className="flex shrink-0 items-baseline justify-between gap-3 px-4 pt-3 pb-2">
+              <h2 id={consoleId} className="text-sm font-medium text-kumo-strong">
+                <Trans>実行結果</Trans>
+              </h2>
+              {statusLine && (
+                <p aria-hidden className="text-xs text-kumo-subtle tabular-nums">
+                  {statusLine}
+                </p>
+              )}
+            </div>
+            <div
+              ref={consoleBody}
+              role="status"
+              aria-labelledby={consoleId}
+              className="min-h-0 flex-1 overflow-auto overscroll-contain px-4 pb-4 font-mono text-[13px] leading-5"
+            >
+              {error && (
+                <pre role="alert" className="break-words whitespace-pre-wrap text-kumo-danger">
+                  {error}
+                </pre>
+              )}
+              {result && (
+                <>
+                  <p className="sr-only">{statusLine}</p>
+                  <pre className="break-words whitespace-pre-wrap text-kumo-default">
+                    {result.body}
+                  </pre>
+                  {result.logs.length > 0 && (
+                    <>
+                      <p className="mt-4 mb-1 font-sans text-xs text-kumo-subtle">console</p>
+                      <pre className="break-words whitespace-pre-wrap text-kumo-default">
+                        {result.logs.join("\n")}
+                      </pre>
+                    </>
+                  )}
+                </>
+              )}
+              {!error && !result && (
+                <p className="font-sans text-sm text-kumo-subtle">
+                  {lesson.runnable ? (
                     <Trans>
-                      exit {result.status} · {result.ms}ms
+                      実行するとここにレスポンスと console
+                      の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。
                     </Trans>
                   ) : (
-                    <Trans>
-                      HTTP {result.status} · {result.ms}ms
-                    </Trans>
+                    <Trans>この単元は資料のみです。コードは参考として置いています。</Trans>
                   )}
                 </p>
-                <pre className="mb-2 rounded-md bg-kumo-recessed p-3 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap text-kumo-default">
-                  {result.body}
-                </pre>
-                {result.logs.length > 0 && (
-                  <>
-                    <p className="mb-1.5 text-xs text-kumo-subtle">console</p>
-                    <pre className="rounded-md bg-kumo-recessed p-3 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap text-kumo-default">
-                      {result.logs.join('\n')}
-                    </pre>
-                  </>
-                )}
-              </>
-            )}
-            {!error && !result && (
-              <p className="text-sm text-kumo-subtle">
-                {lesson.runnable ? (
-                  <Trans>
-                    実行するとここにレスポンスと console
-                    の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。
-                  </Trans>
-                ) : (
-                  <Trans>この単元は資料のみです。コードは参考として置いています。</Trans>
-                )}
-              </p>
-            )}
+              )}
+            </div>
           </div>
         </section>
 
-        <section
-          className="min-h-0 overflow-x-hidden overflow-y-auto border-l border-kumo-line bg-kumo-base px-8 py-6 max-lg:border-t max-lg:border-l-0"
-          aria-label={t`資料`}
-        >
-          <MarkdownArticle document={doc} />
-          <footer className="mt-10 max-w-[680px] border-t border-kumo-line pt-4">
-            <nav className="mb-6 flex items-center justify-between gap-3" aria-label={t`章の移動`}>
-              <Button
-                variant="outline"
-                icon={<ArrowLeftIcon size={16} />}
-                onClick={() => go(-1)}
-                disabled={lessonIndex === 0}
-              >
-                <Trans>前の章</Trans>
-              </Button>
-              <span className="text-xs text-kumo-subtle">
-                {lessonIndex + 1} / {lessons.length}
-              </span>
-              <Button
-                variant="outline"
-                icon={<ArrowRightIcon size={16} />}
-                onClick={() => go(1)}
-                disabled={lessonIndex === lessons.length - 1}
-              >
-                <Trans>次の章</Trans>
-              </Button>
-            </nav>
-
-            <p className="mb-2 text-sm font-semibold text-kumo-strong">
-              <Trans>前提知識</Trans>
-            </p>
-            <ul className="list-disc space-y-1 pl-5 text-sm text-kumo-default">
-              <li>
-                <Link href="https://jsprimer.net/" target="_blank" rel="noreferrer">
-                  JavaScript Primer
-                </Link>{' '}
-                — <Trans>JS がはじめてなら最初に</Trans>
-              </li>
-              <li>
-                <Link href="https://typescriptbook.jp/" target="_blank" rel="noreferrer">
-                  サバイバル TypeScript
-                </Link>{' '}
-                — <Trans>型が読めないと先に進みにくい</Trans>
-              </li>
-              <li>
-                <Link
-                  href="https://gihyo.jp/book/2026/978-4-297-15438-7"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Trans>Web開発者のための［入門］Cloudflare Workers</Trans>
-                </Link>{' '}
-                — <Trans>本気で使うなら</Trans>
-              </li>
-              <li>
-                <Link
-                  href="https://gihyo.jp/book/2026/978-4-297-15678-7"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Trans>Cloudflare Workers 実践ガイド</Trans>
-                </Link>{' '}
-                — <Trans>設計・運用まで</Trans>
-              </li>
-            </ul>
-          </footer>
-        </section>
-      </main>
-    </div>
+        <ChapterFooter activeKey={key} className="xl:col-start-1 xl:row-start-2" />
+      </div>
+    </ContentShell>
   );
 }
 

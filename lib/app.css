@@ -1,6 +1,6 @@
 @source "../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}";
-@import '@cloudflare/kumo/styles/tailwind';
-@import 'tailwindcss';
+@import "@cloudflare/kumo/styles/tailwind";
+@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 /* Kumo drives dark mode with <html data-mode="dark">, not the `dark` class. */
@@ -8,6 +8,8 @@
 
 /* Japanese copy: break at phrase boundaries and avoid one-character last lines. */
 html {
+  /* Keep the header from shifting sideways when a page is too short to scroll. */
+  scrollbar-gutter: stable;
   word-break: auto-phrase;
   text-wrap: pretty;
   -webkit-font-smoothing: antialiased;
@@ -17,4 +19,14 @@ h1,
 h2,
 h3 {
   text-wrap: balance;
+}
+
+/* Anchored headings land below the sticky header. */
+.markdown-renderer :is(h1, h2, h3, h4) {
+  scroll-margin-top: 6rem;
+}
+
+/* Scrolling inside the editor stays inside it. */
+.monaco-scrollable-element {
+  overscroll-behavior: contain;
 }

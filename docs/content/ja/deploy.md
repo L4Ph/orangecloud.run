@@ -1,21 +1,21 @@
 # エッジへのデプロイと運用
 
-ローカルのシミュレータ（Miniflare）で動作を確認したコードを、世界数百箇所のエッジデータセンターへ展開する。Cloudflare の公式 CLI ツールである **Wrangler** を通じて、設定ファイルとビルド成果物を瞬時に世界規模のネットワークへ同期させる。
+ローカルのシミュレータ（Miniflare）で動作を確認したコードを、世界数百箇所のエッジデータセンターへ展開する。Cloudflare の公式 CLI である **cf**（ベータ）を通じて、設定ファイルとビルド成果物を世界規模のネットワークへ同期させる。従来の Wrangler も使えるが、新規プロジェクトは `cf` を前提にする。
 
 ## 開発とデプロイの基本サイクル
 
 ```sh
 # 初回認証（ブラウザが起動しアカウント連携を行う）
-npx wrangler login
+cf auth login
 
 # ローカルエミュレータによる動作確認（高速なフィードバック）
-npx wrangler dev
+cf dev
 
 # エッジネットワークへの本番デプロイ（通常数秒で全世界に伝播）
-npx wrangler deploy
+cf deploy
 ```
 
-新規プロジェクトを立ち上げる際は、公式スキャフォールドである `npm create cloudflare@latest` を利用すると、TypeScript の型定義や推奨設定が揃った状態で開始できる。
+新規プロジェクトは `cf init my-worker` で作る。`cloudflare.config.ts`、型定義、`dev` / `build` / `deploy` の各スクリプトが揃った状態で始まる。Wrangler の既存プロジェクトは `cf migrate` で `cloudflare.config.ts` へ変換できる。
 
 ## 機密情報と外部リソースの接続
 
@@ -23,18 +23,22 @@ npx wrangler deploy
 
 ```sh
 # 暗号化シークレットの登録（ダッシュボード上でも値は隠蔽される）
-npx wrangler secret put STRIPE_API_KEY
+npx wrangler secret put STRIPE_API_KEY --name my-worker
 
-# D1 リレーショナルデータベースの作成と本番マイグレーションの適用
-npx wrangler d1 create my-production-db
-npx wrangler d1 migrations apply my-production-db --remote
+# D1 を作るコマンドは説明文から探せる
+cf cli search "create a D1 database"
+
+# 本番マイグレーションの適用（cf はデータベース ID を取り、既定でリモートに適用する）
+cf d1 migrations apply <DATABASE_ID>
 ```
 
-各種リソースへの接続設定はプロジェクトルートの `wrangler.jsonc`（または `wrangler.toml`）に記述する。ローカル開発時も Miniflare がこの定義ファイルを解釈するため、本番と同じ `env.DB` や `env.KV` のインターフェースで開発を継続できる。
+`cf` はシークレットを 1 件ずつ登録するコマンドをまだ持たない。当面は `npx wrangler secret put` を使うか、`cf deploy --secrets-file <PATH>` でまとめて渡す。
+
+各種リソースへの接続設定はプロジェクトルートの `cloudflare.config.ts` に型付きで記述する（`bindings.d1()` などのビルダーを使う）。ローカル開発時もこの定義を読むため、本番と同じ `env.DB` や `env.KV` のインターフェースで開発を継続できる。
 
 ## デプロイ前に検証すべき境界線
 
 - **シークレットの分離**: API トークンや秘密鍵が設定ファイルの `vars` 項目やソースコードに平文で残っていないか。
 - **バインディング名の完全一致**: ソースコード上で参照している `env` プロパティ名と、設定ファイル内の `binding` 定義名に差異がないか。
 - **CPU 制限時間の考慮**: 外部データ処理や重厚なループ処理が、プランの制限時間（無料枠 10ms、有料枠 30 秒）を超過して強制終了を招く恐れはないか。
-- **テールログによる監視体制**: デプロイ直後の実トラフィックの挙動は、`npx wrangler tail` を実行してエッジからの標準出力ログをリアルタイムに監視する。
+- **テールログによる監視体制**: デプロイ直後の実トラフィックの挙動は、エッジからの標準出力ログをリアルタイムに監視して確かめる。`cf` はまだ対応していないため、`npx wrangler tail <WORKER_NAME>` を使う。

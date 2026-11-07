@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite-plus';
-import tailwindcss from '@tailwindcss/vite';
-import { voidPlugin } from 'void';
-import { voidReact } from '@void/react/plugin';
-import { lingui } from '@lingui/vite-plugin';
+import { defineConfig } from "vite-plus";
+import tailwindcss from "@tailwindcss/vite";
+import { voidPlugin } from "void";
+import { voidReact } from "@void/react/plugin";
+import { lingui } from "@lingui/vite-plugin";
 
 export default defineConfig({
   plugins: [
@@ -11,14 +11,15 @@ export default defineConfig({
     voidPlugin(),
     voidReact({ react: { compiler: true } }),
   ],
+  server: { port: 5173, strictPort: true },
   lint: {
     ignorePatterns: [
-      'dist/**',
-      '.void/**',
-      '.cloudflare/**',
-      '.wrangler/**',
-      'locales/**',
-      'lessons/code/**',
+      "dist/**",
+      ".void/**",
+      ".cloudflare/**",
+      ".wrangler/**",
+      "locales/**",
+      "lessons/code/**",
     ],
     options: {
       typeAware: true,
@@ -26,9 +27,6 @@ export default defineConfig({
     },
   },
   fmt: {
-    singleQuote: true,
-    printWidth: 100,
-    trailingComma: 'all',
-    ignorePatterns: ['dist/**', '.void/**', '.cloudflare/**', '.wrangler/**', 'locales/**'],
+    ignorePatterns: ["dist/**", ".void/**", ".cloudflare/**", ".wrangler/**", "locales/**"],
   },
 });

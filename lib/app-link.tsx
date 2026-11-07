@@ -1,6 +1,6 @@
-import { forwardRef, type MouseEvent } from 'react';
-import { useRouter } from '@void/react';
-import type { LinkComponentProps } from '@cloudflare/kumo';
+import { forwardRef, type MouseEvent } from "react";
+import { useRouter } from "@void/react";
+import type { LinkComponentProps } from "@cloudflare/kumo";
 
 // Lets Kumo's Link components navigate through Void's router.
 export const AppLink = forwardRef<HTMLAnchorElement, LinkComponentProps>(
@@ -11,7 +11,7 @@ export const AppLink = forwardRef<HTMLAnchorElement, LinkComponentProps>(
       onClick?.(event);
       if (event.defaultPrevented || event.button !== 0) return;
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      if (!href || !href.startsWith('/') || href.startsWith('/#')) return;
+      if (!href || !href.startsWith("/") || href.startsWith("/#")) return;
 
       event.preventDefault();
       void router.visit(new URL(href, window.location.origin));
@@ -20,4 +20,4 @@ export const AppLink = forwardRef<HTMLAnchorElement, LinkComponentProps>(
     return <a ref={ref} href={href} onClick={handleClick} {...rest} />;
   },
 );
-AppLink.displayName = 'AppLink';
+AppLink.displayName = "AppLink";

@@ -18,4 +18,41 @@ Durable Objects는 **지정한 ID 또는 이름마다 전 세계에서 항상 �
 - 접속이 끊기면 인스턴스는 자동으로 메모리에서 제거(하이버네이션)되어 불필요한 비용이 발생하지 않는다. 다음 요청이 도착하는 순간 수 밀리초 만에 복구된다.
 - `ctx.storage.setAlarm()`을 호출하여 향후 특정 시점에 인스턴스를 자동으로 기동시켜 타이머 처리나 클린업을 실행할 수 있다.
 
+## 인메모리 상태와 SQLite 스토리지의 차이
+
+DO에는 상태를 두는 곳이 두 군데 있다. **클래스 필드(인메모리)** 와 **`ctx.storage`(SQLite)** 이다.
+
+|             | 인메모리(클래스 필드)                                   | SQLite(`ctx.storage`)                          |
+| ----------- | ------------------------------------------------------- | ---------------------------------------------- |
+| 속도        | 가장 빠름(메모리 참조뿐)                                | 빠름(같은 머신의 디스크, 동기 API로 호출 가능) |
+| 영속성      | 하이버네이션, 퇴거, 크래시, 코드 업데이트 시 **사라짐** | 재시작과 배포를 넘어 **유지됨**                |
+| 적합한 용도 | 캐시, 연결 중인 WebSocket 목록, 쓰기 전 배치            | 원본 데이터 전반                               |
+
+사라지는 조건은 구체적으로 정해져 있다. 약 10초간 접근이 없어 퇴거될 때, 처리되지 않은 예외로 종료될 때, 새 코드를 배포할 때(기본적으로 최대 5분 정도 유예)이다. 다시 호출되면 `constructor()`가 다시 실행되어 필드가 초기값으로 돌아간다.
+
+따라서 원본은 항상 SQLite에 먼저 쓰고, 메모리는 읽기 속도를 높이는 데 쓴다. 생성자에서 SQLite를 읽어 필드를 채워 두는 것이 정석이다.
+
+```ts
+export class ChatRoom extends DurableObject {
+  // 퇴거로 사라져도 되는 읽기 캐시
+  recent: Message[] | null = null;
+
+  addMessage(text: string) {
+    // 먼저 영속화하고 캐시를 버린다
+    this.ctx.storage.sql.exec('INSERT INTO messages (text) VALUES (?)', text);
+    this.recent = null;
+  }
+}
+```
+
+## WebSocket과 Hibernation API
+
+채팅처럼 연결을 계속 유지하는 용도는 DO가 가장 잘하는 영역이다. 같은 이름의 DO에 모두가 연결되므로 브로드캐스트에 별도 장치가 필요 없다.
+
+표준 `ws.accept()`를 쓰면 연결이 살아 있는 동안 DO가 메모리에 머물며 그 시간 내내 과금된다. **Hibernation API**는 `this.ctx.acceptWebSocket(ws)`로 연결을 맡기고 `webSocketMessage()` / `webSocketClose()` 핸들러로 받는다. 메시지가 없는 동안 DO는 연결을 끊지 않은 채 메모리에서 퇴거될 수 있다.
+
+다만 퇴거되면 필드는 사라진다. 연결별 작은 정보(사용자 이름 등)는 `ws.serializeAttachment()`에 저장하고 깨어났을 때 `ws.deserializeAttachment()`로 복원한다. 이력은 SQLite에 둔다. 즉 Hibernation은 위 표의 구분을 지키는 것이 전제다.
+
+다음 장 [Durable Object를 직접 작성하기](/lessons/durable-object-class)에서 코드를 고쳐 가며 두 상태의 차이를 확인할 수 있다.
+
 에디터상의 `env.COUNTER`는 실제로 가동 중인 Durable Object 인스턴스이다. 코드를 반복 실행하면 프로세스가 재시작되어도 카운터가 확실하게 계속 증가하는 동작을 확인할 수 있다.

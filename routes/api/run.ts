@@ -1,32 +1,32 @@
-import { defineHandler } from 'void';
-import { z } from 'zod';
-import { env } from 'void/env';
-import { runInSandbox, type RunResult } from '../../lib/run';
+import { defineHandler } from "void";
+import * as v from "valibot";
+import { env } from "void/env";
+import { runInSandbox, type RunResult } from "../../lib/run";
 
 // Cloudflare's published test secrets accept any token, so they skip the
 // hostname/action checks that a real secret relies on.
-const TEST_SECRET_PREFIX = '1x0000000000000000000000000000000';
+const TEST_SECRET_PREFIX = "1x0000000000000000000000000000000";
 
 // One verified visit per browser per half day; tokens are single-use, so
 // re-running the widget for every click is user-hostile.
-const PASS_COOKIE = 'run_pass';
+const PASS_COOKIE = "run_pass";
 const PASS_TTL_MS = 12 * 60 * 60 * 1000;
 
 const encode = (bytes: ArrayBuffer) =>
   btoa(String.fromCharCode(...new Uint8Array(bytes)))
-    .replaceAll('+', '-')
-    .replaceAll('/', '_')
-    .replace(/=+$/, '');
+    .replaceAll("+", "-")
+    .replaceAll("/", "_")
+    .replace(/=+$/, "");
 
 async function hmac(value: string) {
   const key = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     new TextEncoder().encode(env.TURNSTILE_SECRET),
-    { name: 'HMAC', hash: 'SHA-256' },
+    { name: "HMAC", hash: "SHA-256" },
     false,
-    ['sign'],
+    ["sign"],
   );
-  return encode(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)));
+  return encode(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value)));
 }
 
 async function issuePass() {
@@ -36,13 +36,13 @@ async function issuePass() {
 
 async function hasValidPass(cookieHeader: string | undefined) {
   const raw = cookieHeader
-    ?.split(';')
+    ?.split(";")
     .map((part) => part.trim())
     .find((part) => part.startsWith(`${PASS_COOKIE}=`))
     ?.slice(PASS_COOKIE.length + 1);
   if (!raw) return false;
 
-  const [expires, signature] = raw.split('.');
+  const [expires, signature] = raw.split(".");
   if (!expires || !signature) return false;
   if (Number(expires) < Date.now()) return false;
   return signature === (await hmac(expires));
@@ -50,12 +50,12 @@ async function hasValidPass(cookieHeader: string | undefined) {
 
 async function verifyTurnstile(token: string, hostname: string, remoteip: string | undefined) {
   const form = new URLSearchParams({ secret: env.TURNSTILE_SECRET, response: token });
-  if (remoteip) form.set('remoteip', remoteip);
+  if (remoteip) form.set("remoteip", remoteip);
 
   let result: { success?: boolean; action?: string; hostname?: string };
   try {
-    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
       body: form,
       signal: AbortSignal.timeout(10_000),
     });
@@ -67,30 +67,28 @@ async function verifyTurnstile(token: string, hostname: string, remoteip: string
 
   if (result.success !== true) return false;
   if (env.TURNSTILE_SECRET.startsWith(TEST_SECRET_PREFIX)) return true;
-  return result.action === 'run' && result.hostname === hostname;
+  return result.action === "run" && result.hostname === hostname;
 }
 
 export const POST = defineHandler.withValidator({
-  body: z.object({
-    code: z
-      .string()
-      .min(1)
-      .max(64 * 1024),
-    token: z.string().min(1).max(2048).optional(),
-    lang: z.enum(['javascript', 'python', 'container']).optional(),
+  body: v.object({
+    code: v.pipe(v.string(), v.minLength(1), v.maxLength(64 * 1024)),
+    token: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(2048))),
+    lang: v.optional(v.picklist(["javascript", "python", "container", "durable-object"])),
+    runtime: v.optional(v.picklist(["python", "node", "sh"])),
   }),
 })(async (c, { body }): Promise<RunResult | Response> => {
-  const passed = await hasValidPass(c.req.header('cookie'));
+  const passed = await hasValidPass(c.req.header("cookie"));
   let setCookie: string | null = null;
 
   if (!passed) {
     if (!body.token) {
       return {
         status: 0,
-        body: '',
+        body: "",
         logs: [],
-        error: 'Turnstile verification required',
-        errorCode: 'turnstile',
+        error: "Turnstile verification required",
+        errorCode: "turnstile",
         ms: 0,
       };
     }
@@ -98,15 +96,15 @@ export const POST = defineHandler.withValidator({
     const verified = await verifyTurnstile(
       body.token,
       new URL(c.req.url).hostname,
-      c.req.header('cf-connecting-ip'),
+      c.req.header("cf-connecting-ip"),
     );
     if (!verified) {
       return {
         status: 0,
-        body: '',
+        body: "",
         logs: [],
-        error: 'Turnstile verification failed',
-        errorCode: 'turnstile',
+        error: "Turnstile verification failed",
+        errorCode: "turnstile",
         ms: 0,
       };
     }
@@ -114,11 +112,12 @@ export const POST = defineHandler.withValidator({
     setCookie = `${PASS_COOKIE}=${await issuePass()}; Path=/; Max-Age=${PASS_TTL_MS / 1000}; HttpOnly; Secure; SameSite=Lax`;
   }
 
-  const { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER } = c.env;
+  const { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER, LESSON_USER_DO } = c.env;
   const result = await runInSandbox(
-    { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER },
+    { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER, LESSON_USER_DO },
     body.code,
     body.lang,
+    body.runtime,
   );
 
   if (!setCookie) return result;
@@ -126,6 +125,6 @@ export const POST = defineHandler.withValidator({
   // Returning a Response keeps the cookie: Void builds one from a plain object
   // and drops headers set on the context.
   return new Response(JSON.stringify(result), {
-    headers: { 'content-type': 'application/json; charset=utf-8', 'set-cookie': setCookie },
+    headers: { "content-type": "application/json; charset=utf-8", "set-cookie": setCookie },
   });
 });

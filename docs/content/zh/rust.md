@@ -42,10 +42,10 @@ cargo install worker-build
 worker-build --release
 
 # 部署至边缘网络
-npx wrangler deploy
+cf deploy
 ```
 
-`worker-build` 通过 Rust 编译器（`rustc`）构建 `wasm32-unknown-unknown` 目标的二进制文件，并将起到 V8 边界作用的 JavaScript 包装器（源自 `wasm-bindgen` 的 shim）输出到 `build/worker/shim.mjs` 中。配置文件的 `main` 属性指定了该 shim 文件。
+`worker-build` 通过 Rust 编译器（`rustc`）构建 `wasm32-unknown-unknown` 目标的二进制文件，并将起到 V8 边界作用的 JavaScript 包装器（源自 `wasm-bindgen` 的 shim）输出到 `build/worker/shim.mjs` 中。配置文件的 `worker.entrypoint` 属性指定了该 shim 文件。
 
 ## 与 JavaScript 的分工界限
 
