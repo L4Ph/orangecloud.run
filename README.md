@@ -44,7 +44,7 @@ Vite+（`vp`）の `check` を使います。設定は `vite.config.ts` の `lin
 
 - **Void（Vite+）**: ルーティング・SSR・Cloudflare へのデプロイ
 - **`routes/api/run.ts`**: Turnstile を検証してから `env.LOADER`（Worker Loader バインディング）でサンドボックス Worker を起動
-- **`pages/index.server.ts`**: ロケール・章・本文 HTML を loader で返す（章は `?lesson=kv`、`head()` で `<html lang>`）
+- **`pages/lessons/[id].server.ts`**: 章ごとのページ。loader がロケール・本文 HTML を返し、`head()` がタイトル／説明／`<html lang>` を設定。`/` は最初の章へ 302
 - **`lib/turnstile.tsx`**: widget の描画（実行ごとに作り直して単発トークンを取り直す）
 - **`env.ts`**: `TURNSTILE_SECRET` のスキーマ（ローカルは `.env`、本番は `void secret put`）
 - **`routes/api/sandbox.dev.ts`**: 開発専用の検証なし実行口（smoke 用。ビルド対象外）
