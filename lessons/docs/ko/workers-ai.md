@@ -4,18 +4,20 @@ Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 
 
 ## 우선 저렴한 모델부터
 
-| 모델                                       | 용도              | 대략            |
-| ------------------------------------------ | ----------------- | --------------- |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 범용 대화·요약    | 저렴. 먼저 이것 |
-| `@cf/openai/gpt-oss-20b`                   | 어려운 추론       | 비쌈            |
-| `@cf/baai/bge-small-en-v1.5`               | 임베딩(검색, RAG) | 매우 저렴       |
-| `@cf/openai/whisper`                       | 음성→문자         | 초 단위 과금    |
+| 모델                                           | 용도              | 대략            |
+| ---------------------------------------------- | ----------------- | --------------- |
+| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화·요약    | 저렴. 먼저 이것 |
+| `@cf/openai/gpt-oss-20b`                       | 어려운 추론       | 비쌈            |
+| `@cf/baai/bge-small-en-v1.5`                   | 임베딩(검색, RAG) | 매우 저렴       |
+| `@cf/openai/whisper`                           | 음성→문자         | 초 단위 과금    |
 
 가격은 입력·출력 토큰 종량제입니다. 저렴한 모델이면 1회에 몇 원 미만입니다. 먼저 저렴한 모델로 돌리고 부족할 때만 올리세요.
 
 모델은 자주 바뀝니다. 쓰기 전에 [Workers AI 모델 카탈로그](https://developers.cloudflare.com/workers-ai/models/)에서 ID와 폐기 예정을 확인하세요. 위의 ID도 언젠가 사라집니다.
 
-모델마다 응답 구조가 다릅니다. `@cf/meta/llama-3.3-70b-instruct-fp8-fast`는 `response`에 문자열을 주지만, Gemma 4 같은 추론 모델은 `choices[0].message.content`에 주고 생각하는 데 토큰을 많이 씁니다. 처음에는 `response` 모델이 다루기 쉽습니다.
+비용은 대개 출력 토큰이 좌우하므로 출력 단가를 비교하세요. `mistral-small-3.1-24b`는 출력 100만 토큰당 $0.555로 llama-3.3-70b의 $2.253보다 약 4배 저렴하고, `response`에 문자열을 돌려줍니다.
+
+모델마다 응답 구조가 다릅니다. `@cf/mistralai/mistral-small-3.1-24b-instruct`는 `response`에 문자열을 주지만, Gemma 4 같은 추론 모델은 `choices[0].message.content`에 주고 생각하는 데 토큰을 많이 씁니다. 처음에는 `response` 모델이 다루기 쉽습니다.
 
 ## 호출 방법
 

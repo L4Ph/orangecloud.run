@@ -4,18 +4,20 @@ Cloudflare の GPU 上でモデルを動かす仕組み。**推論エンジン�
 
 ## まずは安いモデルから
 
-| モデル                                     | 用途                  | 目安           |
-| ------------------------------------------ | --------------------- | -------------- |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 汎用の会話・要約      | 安い。まずこれ |
-| `@cf/openai/gpt-oss-20b`                   | 難しい推論            | 高い           |
-| `@cf/baai/bge-small-en-v1.5`               | 埋め込み（検索・RAG） | 非常に安い     |
-| `@cf/openai/whisper`                       | 音声→文字             | 秒課金         |
+| モデル                                         | 用途                  | 目安           |
+| ---------------------------------------------- | --------------------- | -------------- |
+| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 汎用の会話・要約      | 安い。まずこれ |
+| `@cf/openai/gpt-oss-20b`                       | 難しい推論            | 高い           |
+| `@cf/baai/bge-small-en-v1.5`                   | 埋め込み（検索・RAG） | 非常に安い     |
+| `@cf/openai/whisper`                           | 音声→文字             | 秒課金         |
 
 価格は「入力トークン」「出力トークン」の従量制。安いモデルなら 1 回数円未満です。まずは小さいモデルで動かし、足りないときだけ上げる。
 
 モデルは頻繁に入れ替わります。使う前に [Workers AI のモデルカタログ](https://developers.cloudflare.com/workers-ai/models/) で ID と廃止予定を確認してください。ここに載せた ID も将来は消えます。
 
-モデルによって返し方が違います。`@cf/meta/llama-3.3-70b-instruct-fp8-fast` は `response` に文字列を返しますが、Gemma 4 のような推論モデルは `choices[0].message.content` に返し、考えるためのトークンを多く使います。最初は `response` を返すモデルが扱いやすいです。
+料金は出力トークンで決まることが多いので、出力単価で比べます。`mistral-small-3.1-24b` は出力 $0.555/M トークンで、llama-3.3-70b の $2.253/M より約4倍安く、`response` に文字列を返します。
+
+モデルによって返し方が違います。`@cf/mistralai/mistral-small-3.1-24b-instruct` は `response` に文字列を返しますが、Gemma 4 のような推論モデルは `choices[0].message.content` に返し、考えるためのトークンを多く使います。最初は `response` を返すモデルが扱いやすいです。
 
 ## 呼び方
 
