@@ -3,7 +3,7 @@ import { Link } from "@cloudflare/kumo/components/link";
 import { Select } from "@cloudflare/kumo/components/select";
 import { GithubLogoIcon } from "@phosphor-icons/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { localeLabel, locales, type Locale } from "./locales";
+import { localeLabel, locales, type Locale } from "../lib/locales";
 
 const languageItems = Object.fromEntries(locales.map((item) => [item, localeLabel[item]]));
 

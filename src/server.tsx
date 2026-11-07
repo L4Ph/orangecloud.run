@@ -6,18 +6,18 @@ import { docs } from "../docs";
 import { docBody } from "../docs/bodies";
 import { lessons } from "../lessons";
 import { lessonDoc } from "../lessons/docs";
-import { catalogs } from "../lib/catalogs";
-import type { Locale } from "../lib/locales";
-import { parseDoc, tocOf } from "../lib/markdown-source";
-import { requestLocale } from "../lib/request-locale";
-import { runInSandbox } from "../lib/run";
+import { catalogs } from "./lib/catalogs";
+import type { Locale } from "./lib/locales";
+import { parseDoc, tocOf } from "./lib/markdown-source";
+import { requestLocale } from "./lib/request-locale";
+import { runInSandbox } from "./lib/run";
 import { renderPage } from "./document";
 
 // A Worker's named exports are its Durable Object classes and the sandbox's bindings.
-export { LessonCounterDurableObject } from "../durable-objects/counter";
-export { SandboxV1 } from "../durable-objects/sandbox";
-export { LessonUserDoDurableObject } from "../durable-objects/user-do";
-export * from "../lib/lesson-bindings";
+export { LessonCounterDurableObject } from "./durable-objects/counter";
+export { SandboxV1 } from "./durable-objects/sandbox";
+export { LessonUserDoDurableObject } from "./durable-objects/user-do";
+export * from "./lib/lesson-bindings";
 
 const translator = (locale: Locale) =>
   new I18n({ locale, messages: { [locale]: catalogs[locale] } });

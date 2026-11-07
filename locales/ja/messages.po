@@ -7,8 +7,8 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ja\n"
 
-#: lib/content-shell.tsx:42
-#: lib/site-header.tsx:56
+#: src/components/content-shell.tsx:42
+#: src/components/site-header.tsx:56
 #: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
 msgstr "（新しいタブで開く）"
@@ -71,11 +71,11 @@ msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:279
+#: src/components/playground.tsx:279
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
-#: lib/site-header.tsx:56
+#: src/components/site-header.tsx:56
 msgid "GitHub のリポジトリ"
 msgstr "GitHub のリポジトリ"
 
@@ -93,7 +93,7 @@ msgstr "Hono のルーターとミドルウェア"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:283
+#: src/components/playground.tsx:283
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -117,7 +117,7 @@ msgstr "isolate、状態を持たない、制限、課金"
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript エンジンとランタイム"
 
-#: lib/content-shell.tsx:241
+#: src/components/content-shell.tsx:241
 msgid "JS がはじめてなら最初に"
 msgstr "JS がはじめてなら最初に"
 
@@ -173,15 +173,15 @@ msgstr "Workers の実行モデル"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 
-#: lib/playground.tsx:311
+#: src/components/playground.tsx:311
 msgid "エディタ"
 msgstr "エディタ"
 
-#: lib/playground.tsx:299
+#: src/components/playground.tsx:299
 msgid "エディタへ移動"
 msgstr "エディタへ移動"
 
-#: lib/playground.tsx:346
+#: src/components/playground.tsx:346
 msgid "コードエディタ"
 msgstr "コードエディタ"
 
@@ -198,7 +198,7 @@ msgstr "このサイトの仕組み"
 msgid "このページ"
 msgstr "このページ"
 
-#: lib/playground.tsx:397
+#: src/components/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
@@ -246,24 +246,24 @@ msgstr "任意の Linux バイナリをパイプでつなぐ。FFmpeg なども�
 msgid "公開と運用"
 msgstr "公開と運用"
 
-#: lib/playground.tsx:317
+#: src/components/playground.tsx:317
 msgid "初期化"
 msgstr "初期化"
 
-#: lib/content-shell.tsx:205
+#: src/components/content-shell.tsx:205
 msgid "前"
 msgstr "前"
 
-#: lib/content-shell.tsx:227
+#: src/components/content-shell.tsx:227
 msgid "前後の章"
 msgstr "前後の章"
 
-#: lib/content-shell.tsx:236
+#: src/components/content-shell.tsx:236
 msgid "前提知識"
 msgstr "前提知識"
 
-#: lib/content-shell.tsx:30
-#: lib/content-shell.tsx:83
+#: src/components/content-shell.tsx:30
+#: src/components/content-shell.tsx:83
 msgid "動かす"
 msgstr "動かす"
 
@@ -271,7 +271,7 @@ msgstr "動かす"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "名前ごとに 1 つの実体。状態と直列化"
 
-#: lib/content-shell.tsx:245
+#: src/components/content-shell.tsx:245
 msgid "型が読めないと先に進みにくい"
 msgstr "型が読めないと先に進みにくい"
 
@@ -284,15 +284,15 @@ msgstr "基礎"
 msgid "学ぶ"
 msgstr "学ぶ"
 
-#: lib/playground.tsx:327
+#: src/components/playground.tsx:327
 msgid "実行"
 msgstr "実行"
 
-#: lib/playground.tsx:392
+#: src/components/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 
-#: lib/playground.tsx:242
+#: src/components/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 
@@ -300,7 +300,7 @@ msgstr "実行回数が多すぎます。少し待ってからもう一度お試
 msgid "実行環境"
 msgstr "実行環境"
 
-#: lib/playground.tsx:354
+#: src/components/playground.tsx:354
 msgid "実行結果"
 msgstr "実行結果"
 
@@ -309,12 +309,12 @@ msgstr "実行結果"
 msgid "書籍の紹介"
 msgstr "書籍の紹介"
 
-#: lib/content-shell.tsx:250
+#: src/components/content-shell.tsx:250
 #: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
 msgstr "書籍の紹介 →"
 
-#: lib/site-header.tsx:18
+#: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "本文へ移動"
 
@@ -326,7 +326,7 @@ msgstr "本気で使うなら"
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "構文もランタイムも違う言語が、同じ Worker として動く"
 
-#: lib/content-shell.tsx:205
+#: src/components/content-shell.tsx:205
 msgid "次"
 msgstr "次"
 
@@ -335,7 +335,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "状態の置き場所を選ぶ"
 
 #: lessons/index.ts:20
-#: lib/site-header.tsx:33
+#: src/components/site-header.tsx:33
 msgid "言語"
 msgstr "言語"
 
@@ -343,8 +343,8 @@ msgstr "言語"
 msgid "設計・運用まで"
 msgstr "設計・運用まで"
 
-#: lib/content-shell.tsx:30
-#: lib/content-shell.tsx:83
+#: src/components/content-shell.tsx:30
+#: src/components/content-shell.tsx:83
 msgid "読む"
 msgstr "読む"
 
@@ -360,10 +360,10 @@ msgstr "速い読み取りと結果整合。キャッシュや設定の置き場
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "非同期処理と、再開できる長時間ジョブ"
 
-#: lib/content-shell.tsx:54
+#: src/components/content-shell.tsx:54
 msgid "章と記事"
 msgstr "章と記事"
 
-#: lib/content-shell.tsx:144
+#: src/components/content-shell.tsx:144
 msgid "章と記事の一覧"
 msgstr "章と記事の一覧"

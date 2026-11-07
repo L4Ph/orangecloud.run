@@ -1,6 +1,6 @@
 import type { MessageDescriptor } from "@lingui/core";
-import { docs } from "../docs";
-import { lessonSections, lessons, type LessonSection } from "../lessons";
+import { docs } from "../../docs";
+import { lessonSections, lessons, type LessonSection } from "../../lessons";
 
 // The one reading order: sections in order, hands-on chapters before articles.
 // The index, the sidebar and every previous/next link follow it.

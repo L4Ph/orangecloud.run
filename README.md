@@ -19,6 +19,15 @@ Workers AI has no local simulation, so `npm run dev` uses the real binding and n
 npm run check   # format, lint (type-aware), type check
 ```
 
+## Layout
+
+- `src/server.tsx` — the Hono app: the page routes and `POST /api/run`
+- `src/pages/` — one component per page
+- `src/components/` — the header, editor, article and other shared components
+- `src/lib/` — catalogs, locale handling, markdown, and the code that runs the editor's input
+- `src/durable-objects/` — the Durable Object classes, including the container one
+- `lessons/`, `docs/`, `locales/` — content and translations (see Content)
+
 ## Routes
 
 All routes are in `src/server.tsx`. Each page route builds its props there and renders a component from `src/pages/`.
@@ -28,7 +37,7 @@ All routes are in `src/server.tsx`. Each page route builds its props there and r
 - `/docs/:slug` — long-form articles
 - `POST /api/run` — runs the editor's code in a Dynamic Worker, a Durable Object or a container
 
-The sandbox reaches D1, KV, R2, AI and the counter through the `WorkerEntrypoint` classes in `lib/lesson-bindings.ts`.
+The sandbox reaches D1, KV, R2, AI and the counter through the `WorkerEntrypoint` classes in `src/lib/lesson-bindings.ts`.
 
 ## Content
 

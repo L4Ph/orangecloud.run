@@ -4,11 +4,11 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { Button } from "@cloudflare/kumo/components/button";
 import { Link } from "@cloudflare/kumo/components/link";
 import { ArrowDownIcon, PlayIcon } from "@phosphor-icons/react";
-import { lessons } from "../lessons";
-import type { Locale } from "./locales";
+import { lessons } from "../../lessons";
+import type { Locale } from "../lib/locales";
 import { ChapterFooter, ChapterHeader, ContentShell } from "./content-shell";
 import { MarkdownArticle } from "./markdown-article";
-import { editorCss } from "./markdown-highlight";
+import { editorCss } from "../lib/markdown-highlight";
 import type { MarkdownDocument } from "@tanstack/markdown";
 
 type RunResult = {

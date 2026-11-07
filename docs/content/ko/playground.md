@@ -32,7 +32,7 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 자식 Worker의 `env`에 실을 수 있는 것은 구조화 클론(Structured Clone)이 가능한 데이터 타입과 Service Binding 두 가지뿐이다. D1, KV, R2, AI, Durable Object 스텁은 어느 쪽에도 해당하지 않으므로 직접 전달할 수 없다. `env`에 실으면 배포된 실행 환경에서 `This ServiceStub cannot be serialized.`로 실패한다.
 
-그래서 부모 Worker는 바인딩마다 `WorkerEntrypoint` 클래스를 export하고, 그 스텁(`ctx.exports.LessonKv({ props })`)을 자식에게 전달한다. 자식은 `env.KV.get()`처럼 일반 바인딩으로 호출할 수 있다. 호출은 부모로의 RPC가 되어, 부모가 실제 리소스에 대해 실행한다. 클래스는 `lib/lesson-bindings.ts`에 있다.
+그래서 부모 Worker는 바인딩마다 `WorkerEntrypoint` 클래스를 export하고, 그 스텁(`ctx.exports.LessonKv({ props })`)을 자식에게 전달한다. 자식은 `env.KV.get()`처럼 일반 바인딩으로 호출할 수 있다. 호출은 부모로의 RPC가 되어, 부모가 실제 리소스에 대해 실행한다. 클래스는 `src/lib/lesson-bindings.ts`에 있다.
 
 | 리소스          | 자식 Worker가 받는 것                                                                     |
 | --------------- | ----------------------------------------------------------------------------------------- |

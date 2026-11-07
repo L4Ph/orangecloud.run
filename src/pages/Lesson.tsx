@@ -1,6 +1,6 @@
-import LessonView from "../../lib/playground";
-import type { Locale } from "../../lib/locales";
-import type { parseDoc } from "../../lib/markdown-source";
+import LessonView from "../components/playground";
+import type { Locale } from "../lib/locales";
+import type { parseDoc } from "../lib/markdown-source";
 
 export type Props = { locale: Locale; lessonId: string; document: ReturnType<typeof parseDoc> };
 

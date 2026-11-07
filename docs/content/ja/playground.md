@@ -32,7 +32,7 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 子 Worker の `env` に載せられるのは、構造化クローン（Structured Clone）が可能なデータ型と Service Binding の2種類だけである。D1、KV、R2、AI、Durable Object のスタブは、どちらにも当たらないので、直接は渡せない。`env` に載せると、デプロイ先の実行環境では `This ServiceStub cannot be serialized.` で失敗する。
 
-そこで親 Worker は、バインディングごとに `WorkerEntrypoint` のクラスを export し、そのスタブ（`ctx.exports.LessonKv({ props })`）を子に渡す。子は `env.KV.get()` のように普通のバインディングとして呼べる。呼び出しは親への RPC になり、親が本物のリソースに対して実行する。クラスは `lib/lesson-bindings.ts` にある。
+そこで親 Worker は、バインディングごとに `WorkerEntrypoint` のクラスを export し、そのスタブ（`ctx.exports.LessonKv({ props })`）を子に渡す。子は `env.KV.get()` のように普通のバインディングとして呼べる。呼び出しは親への RPC になり、親が本物のリソースに対して実行する。クラスは `src/lib/lesson-bindings.ts` にある。
 
 | リソース        | 子 Worker が受け取るもの                                                                            |
 | --------------- | --------------------------------------------------------------------------------------------------- |

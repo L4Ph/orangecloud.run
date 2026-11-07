@@ -7,8 +7,8 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
 
-#: lib/content-shell.tsx:42
-#: lib/site-header.tsx:56
+#: src/components/content-shell.tsx:42
+#: src/components/site-header.tsx:56
 #: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
 msgstr "(opens in a new tab)"
@@ -71,11 +71,11 @@ msgstr "Dynamic Workers, relayed bindings, and run limits"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:279
+#: src/components/playground.tsx:279
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
-#: lib/site-header.tsx:56
+#: src/components/site-header.tsx:56
 msgid "GitHub のリポジトリ"
 msgstr "GitHub repository"
 
@@ -93,7 +93,7 @@ msgstr "Hono's router and middleware"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:283
+#: src/components/playground.tsx:283
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -117,7 +117,7 @@ msgstr "Isolates, no shared state, limits, billing"
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript engines and runtimes"
 
-#: lib/content-shell.tsx:241
+#: src/components/content-shell.tsx:241
 msgid "JS がはじめてなら最初に"
 msgstr "Start here if JS is new to you"
 
@@ -173,15 +173,15 @@ msgstr "The Workers execution model"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "See the difference between in-memory state and SQLite by editing code"
 
-#: lib/playground.tsx:311
+#: src/components/playground.tsx:311
 msgid "エディタ"
 msgstr "Editor"
 
-#: lib/playground.tsx:299
+#: src/components/playground.tsx:299
 msgid "エディタへ移動"
 msgstr "Go to the editor"
 
-#: lib/playground.tsx:346
+#: src/components/playground.tsx:346
 msgid "コードエディタ"
 msgstr "Code editor"
 
@@ -198,7 +198,7 @@ msgstr "How this site works"
 msgid "このページ"
 msgstr "On this page"
 
-#: lib/playground.tsx:397
+#: src/components/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reading only. The code is there for reference."
 
@@ -246,24 +246,24 @@ msgstr "Pipe any Linux binaries together. FFmpeg and friends are an extension of
 msgid "公開と運用"
 msgstr "Ship and operate"
 
-#: lib/playground.tsx:317
+#: src/components/playground.tsx:317
 msgid "初期化"
 msgstr "Reset"
 
-#: lib/content-shell.tsx:205
+#: src/components/content-shell.tsx:205
 msgid "前"
 msgstr "Previous"
 
-#: lib/content-shell.tsx:227
+#: src/components/content-shell.tsx:227
 msgid "前後の章"
 msgstr "Previous and next"
 
-#: lib/content-shell.tsx:236
+#: src/components/content-shell.tsx:236
 msgid "前提知識"
 msgstr "Prerequisites"
 
-#: lib/content-shell.tsx:30
-#: lib/content-shell.tsx:83
+#: src/components/content-shell.tsx:30
+#: src/components/content-shell.tsx:83
 msgid "動かす"
 msgstr "Run"
 
@@ -271,7 +271,7 @@ msgstr "Run"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "One instance per name. State and serialization"
 
-#: lib/content-shell.tsx:245
+#: src/components/content-shell.tsx:245
 msgid "型が読めないと先に進みにくい"
 msgstr "Hard to go further without reading types"
 
@@ -284,15 +284,15 @@ msgstr "Basics"
 msgid "学ぶ"
 msgstr "Learn"
 
-#: lib/playground.tsx:327
+#: src/components/playground.tsx:327
 msgid "実行"
 msgstr "Run"
 
-#: lib/playground.tsx:392
+#: src/components/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "The response and console output appear here after you run. The network is blocked, so nothing breaks."
 
-#: lib/playground.tsx:242
+#: src/components/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "Too many runs. Wait a moment and try again."
 
@@ -300,7 +300,7 @@ msgstr "Too many runs. Wait a moment and try again."
 msgid "実行環境"
 msgstr "Compute"
 
-#: lib/playground.tsx:354
+#: src/components/playground.tsx:354
 msgid "実行結果"
 msgstr "Run output"
 
@@ -309,12 +309,12 @@ msgstr "Run output"
 msgid "書籍の紹介"
 msgstr "Books"
 
-#: lib/content-shell.tsx:250
+#: src/components/content-shell.tsx:250
 #: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
 msgstr "Books →"
 
-#: lib/site-header.tsx:18
+#: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "Skip to content"
 
@@ -326,7 +326,7 @@ msgstr "For serious use"
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "A different language and runtime, still the same Worker"
 
-#: lib/content-shell.tsx:205
+#: src/components/content-shell.tsx:205
 msgid "次"
 msgstr "Next"
 
@@ -335,7 +335,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "Choosing where state lives"
 
 #: lessons/index.ts:20
-#: lib/site-header.tsx:33
+#: src/components/site-header.tsx:33
 msgid "言語"
 msgstr "Languages"
 
@@ -343,8 +343,8 @@ msgstr "Languages"
 msgid "設計・運用まで"
 msgstr "Through design and operations"
 
-#: lib/content-shell.tsx:30
-#: lib/content-shell.tsx:83
+#: src/components/content-shell.tsx:30
+#: src/components/content-shell.tsx:83
 msgid "読む"
 msgstr "Read"
 
@@ -360,10 +360,10 @@ msgstr "Fast reads with eventual consistency. A home for cache and config"
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "Async work and long-running jobs that resume"
 
-#: lib/content-shell.tsx:54
+#: src/components/content-shell.tsx:54
 msgid "章と記事"
 msgstr "Chapters and articles"
 
-#: lib/content-shell.tsx:144
+#: src/components/content-shell.tsx:144
 msgid "章と記事の一覧"
 msgstr "All chapters and articles"

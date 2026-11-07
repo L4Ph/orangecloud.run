@@ -2,10 +2,10 @@ import { useEffect, useId, useRef, type ReactNode } from "react";
 import { Link } from "@cloudflare/kumo/components/link";
 import { ArrowLeftIcon, ArrowRightIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { lessonSections } from "../lessons";
-import { catalog, catalogSections, entryOf, neighbours } from "./catalog";
+import { lessonSections } from "../../lessons";
+import { catalog, catalogSections, entryOf, neighbours } from "../lib/catalog";
 import { SiteHeader } from "./site-header";
-import type { Locale } from "./locales";
+import type { Locale } from "../lib/locales";
 
 // Every chapter and article uses this frame, so the sidebar, the heading and
 // the previous/next links look and behave the same. Only the window scrolls;

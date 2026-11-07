@@ -1,11 +1,11 @@
 import { Link } from "@cloudflare/kumo/components/link";
 import { Text } from "@cloudflare/kumo/components/text";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { catalog, catalogSections } from "../../lib/catalog";
-import { Kind } from "../../lib/content-shell";
-import { SiteHeader } from "../../lib/site-header";
-import { I18nPage } from "../../lib/i18n-page";
-import type { Locale } from "../../lib/locales";
+import { catalog, catalogSections } from "../lib/catalog";
+import { Kind } from "../components/content-shell";
+import { SiteHeader } from "../components/site-header";
+import { I18nPage } from "../components/i18n-page";
+import type { Locale } from "../lib/locales";
 
 export type Props = { locale: Locale };
 

@@ -26,7 +26,7 @@ function Document({ page, head }: { page: PageData; head: Head }) {
         ))}
         <script dangerouslySetInnerHTML={{ __html: darkModeScript }} />
         <ViteClient />
-        <Link href="/lib/app.css" rel="stylesheet" />
+        <Link href="/src/app.css" rel="stylesheet" />
         <Script src="/src/client.tsx" />
       </head>
       <body>

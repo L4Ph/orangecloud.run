@@ -32,7 +32,7 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 The child Worker's `env` accepts only two kinds of values: data that supports Structured Cloning, and Service Bindings. D1, KV, R2, AI and Durable Object stubs are neither, so none of them can be passed in directly. Putting them in `env` fails on the deployed runtime with `This ServiceStub cannot be serialized.`
 
-Instead, the parent Worker exports a `WorkerEntrypoint` class for each binding and hands the child a stub of it (`ctx.exports.LessonKv({ props })`). The child calls `env.KV.get()` like any binding, and each call is an RPC back into the parent, which runs it against the real resource. The classes live in `lib/lesson-bindings.ts`.
+Instead, the parent Worker exports a `WorkerEntrypoint` class for each binding and hands the child a stub of it (`ctx.exports.LessonKv({ props })`). The child calls `env.KV.get()` like any binding, and each call is an RPC back into the parent, which runs it against the real resource. The classes live in `src/lib/lesson-bindings.ts`.
 
 | Resource        | What the child Worker gets                                                                                   |
 | --------------- | ------------------------------------------------------------------------------------------------------------ |

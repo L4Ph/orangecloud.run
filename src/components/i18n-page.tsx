@@ -3,8 +3,8 @@ import { I18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { LinkProvider } from "@cloudflare/kumo";
 import { AppLink } from "./app-link";
-import { catalogs } from "./catalogs";
-import type { Locale } from "./locales";
+import { catalogs } from "../lib/catalogs";
+import type { Locale } from "../lib/locales";
 
 export function I18nPage({ locale, children }: { locale: Locale; children: ReactNode }) {
   const i18n = useMemo(

@@ -1,7 +1,7 @@
 import { Markdown } from "@tanstack/markdown/react";
 import type { MarkdownDocument } from "@tanstack/markdown";
-import { highlightCode, markdownCss } from "./markdown-highlight";
-import { proseTokens } from "./prose";
+import { highlightCode, markdownCss } from "../lib/markdown-highlight";
+import { proseTokens } from "../lib/prose";
 
 export function MarkdownArticle({
   document,

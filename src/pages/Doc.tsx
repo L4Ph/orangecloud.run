@@ -4,11 +4,11 @@ import {
   useTableOfContentsActiveId,
 } from "@cloudflare/kumo/components/table-of-contents";
 import { Text } from "@cloudflare/kumo/components/text";
-import { ChapterFooter, ChapterHeader, ContentShell } from "../../lib/content-shell";
-import { I18nPage } from "../../lib/i18n-page";
-import { MarkdownArticle } from "../../lib/markdown-article";
-import type { Locale } from "../../lib/locales";
-import type { parseDoc, tocOf } from "../../lib/markdown-source";
+import { ChapterFooter, ChapterHeader, ContentShell } from "../components/content-shell";
+import { I18nPage } from "../components/i18n-page";
+import { MarkdownArticle } from "../components/markdown-article";
+import type { Locale } from "../lib/locales";
+import type { parseDoc, tocOf } from "../lib/markdown-source";
 
 export type Props = {
   locale: Locale;

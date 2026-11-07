@@ -32,7 +32,7 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 能放进子 Worker `env` 的只有两类：支持结构化克隆（Structured Clone）的数据类型，以及 Service Binding。D1、KV、R2、AI 和 Durable Object 暂存对象都不属于这两类，因此无法直接传递。放进 `env` 后，在已部署的运行环境中会以 `This ServiceStub cannot be serialized.` 失败。
 
-因此，父 Worker 为每个绑定导出一个 `WorkerEntrypoint` 类，并把它的暂存对象（`ctx.exports.LessonKv({ props })`）交给子 Worker。子 Worker 可以像普通绑定一样调用 `env.KV.get()`。每次调用都是回到父端的 RPC，由父端针对真实资源执行。这些类位于 `lib/lesson-bindings.ts`。
+因此，父 Worker 为每个绑定导出一个 `WorkerEntrypoint` 类，并把它的暂存对象（`ctx.exports.LessonKv({ props })`）交给子 Worker。子 Worker 可以像普通绑定一样调用 `env.KV.get()`。每次调用都是回到父端的 RPC，由父端针对真实资源执行。这些类位于 `src/lib/lesson-bindings.ts`。
 
 | 资源            | 子 Worker 得到的东西                                                            |
 | --------------- | ------------------------------------------------------------------------------- |

@@ -44,7 +44,7 @@ export default defineConfig({
       LessonCounterDurableObject: exports.durableObject({ storage: "sqlite" }),
       LessonUserDoDurableObject: exports.durableObject({ storage: "sqlite" }),
       SandboxV1: exports.durableObject({ storage: "sqlite", container: sandbox }),
-      // Facades the sandbox no longer needs (see lib/lesson-bindings.ts). Keep each
+      // Facades the sandbox no longer needs (see src/lib/lesson-bindings.ts). Keep each
       // tombstone until a deploy reports it safe to remove.
       LessonAiDurableObject: exports.durableObject({ state: "deleted" }),
       LessonKvDurableObject: exports.durableObject({ state: "deleted" }),

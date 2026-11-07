@@ -2,9 +2,9 @@ import { Link } from "@cloudflare/kumo/components/link";
 import { Text } from "@cloudflare/kumo/components/text";
 import { ArrowUpRightIcon } from "@phosphor-icons/react";
 import { Trans } from "@lingui/react/macro";
-import { SiteHeader } from "../../lib/site-header";
-import { I18nPage } from "../../lib/i18n-page";
-import type { Locale } from "../../lib/locales";
+import { SiteHeader } from "../components/site-header";
+import { I18nPage } from "../components/i18n-page";
+import type { Locale } from "../lib/locales";
 
 export type Props = { locale: Locale };
 

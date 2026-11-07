@@ -7,8 +7,8 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh\n"
 
-#: lib/content-shell.tsx:42
-#: lib/site-header.tsx:56
+#: src/components/content-shell.tsx:42
+#: src/components/site-header.tsx:56
 #: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
 msgstr "（在新标签页中打开）"
@@ -71,11 +71,11 @@ msgstr "Dynamic Workers、绑定中继、执行限制"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:279
+#: src/components/playground.tsx:279
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
-#: lib/site-header.tsx:56
+#: src/components/site-header.tsx:56
 msgid "GitHub のリポジトリ"
 msgstr "GitHub 仓库"
 
@@ -93,7 +93,7 @@ msgstr "Hono 的路由器与中间件"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:283
+#: src/components/playground.tsx:283
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -117,7 +117,7 @@ msgstr "isolate、无共享状态、限制、计费"
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
 
-#: lib/content-shell.tsx:241
+#: src/components/content-shell.tsx:241
 msgid "JS がはじめてなら最初に"
 msgstr "刚接触 JS 就从这里开始"
 
@@ -173,15 +173,15 @@ msgstr "Workers 的执行模型"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "通过改写代码来确认内存状态与 SQLite 的区别"
 
-#: lib/playground.tsx:311
+#: src/components/playground.tsx:311
 msgid "エディタ"
 msgstr "编辑器"
 
-#: lib/playground.tsx:299
+#: src/components/playground.tsx:299
 msgid "エディタへ移動"
 msgstr "前往编辑器"
 
-#: lib/playground.tsx:346
+#: src/components/playground.tsx:346
 msgid "コードエディタ"
 msgstr "代码编辑器"
 
@@ -198,7 +198,7 @@ msgstr "本站的运作方式"
 msgid "このページ"
 msgstr "本页内容"
 
-#: lib/playground.tsx:397
+#: src/components/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "本章只有资料，代码仅供参考。"
 
@@ -246,24 +246,24 @@ msgstr "用管道串联任意 Linux 二进制程序。FFmpeg 等也是同样的�
 msgid "公開と運用"
 msgstr "发布与运维"
 
-#: lib/playground.tsx:317
+#: src/components/playground.tsx:317
 msgid "初期化"
 msgstr "重置"
 
-#: lib/content-shell.tsx:205
+#: src/components/content-shell.tsx:205
 msgid "前"
 msgstr "上一个"
 
-#: lib/content-shell.tsx:227
+#: src/components/content-shell.tsx:227
 msgid "前後の章"
 msgstr "上一章与下一章"
 
-#: lib/content-shell.tsx:236
+#: src/components/content-shell.tsx:236
 msgid "前提知識"
 msgstr "前置知识"
 
-#: lib/content-shell.tsx:30
-#: lib/content-shell.tsx:83
+#: src/components/content-shell.tsx:30
+#: src/components/content-shell.tsx:83
 msgid "動かす"
 msgstr "运行"
 
@@ -271,7 +271,7 @@ msgstr "运行"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
 
-#: lib/content-shell.tsx:245
+#: src/components/content-shell.tsx:245
 msgid "型が読めないと先に進みにくい"
 msgstr "读不懂类型就很难继续"
 
@@ -284,15 +284,15 @@ msgstr "基础"
 msgid "学ぶ"
 msgstr "学习"
 
-#: lib/playground.tsx:327
+#: src/components/playground.tsx:327
 msgid "実行"
 msgstr "运行"
 
-#: lib/playground.tsx:392
+#: src/components/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "运行后，响应和 console 输出会显示在这里。网络已被封锁，随便改也不会有问题。"
 
-#: lib/playground.tsx:242
+#: src/components/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "运行次数过多，请稍后再试。"
 
@@ -300,7 +300,7 @@ msgstr "运行次数过多，请稍后再试。"
 msgid "実行環境"
 msgstr "计算"
 
-#: lib/playground.tsx:354
+#: src/components/playground.tsx:354
 msgid "実行結果"
 msgstr "运行结果"
 
@@ -309,12 +309,12 @@ msgstr "运行结果"
 msgid "書籍の紹介"
 msgstr "书籍介绍"
 
-#: lib/content-shell.tsx:250
+#: src/components/content-shell.tsx:250
 #: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
 msgstr "书籍介绍 →"
 
-#: lib/site-header.tsx:18
+#: src/components/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "跳到正文"
 
@@ -326,7 +326,7 @@ msgstr "认真使用的话"
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "语法和运行时都不同，却仍然是同一个 Worker"
 
-#: lib/content-shell.tsx:205
+#: src/components/content-shell.tsx:205
 msgid "次"
 msgstr "下一个"
 
@@ -335,7 +335,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
 
 #: lessons/index.ts:20
-#: lib/site-header.tsx:33
+#: src/components/site-header.tsx:33
 msgid "言語"
 msgstr "语言"
 
@@ -343,8 +343,8 @@ msgstr "语言"
 msgid "設計・運用まで"
 msgstr "直至设计与运维"
 
-#: lib/content-shell.tsx:30
-#: lib/content-shell.tsx:83
+#: src/components/content-shell.tsx:30
+#: src/components/content-shell.tsx:83
 msgid "読む"
 msgstr "阅读"
 
@@ -360,10 +360,10 @@ msgstr "读取快，最终一致。适合缓存和配置"
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "异步处理，以及可恢复的长时间任务"
 
-#: lib/content-shell.tsx:54
+#: src/components/content-shell.tsx:54
 msgid "章と記事"
 msgstr "章节与文章"
 
-#: lib/content-shell.tsx:144
+#: src/components/content-shell.tsx:144
 msgid "章と記事の一覧"
 msgstr "章节与文章列表"
