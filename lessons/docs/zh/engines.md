@@ -19,7 +19,7 @@
 | 运行时                 | 引擎           | 如何构建世界                                                           |
 | ---------------------- | -------------- | ---------------------------------------------------------------------- |
 | **Node.js**            | V8             | libuv + 操作系统系统调用。`fs`、`net`、`process`                       |
-| **Bun**                | JavaScriptCore | Zig 编写。`Bun.serve`、`Bun.file`                                      |
+| **Bun**                | JavaScriptCore | Rust 编写。`Bun.serve`、`Bun.file`                                     |
 | **Deno**               | V8             | Rust 编写。权限模型（`--allow-net` 等）。**2025 年被 Cloudflare 收购** |
 | **Cloudflare Workers** | V8 isolate     | 边缘上的 isolate。`fetch` 等 Web 标准 + 绑定                           |
 

@@ -19,7 +19,7 @@
 | ランタイム             | エンジン       | 外の世界の作り                                                             |
 | ---------------------- | -------------- | -------------------------------------------------------------------------- |
 | **Node.js**            | V8             | libuv + OS のシステムコール。`fs`、`net`、`process`                        |
-| **Bun**                | JavaScriptCore | Zig 製。`Bun.serve`、`Bun.file`                                            |
+| **Bun**                | JavaScriptCore | Rust 製。`Bun.serve`、`Bun.file`                                           |
 | **Deno**               | V8             | Rust 製。権限モデル（`--allow-net` など）。**2025 年に Cloudflare が買収** |
 | **Cloudflare Workers** | V8 isolate     | エッジ上の isolate。`fetch` などの Web 標準 + バインディング               |
 

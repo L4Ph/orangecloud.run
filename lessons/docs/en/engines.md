@@ -19,7 +19,7 @@ An engine reads source → builds a syntax tree → executes it → reclaims mem
 | Runtime                | Engine         | How it builds the world                                                                  |
 | ---------------------- | -------------- | ---------------------------------------------------------------------------------------- |
 | **Node.js**            | V8             | libuv + OS syscalls. `fs`, `net`, `process`                                              |
-| **Bun**                | JavaScriptCore | Written in Zig. `Bun.serve`, `Bun.file`                                                  |
+| **Bun**                | JavaScriptCore | Written in Rust. `Bun.serve`, `Bun.file`                                                 |
 | **Deno**               | V8             | Written in Rust. Permission model (`--allow-net`, …). **Acquired by Cloudflare in 2025** |
 | **Cloudflare Workers** | V8 isolate     | Isolates at the edge. Web standards such as `fetch` plus bindings                        |
 

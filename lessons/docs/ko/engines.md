@@ -19,7 +19,7 @@
 | 런타임                 | 엔진           | 바깥 세계를 만드는 방식                                                |
 | ---------------------- | -------------- | ---------------------------------------------------------------------- |
 | **Node.js**            | V8             | libuv + OS 시스템 콜. `fs`, `net`, `process`                           |
-| **Bun**                | JavaScriptCore | Zig로 작성. `Bun.serve`, `Bun.file`                                    |
+| **Bun**                | JavaScriptCore | Rust로 작성. `Bun.serve`, `Bun.file`                                   |
 | **Deno**               | V8             | Rust로 작성. 권한 모델(`--allow-net` 등). **2025년 Cloudflare에 인수** |
 | **Cloudflare Workers** | V8 isolate     | 엣지의 isolate. `fetch` 같은 웹 표준 + 바인딩                          |
 
