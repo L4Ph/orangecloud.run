@@ -37,7 +37,7 @@ function DocsIndex({ locale }: Props) {
                     <Link
                       href={routeUrl('/docs/:slug', { params: { slug: doc.slug } })}
                       variant="plain"
-                      className="flex h-full w-full flex-col items-start gap-1 rounded-lg bg-kumo-base px-4 pt-3 pb-4 text-left ring ring-kumo-line hover:bg-kumo-tint"
+                      className="flex h-full w-full flex-col items-start gap-1 rounded-lg bg-kumo-base px-4 pt-3 pb-4 text-left ring ring-kumo-line transition-colors hover:bg-kumo-tint"
                     >
                       <Text variant="heading">{i18n._(doc.title)}</Text>
                       <Text as="span" variant="secondary">

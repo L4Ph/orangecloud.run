@@ -1,13 +1,15 @@
-# Rust (workers-rs)
+# Rust and WebAssembly (workers-rs)
 
-Workers is not limited to JavaScript and Python. You can **compile Rust to WebAssembly** and run it. The official `worker` crate (workers-rs) lets you write `fetch` handlers in Rust.
+For compute-intensive tasks—such as implementing cryptographic algorithms, parsing complex binary protocols, or directly manipulating image pixels—JavaScript relying on V8's JIT compilation faces hurdles in garbage collection (GC) stall times and memory overhead.
 
-## The smallest Worker
+Cloudflare Workers provides first-class support for **WebAssembly (Wasm)**. Using the official `workers-rs` crate, you can compile Rust code—with extreme type and memory safety—into Wasm bytecode and execute it at near-native speeds within an isolate.
+
+## Minimal Configuration
 
 ```toml
 # Cargo.toml
 [package]
-name = "rust-worker"
+name = "rust-wasm-worker"
 version = "0.1.0"
 edition = "2021"
 
@@ -24,30 +26,28 @@ use worker::*;
 
 #[event(fetch)]
 async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
-    Response::ok("hello from rust")
+    Response::ok("Fast response via Rust and WebAssembly")
 }
 ```
 
-## Building and deploying
+## Build and Edge Deployment Chain
+
+To convert Rust source code into a Workers executable binary, use the official `worker-build` tool.
 
 ```sh
+# Install the build tool
 cargo install worker-build
-worker-build --release        # emits build/worker/shim.mjs plus the wasm
+
+# Generate Wasm binary and JS glue code
+worker-build --release
+
+# Deploy to the edge network
 npx wrangler deploy
 ```
 
-Point `main` in `wrangler.jsonc` at the generated `build/worker/shim.mjs`. `worker-build` bundles the wasm with the JavaScript glue that wasm-bindgen produces.
+`worker-build` builds a binary for the `wasm32-unknown-unknown` target via the Rust compiler (`rustc`) and outputs a JavaScript wrapper (a shim derived from `wasm-bindgen`) that acts as a boundary with V8 to `build/worker/shim.mjs`. The `main` property in the configuration file specifies this shim file.
 
-## Why this site's editor cannot run it
+## Boundary for Separation from JavaScript
 
-Rust **must be compiled**. There is no Rust toolchain inside Workers to compile what you type in a browser, and this editor executes source as-is, so Rust is out of scope.
-
-Wasm itself is fine in Dynamic Workers (a module can be `{ wasm: ArrayBuffer }`), but you pass a **prebuilt** wasm, not source.
-
-## When to use it
-
-- Compute-heavy work (parsers, image processing, crypto)
-- Reusing existing Rust crates
-- When wasm size and startup are acceptable
-
-If you are only waiting on HTTP or querying a database, JavaScript is smaller and faster. If you truly need Rust, you can also compile it inside a container with `rustc` (expect tens of seconds per build).
+- **Areas where Rust / Wasm have an overwhelming advantage**: CPU-bound, heavy-duty computational processing (data compression, tokenizers, cryptographic processing, geometric calculations), and scenarios where you want to reuse the mature crate ecosystems of C/C++ or Rust as-is.
+- **Areas where JavaScript is advantageous**: I/O-bound tasks where the primary processing involves fetching external Web APIs or waiting for data retrieval from D1/KV. Due to the deployment costs and boundary-crossing (FFI) overhead of Wasm binaries, JavaScript offers faster initialization and a smaller footprint for pure I/O pipelines.

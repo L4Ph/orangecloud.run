@@ -1,51 +1,72 @@
-# Queues and Workflows
+# Asynchronous Processing Design (Queues and Workflows)
 
-Both handle work that does not finish during the request. The difference is **granularity**.
+Attempting to complete tasks—such as sending emails, generating image thumbnails, or calling external Webhooks—immediately upon receiving an HTTP request makes the system fragile. This is because delays from external services can block responses to the client, leading to timeouts or connection exhaustion.
 
-## Queues (asynchronous messages)
+Cloudflare provides two fundamental tools for asynchronous processing: **Queues** and **Workflows**. The difference between the two lies in the **granularity** of the processing they handle and their **durability (state retention capability)**.
 
-- A Worker `send()`s a message; another Worker (the consumer) processes a batch
-- Failures retry automatically, then go to a Dead Letter Queue
-- 64KB per message, retained for 4 days by default (up to 14)
-- Good for: sending mail, image conversion, webhook retries, log post-processing
+## Queues (Asynchronous Message Queues)
+
+Queues are a mechanism for safely decoupling single-shot background tasks that complete quickly. A producer (Worker) pushes messages into a queue, and a consumer (another Worker) processes them asynchronously in batches.
 
 ```js
-// producer
-await env.QUEUE_EMAILS.send({ to: 'a@example.com', template: 'welcome' });
-
-// consumer (queues/emails.ts)
-export const queue = defineQueue(async (batch) => {
-  for (const message of batch.messages) {
-    await sendEmail(message.body);
-  }
+// Producer side: Immediately queue messages and return an HTTP response
+await env.EMAIL_QUEUE.send({
+  to: 'user@example.com',
+  template: 'welcome_v1',
+  payload: { name: 'Alice' },
 });
+
+// Consumer side: Process messages in bulk in the background
+export default {
+  async queue(batch, env) {
+    for (const message of batch.messages) {
+      try {
+        await deliverEmail(message.body);
+        message.ack(); // Signal successful completion
+      } catch (err) {
+        message.retry(); // Automatic retry on failure
+      }
+    }
+  },
+};
 ```
 
-You pay per message times operations (roughly 3 per message). The free tier is 10k operations a day.
+- Maximum message size is 64KB; the default maximum retention period in the queue is 4 days (up to 14 days).
+- If an exception is thrown on the consumer side, automatic retries are performed according to a configured policy; if the limit is exceeded, the message is moved to a Dead Letter Queue (DLQ).
+- Best use cases: Transactional email sending, batch processing of log aggregation, and asynchronous dispatch to external Webhooks.
 
-## Workflows (long-running choreography)
+## Workflows (Durable, Long-Term Orchestration)
 
-- Steps run in order, and **resume where they stopped** after a failure
-- `step.sleep('3 days')` waits without billing
-- Good for: invoice closing, staged onboarding mail, anything taking minutes to days
+When you need to execute multiple steps sequentially over several minutes to several days, and ensure the system resumes exactly from the previous step (Durable Execution) even if the server restarts midway, you adopt Workflows instead of Queues.
 
-```js
-export class Onboarding extends WorkflowEntrypoint {
-  async run(event, step) {
-    const user = await step.do('create user', async () => createUser(event.payload));
-    await step.sleep('wait a day', '1 day');
-    await step.do('send tips', async () => sendTips(user));
+```ts
+import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from 'cloudflare:workers';
+
+export class UserOnboardingWorkflow extends WorkflowEntrypoint {
+  async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
+    // Step 1: Create external billing account
+    const account = await step.do('create-billing-account', async () => {
+      return await createStripeCustomer(event.payload.email);
+    });
+
+    // Step 2: Wait for 3 days (no CPU time or process consumption, zero cost)
+    await step.sleep('wait-trial-period', '3 days');
+
+    // Step 3: Send follow-up notification
+    await step.do('send-checkin-notification', async () => {
+      await sendFollowUpEmail(account.id);
+    });
   }
 }
 ```
 
-## Choosing
+The execution results of each step are saved as checkpoints in the infrastructure layer. Even if a process is forcibly terminated midway, previously completed steps will not be executed redundantly; execution will strictly resume from unfinished steps.
 
-| You want                                   | Pick              |
-| ------------------------------------------ | ----------------- |
-| Answer now, process once in the background | Queues            |
-| Ordering, resumption, waiting              | Workflows         |
-| A one-off that takes seconds               | `ctx.waitUntil()` |
-| Exactly one execution at a time            | Durable Objects   |
+## Architecture Selection Criteria
 
-Queues cannot run in the shared sandbox, so this article shows the code only. Try it in your own account.
+| Requirement | Recommended Mechanism |
+| --- | --- |
+| Single-shot asynchronous tasks that complete within a few seconds | `ctx.waitUntil()` (background execution within the same isolate) |
+| Large volumes of tasks to be smoothed and processed asynchronously in batches | **Queues** |
+| Long-running processes with waiting periods (`sleep`) or multi-step sequence dependencies | **Workflows** |
+| Concurrent writes to the same resource to be serialized in a single location | **Durable Objects** |

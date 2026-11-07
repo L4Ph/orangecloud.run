@@ -1,37 +1,41 @@
 # AI Gateway
 
-모델 API **앞에 서는 관문**입니다. 추론은 하지 않습니다. OpenAI, Anthropic, Gemini, Workers AI 등으로 가는 호출을 하나의 URL로 모으고 로그·캐시·제한·폴백을 붙입니다.
+외부 LLM 프로바이더나 Workers AI를 프런트엔드나 백엔드에서 직접 호출하는 설계는 운영 단계에 접어드는 순간 취약점이 드러난다. 상위 API의 갑작스러운 장애, 동일 프롬프트에 대한 중복 요청으로 인한 비용 낭비, 그리고 악의적인 사용자의 과도한 토큰 소비. 이 모든 것을 애플리케이션 코드 측의 개별 로직으로 감당하는 데는 한계가 있다.
 
-## 무엇이 좋은가
+AI Gateway는 모델 호출 **직전에 배치하는 리버스 프록시**이다. 추론 처리 자체는 수행하지 않으며, OpenAI, Anthropic, Google Gemini, Workers AI로 향하는 통신을 일원화하여 중개함으로써 관측 가능성과 비용 방어벽을 제공한다.
 
-- **로그**: 누가 어떤 모델을 몇 토큰 썼는지 모두 남음
-- **캐시**: 같은 프롬프트는 캐시에서 반환(비용 절감)
-- **레이트 리밋**: 사용자당 분당 N회 등
-- **폴백**: 저렴한 모델이 실패하면 다른 모델로
-- **비용 제어**: 예산 알림과 상한
+## 제공되는 5가지 방어벽
 
-## 쓰는 두 가지 방법
+1. **완전한 요청 감사**: 어떤 계정이 언제, 어떤 모델에 대해 몇 토큰을 소비했는지에 대한 전체 이력을 대시보드에 기록한다.
+2. **의미적·완전 일치 캐시**: 동일한 프롬프트와 파라미터에 대한 추론 결과를 엣지에 캐시하여, 두 번째 이후의 호출은 프로바이더를 거치지 않고 밀리초 단위로 반환한다. 토큰 과금과 통신 시간을 동시에 제로로 줄일 수 있다.
+3. **세분화된 레이트 리미트**: 사용자 단위나 IP 단위로 분당 실행 횟수 상한을 강제하여, 봇이나 폭주 루프로 인한 과금 사고를 발생 직전에 차단한다.
+4. **자동 폴백 및 재시도**: 우선 모델(예: 저비용 모델)이 500 에러를 반환했을 때, 투명하게 대체 프로바이더의 모델로 요청을 전달한다.
+5. **예산 상한 및 알림**: 월간 비용이 지정 금액에 도달한 시점에 자동으로 호출을 거부하는 페일세이프를 마련한다.
 
-1. **프로바이더 URL 교체**: `https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway}/openai/chat/completions`
-2. **Workers의 `ai` 바인딩으로 호출** (Gateway를 거치게 하려면 1번의 URL 사용)
+## 도입 방법
+
+도입 시 특별한 SDK는 필요하지 않다. 기존 API 클라이언트나 `fetch` 호출 대상을 AI Gateway의 엔드포인트 URL로 교체하는 것만으로 완료된다.
 
 ```js
-const res = await fetch(
-  `https://gateway.ai.cloudflare.com/v1/${accountId}/${gateway}/anthropic/v1/messages`,
+const response = await fetch(
+  `https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.AI_GATEWAY_NAME}/anthropic/v1/messages`,
   {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-api-key': env.ANTHROPIC_KEY },
-    body: JSON.stringify({ model: 'claude-3-5-haiku', max_tokens: 200, messages: [...] }),
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': env.ANTHROPIC_API_KEY,
+    },
+    body: JSON.stringify({
+      model: 'claude-3-5-haiku-20241022',
+      max_tokens: 256,
+      messages: [{ role: 'user', content: 'Workers의 특징을 요약해 주세요.' }],
+    }),
   },
 );
 ```
 
-## 모두가 부담 없이 쓰게 하는 요령
+## 비용을 억제하기 위한 설계 원칙
 
-- 기본은 가장 저렴한 모델. 상위 모델은 명시적 버튼 뒤에만
-- 캐시를 켜서 같은 질문에 두 번 과금하지 않기
-- 인증이 있으면 사용자 단위, 없으면 IP 단위로 제한
-- 입력 길이를 서버에서 자르기 (긴 글을 그대로 보내지 않기)
-- 실패 시 폴백 대상을 미리 정하기
-
-Gateway 설정과 API 키가 필요하므로 여기서는 코드 예시만 보여 줍니다.
+- **기본값은 최소·최저가 모델로 고정**: 모든 요청에 최고 성능 모델을 할당하지 않고, 고도의 추론이 필요한 특정 기능에만 플래그로 전환한다.
+- **입력 텍스트 길이 상한 검증**: 클라이언트에서 전송된 거대한 텍스트를 그대로 프로바이더로 보내지 않고, Workers 앞단에서 글자 수나 토큰 수를 제한한다.
+- **캐시 생존 기간(TTL) 고려**: 실시간성을 요구하지 않는 분석이나 요약 작업에는 긴 캐시를 설정하여 엣지에서 즉시 답변하도록 한다.

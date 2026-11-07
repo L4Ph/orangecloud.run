@@ -27,13 +27,16 @@ function CodeEditor({
   value,
   onChange,
   language,
+  label,
   onRun,
 }: {
   value: string;
   onChange: (next: string) => void;
   language: 'javascript' | 'shell' | 'python';
+  label: string;
   onRun: () => void;
 }) {
+  const [ready, setReady] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const editorRef = useRef<import('monaco-editor').editor.IStandaloneCodeEditor | null>(null);
   const onChangeRef = useRef(onChange);
@@ -74,8 +77,10 @@ function CodeEditor({
         padding: { top: 14, bottom: 14 },
         renderLineHighlight: 'none',
         smoothScrolling: true,
+        ariaLabel: label,
       });
       editorRef.current = editor;
+      setReady(true);
       subscription = editor.onDidChangeModelContent(() => {
         onChangeRef.current(editor.getValue());
       });
@@ -108,7 +113,17 @@ function CodeEditor({
     });
   }, [language]);
 
-  return <div className="h-full w-full" ref={host} />;
+  return (
+    <div className="relative h-full w-full">
+      <div className="h-full w-full" ref={host} />
+      {/* Same text while Monaco downloads, so the pane is never an empty box. */}
+      {!ready && (
+        <pre className="absolute inset-0 overflow-auto px-6 py-3.5 font-mono text-[13px] leading-5 whitespace-pre-wrap text-kumo-default">
+          {value}
+        </pre>
+      )}
+    </div>
+  );
 }
 
 function Playground({
@@ -249,7 +264,10 @@ function Playground({
 
       {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
 
-      <main className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_minmax(0,1fr)] max-lg:block max-lg:overflow-auto">
+      <main
+        id="main"
+        className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_minmax(0,1fr)] max-lg:block max-lg:overflow-auto"
+      >
         <section className="flex min-h-0 min-w-0 flex-col" aria-label={t`エディタ`}>
           <div className="flex shrink-0 items-start justify-between gap-4 px-5 pt-4 pb-3 max-sm:flex-col">
             <div className="min-w-0">
@@ -266,7 +284,10 @@ function Playground({
                 onClick={run}
                 disabled={!lesson.runnable}
               >
-                <Trans>実行 ⌘/Ctrl+Enter</Trans>
+                <Trans>実行</Trans>
+                <kbd className="ml-2 font-sans text-xs opacity-80 [@media(hover:none)]:hidden">
+                  ⌘/Ctrl+Enter
+                </kbd>
               </Button>
               <Button variant="secondary" onClick={() => setCode(lesson.code)}>
                 <Trans>初期化</Trans>
@@ -285,13 +306,21 @@ function Playground({
               value={code}
               onChange={setCode}
               language={lesson.language ?? 'javascript'}
+              label={t`コードエディタ`}
               onRun={run}
             />
           </div>
 
-          <div className="max-h-[42%] shrink-0 overflow-auto border-t border-kumo-line bg-kumo-base px-5 py-3 max-lg:max-h-none">
+          <div
+            role="status"
+            aria-label={t`実行結果`}
+            className="max-h-[42%] shrink-0 overflow-auto border-t border-kumo-line bg-kumo-base px-5 py-3 max-lg:max-h-none"
+          >
             {error && (
-              <pre className="mb-2 text-xs break-words whitespace-pre-wrap text-kumo-danger">
+              <pre
+                role="alert"
+                className="mb-2 text-xs break-words whitespace-pre-wrap text-kumo-danger"
+              >
                 {error}
               </pre>
             )}

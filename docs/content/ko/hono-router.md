@@ -1,78 +1,52 @@
-# Hono의 라우터와 미들웨어
+# Hono의 내부 설계 (라우터 및 미들웨어 합성)
 
-기본을 익힌 뒤 읽는 구현 쪽 이야기. 라우터 선택, 미들웨어 합성, 타입이 클라이언트까지 이어지는 방식을 봅니다.
+표면적인 라우팅 구문 너머에서, Hono는 에지 환경의 가혹한 리소스 제약을 견뎌낼 수 있는 고도의 최적화를 적용하고 있다. 라우터 엔진 전환 메커니즘과 다층 미들웨어를 단일 비동기 함수로 평탄화하는 합성 구조를 파헤친다.
 
-## 라우터는 교체 가능
+## 최적화 라우터 자동 선택
 
-`SmartRouter`가 구현을 골라 줍니다. 기본은 라우트를 하나의 정규식으로 모으는 `RegExpRouter`와 `TrieRouter`의 조합이라 라우트가 많아도 무너지지 않습니다. `new Hono({ router: new TrieRouter() })`처럼 직접 지정할 수도 있습니다.
+Hono는 `SmartRouter`라는 총괄 계층을 가지며, 등록된 라우트의 특성에 따라 최적의 라우팅 엔진을 자동으로 선택한다.
 
-매칭은 등록 순서가 아니라 정적 세그먼트 > 파라미터 > 와일드카드 순으로 강한 쪽이 이깁니다. `/users/me`가 `/users/:id`에 먹히지 않습니다.
+- **RegExpRouter**: 등록된 모든 경로를 단일한 긴 정규 표현식으로 컴파일하여, 한 번의 정규 표현식 매칭으로 대상 핸들러를 식별한다. 수십~수백 개의 라우트에 대해서도 상수 시간에 가까운 압도적인 속도로 분기를 완료한다.
+- **TrieRouter**: 트리 구조를 사용하여 URL 세그먼트를 한 글자씩 탐색한다. 와일드카드나 정규 표현식 캡처가 복잡하게 얽힌 라우트군에서 안정적인 폴백으로 기능한다.
 
-## 미들웨어는 함수 합성
+매칭 우선순위는 배열의 등록 순서가 아니다. 완전 일치하는 정적 세그먼트가 가장 강하게 평가되고, 다음으로 경로 파라미터, 가장 우선순위가 낮은 것으로서 와일드카드(`*`) 순으로 평가된다. 따라서 `/users/me`라는 특수 엔드포인트가 먼저 등록된 `/users/:id`로 잘못 흡수되는 일은 구조상 발생하지 않는다.
 
-`await next()`는 "나머지 체인을 호출"할 뿐입니다. Hono는 등록된 미들웨어를 `compose()`로 하나의 함수로 접은 뒤 실행합니다.
+## 미들웨어 합성 메커니즘
+
+미들웨어 체인의 실체는 함수형 프로그래밍의 함수 합성(Composition)이다. 등록된 다단계 핸들러군은 요청 처리 시작 시 `compose()` 처리를 거쳐, 하나의 중첩된 비동기 콜백으로 축소된다.
 
 ```ts
 const timing = async (c, next) => {
   const start = performance.now();
-  await next();
-  c.header('server-timing', `app;dur=${performance.now() - start}`);
+  try {
+    await next(); // 다음 미들웨어 또는 최종 핸들러로 처리 이양
+  } finally {
+    const elapsed = performance.now() - start;
+    c.header('server-timing', `work;dur=${elapsed}`);
+  }
 };
 ```
 
-- 후처리는 `next()` 뒤에 씁니다. 반드시 실행해야 하면 `try/finally`
-- 일찍 return하면 뒤쪽은 실행되지 않습니다(인증의 정석)
-- `c.set` / `c.get`은 요청 스코프. `new Hono<{ Variables: { user: User } }>()`로 타입을 붙입니다
-- 라우트 단위로도 붙일 수 있습니다: `app.get('/x', mw1, mw2, handler)`
+- 후처리에서 예외가 발생하더라도 확실하게 클린업을 수행할 수 있도록, `try / finally` 구문으로 `await next()`를 감싸는 것이 견고한 패턴이다.
+- `c.set(key, value)`와 `c.get(key)`를 사용함으로써, 인증 미들웨어에서 복호화한 사용자 정보 등을 후속 핸들러로 안전하게 전달할 수 있다. 이 컨텍스트 변수에는 TypeScript의 제네릭으로 엄격한 타입을 적용할 수 있다.
 
-## 타입이 엔드포인트까지 가는 방식
+## 스트리밍 전송 제어
 
-Hono는 라우트 정의의 타입을 그대로 클라이언트에 넘깁니다. `hc<typeof app>()`는 `AppType`에서 URL과 입출력 타입을 만들기 때문에 경로나 body 모양을 다시 쓰지 않습니다.
+대규모 언어 모델의 순차적 출력이나 대용량 파일의 실시간 전송에는 표준 응답 버퍼링 대신 스트리밍 헬퍼를 사용한다.
 
 ```ts
-const api = new Hono().post('/posts', zValidator('json', schema), (c) => c.json({ id: 1 }, 201));
-
-export type AppType = typeof api;
-```
-
-```ts
-const client = hc<AppType>('https://api.example.com');
-await client.posts.$post({ json: { title: 'hello' } });
-```
-
-`app.route('/v1', api)`로 붙여도 타입이 유지됩니다. `InferRequestType` / `InferResponseType`로 개별 추출도 가능합니다.
-
-## 스트리밍
-
-```ts
+// 텍스트 청크 스트리밍
 return c.streamText(async (stream) => {
-  for (const token of tokens) await stream.write(token);
+  for (const token of textTokens) {
+    await stream.write(token);
+    await stream.sleep(20);
+  }
 });
 
+// Server-Sent Events(SSE) 송출
 return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: 'hello' });
+  await stream.writeSSE({ data: JSON.stringify({ event: 'ping' }) });
 });
 ```
 
-긴 LLM 응답이나 로그 흘리기에 씁니다. `stream.onAbort()`로 끊김도 잡습니다.
-
-## 테스트
-
-`app.request()`는 서버를 띄우지 않고 요청을 보냅니다. Workers와 Node에서 같은 테스트가 됩니다.
-
-```ts
-const res = await app.request('/users/1');
-expect(res.status).toBe(200);
-```
-
-## 성능 포인트
-
-- 모든 미들웨어를 전역에 달지 말고 라우트 범위로
-- `c.req.json()`은 한 번만. 두 번째는 빈 스트림
-- 큰 응답은 `c.body(stream)`으로 흘리기. 통째로 버퍼링하지 않기
-- 라우트가 수백 개를 넘으면 `RegExpRouter` 등록 한도를 보고 분할 검토
-
-## 참고
-
-- `hono.dev` 문서 (Router, Middleware, RPC, Testing)
-- `@hono/zod-validator`로 검증과 타입 추론을 함께
+스트림 내부에서 `stream.onAbort()` 리스너를 등록해 두면, 클라이언트가 브라우저 탭을 닫는 등으로 통신을 끊는 순간 이를 감지하여, 불필요한 상위 API 소비나 계산 리소스 낭비를 즉시 중단할 수 있다.

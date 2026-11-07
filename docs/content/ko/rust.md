@@ -1,13 +1,15 @@
-# Rust(workers-rs)
+# Rust와 WebAssembly(workers-rs)
 
-Workers는 JavaScript와 Python만의 공간이 아닙니다. **Rust를 WebAssembly로 컴파일**해 실행할 수 있습니다. 공식 `worker` 크레이트(workers-rs)로 `fetch` 핸들러를 Rust로 작성합니다.
+암호 알고리즘 구현, 복잡한 바이너리 프로토콜 파서, 이미지 픽셀의 직접 조작 등 계산 집약적인 작업에서 V8의 JIT 컴파일에 의존하는 JavaScript는 가비지 컬렉션(GC) 정지 시간과 메모리 오버헤드라는 장벽에 부딪힌다.
 
-## 가장 작은 Worker
+Cloudflare Workers는 **WebAssembly(Wasm)**에 대한 최상급 지원을 제공한다. 공식 `workers-rs` 크레이트를 사용하면 타입 안전성과 메모리 안전성을 극한까지 높인 Rust 코드를 Wasm 바이트코드로 컴파일하여, isolate 내부에서 네이티브에 가까운 속도로 실행할 수 있다.
+
+## 최소한의 구성
 
 ```toml
 # Cargo.toml
 [package]
-name = "rust-worker"
+name = "rust-wasm-worker"
 version = "0.1.0"
 edition = "2021"
 
@@ -24,30 +26,28 @@ use worker::*;
 
 #[event(fetch)]
 async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
-    Response::ok("hello from rust")
+    Response::ok("Rust와 WebAssembly를 이용한 빠른 응답")
 }
 ```
 
-## 빌드와 배포
+## 빌드 및 에지 배포 연쇄
+
+Rust 소스 코드를 Workers 실행 바이너리로 변환하려면 공식 도구인 `worker-build`를 사용한다.
 
 ```sh
+# 빌드 도구 설치
 cargo install worker-build
-worker-build --release        # build/worker/shim.mjs와 wasm 생성
+
+# Wasm 바이너리와 JS 글루 코드 생성
+worker-build --release
+
+# 에지 네트워크에 배포
 npx wrangler deploy
 ```
 
-`wrangler.jsonc`의 `main`은 생성된 `build/worker/shim.mjs`를 가리킵니다. `worker-build`가 wasm과 wasm-bindgen이 만든 JavaScript 글루를 함께 묶습니다.
+`worker-build`는 Rust 컴파일러(`rustc`)를 통해 `wasm32-unknown-unknown` 타겟의 바이너리를 빌드하고, V8과의 경계를 담당하는 JavaScript 래퍼(`wasm-bindgen`에서 유래한 심)를 `build/worker/shim.mjs`에 출력한다. 설정 파일의 `main` 프로퍼티는 이 심 파일을 지정한다.
 
-## 이 사이트의 에디터에서 실행할 수 없는 이유
+## JavaScript와의 영역 구분 경계
 
-Rust는 **빌드가 필수**입니다. 브라우저에서 쓴 Rust를 즉시 컴파일하는 툴체인은 Workers 안에 없고, 이 에디터는 받은 소스를 그대로 실행하므로 Rust는 대상이 아닙니다.
-
-Wasm 자체는 Dynamic Workers에서 다룰 수 있습니다(모듈을 `{ wasm: ArrayBuffer }`로 전달). 다만 전달하는 것은 **빌드된 wasm**이며 소스가 아닙니다.
-
-## 언제 쓰나
-
-- 계산이 무거운 작업(파서, 이미지 처리, 암호)
-- 기존 Rust 크레이트를 쓰고 싶을 때
-- wasm 크기와 기동을 감수할 수 있을 때
-
-HTTP 대기나 DB 조회만 한다면 JavaScript가 더 작고 빠릅니다. 정말 필요하다면 컨테이너에서 `rustc`로 빌드하는 방법도 있습니다(빌드에 수십 초).
+- **Rust / Wasm이 압도적으로 우위인 영역**: CPU 바운드의 무거운 연산 처리(데이터 압축, 토큰나이저, 암호 처리, 기하 계산), C/C++나 Rust의 성숙한 크레이트 생태계를 그대로 재사용하고 싶은 상황.
+- **JavaScript가 유리한 영역**: 주요 처리가 외부 Web API 페치나 D1/KV로부터의 데이터 취득 대기인 I/O 바운드 작업. Wasm 바이너리의 압축 해제 비용이나 경계 넘기(FFI)의 오버헤드가 존재하므로, 순수 I/O 파이프라인에서는 JavaScript의 초기화가 더 빠르고 풋프린트도 작다.

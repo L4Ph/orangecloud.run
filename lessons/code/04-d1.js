@@ -1,19 +1,22 @@
 export default {
   async fetch(request, env) {
-    // exec() は改行で文を分割するので、DDL は prepare().run() で 1 行にして渡す
+    // DDL は prepare().run() で実行（exec() は改行で文を分割するため注意）
+    // Execute DDL with prepare().run() (exec() splits statements on newlines)
     await env.DB.prepare(
       "CREATE TABLE IF NOT EXISTS playground_notes (id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT (datetime('now')))",
     ).run();
 
-    // bind で値を渡す（文字列連結はしない）
+    // プリペアドステートメントで値を安全にバインド（SQLインジェクション防止）
+    // Bind parameters safely using prepared statements (prevents SQL injection)
     await env.DB.prepare('INSERT INTO playground_notes (body) VALUES (?)')
-      .bind('メモ ' + new Date().toISOString())
+      .bind('note ' + new Date().toISOString())
       .run();
 
     const count = await env.DB.prepare('SELECT COUNT(*) AS n FROM playground_notes').first();
     console.log('rows =', count.n);
 
-    // 索引を張ると WHERE が速くなり、読む行数＝課金も減る
+    // インデックスを作成してスキャン行数（＝課金対象）を抑える
+    // Create an index to speed up WHERE clauses and reduce scanned rows
     await env.DB.prepare(
       'CREATE INDEX IF NOT EXISTS idx_notes_created ON playground_notes (created_at)',
     ).run();

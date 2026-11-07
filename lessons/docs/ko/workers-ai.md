@@ -1,47 +1,38 @@
 # Workers AI
 
-Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 GPU 관리도 직접 갖지 않고** 모델 이름과 입력만 넘깁니다. 서버리스이므로 사용한 만큼만 과금됩니다.
+대규모 언어 모델이나 이미지 생성 모델을 백엔드에 구현하려 할 때 가장 큰 골칫거리는 GPU 인프라 확보와 종량제 비용의 폭주다. 전용 인스턴스를 임대하면 유휴 시에도 고정비가 사라지지만, 대형 AI API에 의존하면 토큰 과금과 통신 지연 시간이라는 이중고에 직면하게 된다.
 
-## 우선 저렴한 모델부터
+Workers AI는 추론 서버 프로비저닝과 API 키 관리가 필요 없게 한다. Cloudflare가 전 세계 데이터 센터에 배치한 서버리스 GPU 클러스터에 대해, Workers 내에서 몇 줄의 코드를 호출하는 것만으로 직접 추론을 실행할 수 있다.
 
-| 모델                                           | 용도              | 대략            |
-| ---------------------------------------------- | ----------------- | --------------- |
-| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화·요약    | 저렴. 먼저 이것 |
-| `@cf/ibm-granite/granite-4.0-h-micro`          | 최저가, 영어 중심 | 일본어는 약함   |
-| `@cf/openai/gpt-oss-20b`                       | 추론이 필요할 때  | 추론 토큰 사용  |
-| `@cf/baai/bge-small-en-v1.5`                   | 임베딩(검색, RAG) | 매우 저렴       |
-| `@cf/openai/whisper`                           | 음성→문자         | 초 단위 과금    |
+## 주요 모델의 특성 및 비용 비교
 
-가격은 입력·출력 토큰 종량제입니다. 저렴한 모델이면 1회에 몇 원 미만입니다. 먼저 저렴한 모델로 돌리고 부족할 때만 올리세요.
+모델 선정 시 가장 중요한 것은 입력 토큰보다 '출력 토큰 단가'다. 생성 텍스트의 길이에 따라 청구액의 대부분이 결정되기 때문이다.
 
-모델은 자주 바뀝니다. 쓰기 전에 [Workers AI 모델 카탈로그](https://developers.cloudflare.com/workers-ai/models/)에서 ID와 폐기 예정을 확인하세요. 위의 ID도 언젠가 사라집니다.
+| 모델명 | 주요 용도 | 특징 및 비용 감 |
+| --- | --- | --- |
+| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화, 요약, 번역 | 출력 $0.555/1M 토큰. 일본어 정확도와 비용의 균형이 가장 좋음 |
+| `@cf/ibm-granite/granite-4.0-h-micro` | 영어 텍스트 처리, 초소형 태스크 | 출력 $0.112/1M 토큰. 극도로 저렴하지만 일본어 응답 정확도는 크게 떨어짐 |
+| `@cf/openai/gpt-oss-20b` | 논리 추론, 복잡한 사고 단계 | 사고용 토큰을 대량으로 소비하므로 총비용이 높아지기 쉬움 |
+| `@cf/baai/bge-small-en-v1.5` | 벡터 임베딩(RAG) | 검색 엔진 구축용. 극도로 저렴하고 빠름 |
+| `@cf/openai/whisper` | 음성 트랜스크립션 | 음성 초수에 따른 종량제 과금 |
 
-비용은 대개 출력 토큰이 좌우하므로 출력 단가를 비교하세요. `mistral-small-3.1-24b`는 출력 100만 토큰당 $0.555로 llama-3.3-70b의 $2.253보다 약 4배 저렴하고, `response`에 문자열을 돌려줍니다.
+## 응답 포맷의 차이에 주의
 
-`granite-4.0-h-micro`는 출력 100만 토큰당 $0.112로 더 저렴하지만(mistral의 1/5), 일본어 질문에는 엉뚱한 답을 줍니다. 일본어라면 mistral, 영어만이라면 granite가 가장 저렴합니다.
+모델마다 반환 객체의 형태가 다르다는 점에 주의가 필요하다.
 
-모델마다 응답 구조가 다릅니다. `@cf/mistralai/mistral-small-3.1-24b-instruct`는 `response`에 문자열을 주지만, gpt-oss-20b 같은 추론 모델은 `choices[0].message.content`에 주고 생각하는 데 토큰을 많이 씁니다. 처음에는 `response` 모델이 다루기 쉽습니다.
-
-## 호출 방법
+`mistral-small-3.1-24b`와 같은 경량 모델은 결과 객체의 `.response` 속성에 문자열 자체를 직접 반환한다. 반면, 추론 특화 모델(gpt-oss 등)은 OpenAI 호환의 `.choices[0].message.content` 구조를 취하는 경우가 많다. 우선 `.response`를 반환하는 단순한 모델부터 시작하는 것이 가장 고민이 적다.
 
 ```js
-const answer = await env.AI.run('@cf/google/gemma-4-26b-a4b-it', {
+const answer = await env.AI.run('@cf/mistralai/mistral-small-3.1-24b-instruct', {
   messages: [
-    { role: 'system', content: '짧게 답한다.' },
-    { role: 'user', content: 'Cloudflare Workers를 한 문장으로' },
+    { role: 'system', content: '日本語で40文字以内で簡潔に答えてください。' },
+    { role: 'user', content: 'Cloudflare Workers の利点を一言で' },
   ],
+  max_tokens: 80,
 });
-answer.response; // 문자열
+
+console.log(answer.response); // 생성된 텍스트 문자열
 ```
 
-- `stream: true`로 스트리밍(SSE)
-- 임베딩: `env.AI.run('@cf/baai/bge-small-en-v1.5', { text: [...] })` → Vectorize에 넣어 검색
-- 이미지 생성, 음성 인식, 번역도 같은 `run()`으로 호출
-
-## 이 환경에서의 주의
-
-이 사이트는 **비용을 사이트가 부담합니다.** API 키는 필요 없습니다(Workers AI는 바인딩 자체가 인증을 겸함).
-
-다만 Workers AI에는 로컬 시뮬레이터가 없어서 `npm run dev`로 시도할 때만 Cloudflare 로그인이 필요합니다. 인증 오류가 나면 `npx wrangler login` 후 다시 실행하세요. 배포 후에는 누구나 그대로 동작합니다.
-
-공개할 때는 실행 횟수 제한과 저렴한 모델 고정을 잊지 마세요. 다음 장의 **AI Gateway**를 앞에 두면 캐시, 레이트 리밋, 비용 파악을 한 번에 얻습니다.
+- 응답을 순차적으로 브라우저에 흘려보내고 싶은 경우에는 `{ stream: true }`를 지정하여 Server-Sent Events(SSE)로 처리한다.
+- 프로덕션 운용에서는 무제한 호출로 인한 과금 사고를 방지하기 위해, 전단에 **AI Gateway**를 배치하여 캐싱과 속도 제한을 강제하는 것이 정석이다.

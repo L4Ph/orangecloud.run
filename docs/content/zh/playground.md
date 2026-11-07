@@ -1,60 +1,44 @@
-# 本站的运作方式
+# 学习环境架构（Dynamic Workers）
 
-前面各章的「运行」按钮背后做了什么。这里全部由 Cloudflare 的功能构成，可以直接搬到自己的服务里。
+在构建能够安全地执行用户编写的任意代码的滤箱（Sandbox）时，传统的做法通常是在后端运行庞大的 Docker 容器。但容器方式在每次执行时都会产生数秒的启动延迟，且服务器实例的维护成本也十分高昂。
 
-## 每次运行都创建一个 Worker
+在本学习环境中，我们完全不使用容器，而是采用了 **Dynamic Workers（Worker Loader 绑定）**。父 Worker 根据接收到的请求，按需在内存中构建子 V8 isolate，并在毫秒级别将其一次性丢弃。
 
-本站使用 **Dynamic Workers**。父 Worker 持有 `env.LOADER`（Worker Loader 绑定），在每个请求里组装一个子 Worker。
+## 动态 Worker 的构建与启动
+
+父 Worker 将用户发送的代码汇总为模块，并通过 `env.LOADER` 实例化子 Worker。
 
 ```ts
-const worker = env.LOADER.get(`run-${hash(code)}`, () => ({
+const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
   compatibilityDate: '2026-02-24',
   mainModule: 'index.js',
-  modules: { 'index.js': wrap(code) },
-  env: { KV: kvStub, DB: env.DB },
-  globalOutbound: null,
+  modules: { 'index.js': wrapUserCode(code) },
+  env: { KV: kvProxyStub, DB: env.DB },
+  globalOutbound: null, // 阻断所有向外部网络的外向通信
   limits: { cpuMs: 100, subRequests: 0 },
 }));
 
 const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
 ```
 
-- `load()` 每次都是新的；`get(id, callback)` 按 id 复用 isolate
-- `globalOutbound: null` 关闭外网；`fetch` 和 `connect` 都会失败
-- `limits` 限制 CPU 和子请求，脚本再失控也不会超出单个 Worker 的成本
-- `compatibilityDate` / `compatibilityFlags` 与普通 Worker 含义相同
+- **通过 `globalOutbound: null` 实现完全隔离**：子 Worker 内部完全无法对互联网上的任意服务器发起 `fetch()` 或建立 Raw 套接字。这在物理上封锁了恶意脚本进行的非法外部通信或凭据窃取。
+- **严格的资源上限**：将 CPU 执行时间限制在最大 100ms。即使输入了包含无限循环或过度运算的代码，也仅会终止子 isolate，而不会耗尽父 Worker 的资源。
+- **isolate 的缓存复用**：使用 `env.LOADER.get(id, factory)`，针对相同代码（哈希值匹配的代码）复用现有的 isolate。这防止了不必要的内存重新分配，从而将成本和延迟降至最低。
 
-选 isolate 而不是容器，因为启动是毫秒级，适合每个请求丢掉重来。
+## 绑定的注入边界
 
-## 有些绑定能传，有些不能
+能够直接传递给子 Worker `env` 的对象有限制。仅限于支持结构化克隆（Structured Clone）的数据类型以及 Service Binding。
 
-子 Worker 的 `env` 只能包含可结构化克隆的值和 Service Binding。
+| 资源 | 传递给子 Worker 的方式 |
+| --- | --- |
+| D1 数据库 | 由于原生支持结构化克隆，直接传递 |
+| Durable Objects | 作为通过 `namespace.get(id)` 获取的暂存对象（Service Binding）传递 |
+| KV / R2 / AI | 由于命名空间本身无法直接克隆，因此由父端通过 Durable Object 或 Service Binding 的 RPC 代理进行中继 |
 
-| 绑定            | 传递方式                                              |
-| --------------- | ----------------------------------------------------- |
-| D1              | 直接传（可克隆）                                      |
-| Durable Objects | `namespace.get(id)` 的 stub（Service Binding）        |
-| KV / R2 / AI    | namespace 本身传不了 → 通过 Durable Object 的方法中继 |
+例如对于 KV，部署在父环境中的 Durable Object 负责 `get` / `put` / `delete` / `list` 的处理程序，并将该 RPC 暂存作为 `env.KV` 注入到子环境中。子 Worker 内部的代码可以将其作为与真实 KV 命名空间完全相同的接口透明地使用。
 
-例如 KV：放一个暴露 `get` / `put` / `delete` / `list` 的 Durable Object，把它的 stub 作为 `env.KV` 传进去。调用方代码看起来和真实 namespace 几乎一样。
+## 多租户执行的防线
 
-## Turnstile 只在首次出现
-
-入口处验证 Turnstile，成功后返回签名 Cookie，之后的请求直接放行。令牌是一次性的，所以每次验证都需要新的。
-
-## 费用来自哪里
-
-- Dynamic Workers 按每天创建的唯 Worker 数计费，因此相同代码复用同一个 `get()` id。每月含 1,000 个，超出后每个每天 $0.002
-- id 由代码生成，并把换行符和末尾换行归一化，所以直接运行教材代码的人共用同一个 Worker
-- CPU 上限 100ms；等待不收费，所以外部 API 调用很便宜
-- Workers AI 固定使用便宜的模型，并限制执行次数
-
-## 可以照搬的结构
-
-1. 父 Worker 持有 Worker Loader
-2. 把用户代码放进 `modules`，调用 `load()` / `get()`
-3. 只通过 Service Binding 传必要的绑定，并收窄权限
-4. 关闭外网，或只允许走中继绑定
-5. 设置 CPU 与子请求上限
-
-这五条就能搭出安全运行他人代码的地方。
+1. **防止隐式缓存污染**：在计算哈希值前对代码中的空格和换行符进行规范化处理，以防止非预期的缓存分裂。
+2. **通过 Turnstile 拦截机器人**：在执行端点之前进行 Cloudflare Turnstile 验证，防止自动化脚本发起的过载攻击。
+3. **成本防线**：Dynamic Workers 根据“每天生成的唯一 Worker 数量”计费。通过让多名用户共享教材代码的初始状态，实现了将计费对象的唯一 Worker 数量降至最低的设计。

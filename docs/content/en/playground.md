@@ -1,60 +1,44 @@
-# How this site works
+# Learning Environment Architecture (Dynamic Workers)
 
-What the Run button has been doing all along. Everything here is built from Cloudflare features, so you can reuse the shape in your own service.
+Traditionally, when building a sandbox to securely execute arbitrary code written by users in a browser, the standard approach was to run a resource-intensive Docker container as the backend. However, the container approach introduces a startup delay of several seconds per execution and incurs high server instance maintenance costs.
 
-## A Worker per run
+This learning environment employs **Dynamic Workers (Worker Loader Binding)** without using containers at all. In response to requests received by a parent Worker, a child V8 isolate is constructed in memory on-demand and discarded within milliseconds.
 
-This site uses **Dynamic Workers**. The parent Worker holds `env.LOADER` (the Worker Loader binding) and assembles a child Worker per request.
+## Constructing and Starting Dynamic Workers
+
+The parent Worker bundles user-submitted code into modules and instantiates a child Worker via `env.LOADER`.
 
 ```ts
-const worker = env.LOADER.get(`run-${hash(code)}`, () => ({
+const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
   compatibilityDate: '2026-02-24',
   mainModule: 'index.js',
-  modules: { 'index.js': wrap(code) },
-  env: { KV: kvStub, DB: env.DB },
-  globalOutbound: null,
+  modules: { 'index.js': wrapUserCode(code) },
+  env: { KV: kvProxyStub, DB: env.DB },
+  globalOutbound: null, // Block all outbound communication to external networks
   limits: { cpuMs: 100, subRequests: 0 },
 }));
 
 const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
 ```
 
-- `load()` is always fresh; `get(id, callback)` reuses an isolate per id
-- `globalOutbound: null` blocks the network; `fetch` and `connect` both fail
-- `limits` caps CPU and subrequests, so a runaway script cannot outspend one Worker
-- `compatibilityDate` / `compatibilityFlags` mean what they mean on a normal Worker
+- **Complete Isolation via `globalOutbound: null`**: From within the child Worker, `fetch()` calls or raw socket establishment to any server on the internet are strictly prohibited. This physically blocks unauthorized external communication or credential theft by malicious scripts.
+- **Strict Resource Limits**: CPU execution time is limited to a maximum of 100ms. Even if code containing infinite loops or excessive computations is submitted, only the child isolate is terminated without exhausting the parent Worker's resources.
+- **isolate Cache Reuse**: Using `env.LOADER.get(id, factory)`, existing isolates are reused for the same code (code with matching hash values). This prevents wasteful memory reallocation and minimizes cost and latency.
 
-Isolates rather than containers, because they start in milliseconds and are cheap to throw away per request.
+## Binding Injection Boundaries
 
-## Some bindings can be passed, some cannot
+There are restrictions on the objects that can be passed directly to the child Worker's `env`. These are limited to data types that support Structured Cloning and Service Bindings.
 
-The child's `env` may contain structured-cloneable values and Service Bindings only.
+| Resource | How to Pass to Child Worker |
+| --- | --- |
+| D1 Database | Passed as-is, as it natively supports Structured Cloning |
+| Durable Objects | Passed as stub objects (Service Bindings) obtained via `namespace.get(id)` |
+| KV / R2 / AI | Since the namespaces themselves cannot be cloned directly, they are relayed via the parent's Durable Object or Service Binding RPC proxy |
 
-| Binding         | How it is passed                                                          |
-| --------------- | ------------------------------------------------------------------------- |
-| D1              | As-is (it clones)                                                         |
-| Durable Objects | The stub from `namespace.get(id)` (a Service Binding)                     |
-| KV / R2 / AI    | The namespace cannot be passed → relay through a Durable Object's methods |
+For example, in the case of KV, a Durable Object placed in the parent environment handles the `get` / `put` / `delete` / `list` handlers, and its RPC stub is injected into the child environment as `env.KV`. From the child Worker's internal code, this can be accessed transparently as an interface identical to the actual KV namespace.
 
-For KV, one Durable Object exposes `get` / `put` / `delete` / `list` and its stub is handed over as `env.KV`. The calling code looks almost like the real namespace.
+## Multi-Tenant Execution Defense Lines
 
-## Turnstile once per browser
-
-The entry point verifies Turnstile and, on success, sets a signed cookie. Later requests skip the challenge. Tokens are single-use, so each verification needs a new one.
-
-## Where the cost comes from
-
-- Dynamic Workers bill per unique Worker created per day, so the same code reuses the same `get()` id. The allowance is 1,000 per month, then $0.002 per Worker per day
-- The id is derived from the code, with line endings and trailing newlines normalised, so everyone running an unedited snippet shares one Worker
-- CPU is capped at 100ms; waiting is free, so external API calls are cheap
-- Pin a cheap Workers AI model and cap the number of runs
-
-## The shape to copy
-
-1. The parent Worker holds the Worker Loader
-2. Put user code into `modules` and call `load()` / `get()`
-3. Pass only the bindings needed, narrowed through Service Bindings
-4. Block outbound network, or restrict it to a relay binding
-5. Set CPU and subrequest limits
-
-Those five give you a place to run other people's code safely.
+1. **Prevention of Implicit Cache Contamination**: Whitespace and line breaks within the code are normalized before hash values are calculated to prevent unintended cache splitting.
+2. **Bot Blocking via Turnstile**: Cloudflare Turnstile is validated before the execution endpoint to prevent overload attacks by automated scripts.
+3. **Cost Barrier**: Dynamic Workers are billed based on "the number of unique Workers generated per day." The design ensures that the number of unique Workers subject to billing is kept to a minimum by having many users share the initial state of the educational code.

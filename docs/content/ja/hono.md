@@ -1,128 +1,87 @@
 # Hono
 
-Hono は Web 標準の `Request` / `Response` だけで動く小さな Web フレームワークです。同じコードが Node.js、Bun、Deno、Cloudflare Workers で動き、依存が少ないので起動も速い。まずは「ルーティングとミドルウェアの道具」として覚えるのが近道です。
+Node.js 黎明期を支えた Express などのフレームワークは、OS の `net.Socket` や Node 固有の `http.IncomingMessage` に深く依存していた。そのため、それらの遺産を持たない Cloudflare Workers のような Web 標準準拠のエッジ環境へそのまま持ち込むことはできない。
 
-## 最小のアプリ
+Hono は、ブラウザやエッジランタイムが標準装備する **`Request` と `Response` オブジェクトのみを前提に設計された Web フレームワーク**である。Node.js、Bun、Deno、Cloudflare Workers を問わず、同一のコードベースが依存関係なしに極小フットプリントで動作する。
+
+## 最小限の構成
 
 ```ts
 import { Hono } from 'hono';
 
 const app = new Hono();
 
-app.get('/', (c) => c.text('hello'));
+// ルート定義
+app.get('/', (c) => c.text('hello from hono'));
 
-export default app; // Workers / Bun はこれで動く
+// Cloudflare Workers のエントリポイントとしてそのまま公開できる
+export default app;
 ```
 
-Node.js なら `@hono/node-server` の `serve({ fetch: app.fetch })` で起動します。
-
-## ルーティング
+## パスルーティングとパラメータ抽出
 
 ```ts
-app.get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
-app.get('/files/*', (c) => c.text(c.req.path));
-app.post('/users', (c) => c.text('created', 201));
-app.route('/admin', adminRoutes); // ルーターをまとめる
+app.get('/users/:id', (c) => c.json({ userId: c.req.param('id') }));
+app.get('/static/*', (c) => c.text(c.req.path));
+app.post('/items', (c) => c.text('created', 201));
+
+// サブルーターのモジュール結合
+app.route('/api/v1', apiRoutes);
 ```
 
-- `:id` はパラメータ、`*` はワイルドカード
-- `app.route()` で別ファイルのルーターを生やせる（`routes/users.ts` など）
-- ルートは登録順ではなく、静的なほど優先される
+- `:param` 形式によるパスパラメータの抽出と、`*` によるワイルドカードキャッチに対応する。
+- 静的パス、パラメータ付きパス、ワイルドカードが混在する場合、定義順序に関わらず最も具体的なパスが優先してマッチする。
 
-## リクエスト
+## コンテキストを通じた入出力操作
+
+引数 `c`（Context）を通じて、型安全なリクエストのパースとレスポンス生成を行う。
 
 ```ts
-c.req.param('id');
-c.req.query('page');
-c.req.header('authorization');
-await c.req.json();
-await c.req.formData();
+// リクエスト情報の取り出し
+const authHeader = c.req.header('authorization');
+const queryPage = c.req.query('page');
+const bodyJson = await c.req.json();
+
+// レスポンスの送出
+return c.json({ status: 'ok', data: bodyJson }, 201);
 ```
 
-`c.req.raw` で元の `Request` に触れます。
+内部的にはネイティブの `Request` / `Response` を薄くラップしているにすぎないため、`c.req.raw` から生の Web 標準オブジェクトを直接取り出すことも可能である。
 
-## レスポンス
-
-```ts
-c.text('ok');
-c.json({ ok: true }, 201);
-c.html('<h1>hi</h1>');
-c.redirect('/login');
-c.body(stream);
-```
-
-ステータスは第 2 引数、ヘッダーは `c.header('x-foo', 'bar')`。`c.newResponse()` で細かく組み立てることもできます。
-
-## ミドルウェア
+## ミドルウェアパイプラインの結合
 
 ```ts
+// グローバルな実行時間計測ミドルウェア
 app.use('*', async (c, next) => {
   const start = performance.now();
   await next();
-  c.header('server-timing', `app;dur=${performance.now() - start}`);
+  const duration = performance.now() - start;
+  c.header('server-timing', `total;dur=${duration.toFixed(2)}`);
 });
 
+// 認証チェックと早期離脱
 app.use('/admin/*', async (c, next) => {
-  if (!c.req.header('authorization')) return c.text('forbidden', 403);
+  if (!c.req.header('authorization')) {
+    return c.text('unauthorized', 401);
+  }
   await next();
 });
 ```
 
-- `await next()` の前が前処理、後が後処理
-- `c.set('user', user)` / `c.get('user')` で下流へ値を渡す
-- `logger()`、`cors()`、`basicAuth()` など標準のミドルウェアが揃っている
+`await next()` を挟むことで、リクエスト受信時の前処理とレスポンス返却時の後処理を単一の関数内で自然に表現できる。条件に合致しない場合に早期リターンを行えば、下流のハンドラを実行させずに処理を打ち切る安全弁として機能する。
 
-## 入力の検証
+## 型安全な RPC（Remote Procedure Call）
 
-```ts
-import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
-
-app.post('/users', zValidator('json', z.object({ name: z.string().min(1) })), (c) => {
-  const { name } = c.req.valid('json');
-  return c.json({ name }, 201);
-});
-```
-
-検証結果は型としてハンドラに届きます。
-
-## エラー
+Hono の最大の強みの一つは、サーバー側のルート定義からクライアント側の RPC クライアントの型を自動導出できる点にある。
 
 ```ts
-app.onError((err, c) => {
-  console.error(err);
-  return c.json({ error: 'internal' }, 500);
-});
-
-app.notFound((c) => c.json({ error: 'not found' }, 404));
-```
-
-`HTTPException` を投げれば `onError` で拾えます。
-
-## 型付き RPC
-
-```ts
-// server
-const api = new Hono().get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
+// サーバー側（ルートの型定義を公開）
+const api = new Hono().get('/posts/:id', (c) => c.json({ id: c.req.param('id'), title: 'Demo' }));
 export type AppType = typeof api;
 
-// client
+// クライアント側（URL 文字列を一切書かずに完全型補完で呼び出す）
 import { hc } from 'hono/client';
-const client = hc<AppType>('/');
-const res = await client.users[':id'].$get({ param: { id: '1' } });
+const client = hc<AppType>('https://example.com');
+const response = await client.posts[':id'].$get({ param: { id: '42' } });
+const data = await response.json(); // { id: string, title: string } として推論
 ```
-
-パス文字列を書かずに呼べるのが利点です。
-
-## 手元で動かす
-
-```sh
-npm create hono@latest
-npm run dev
-```
-
-ルーターの内部や RPC の仕組みまで踏み込みたいときは [Hono のルーターとミドルウェア](/docs/hono) へ。
-
-## このエディタで動かさない理由
-
-このサイトのエディタでは動かせません。`import 'hono'` を解決するには事前にバンドルが必要です。手元では `npm create hono@latest` から試せます。

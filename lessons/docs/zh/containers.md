@@ -1,37 +1,33 @@
-# 在 Containers 中运行
+# Containers（容器执行环境）
 
-isolate（Workers）又快又便宜，代价是没有系统命令、没有原生库、没有文件系统。**Containers** 就是放弃这些限制的地方，可以直接运行 Docker 镜像。
+V8 isolate 启动仅需毫秒，能流畅地处理数千个请求。但当你想用 FFmpeg 转码视频、使用 Playwright 驱动无头浏览器，或者运行用 C 语言编写的巨大二进制文件时，就会被 isolate 的壁垒挡住。因为 OS 的内核功能以及任意文件的执行权限在那里都不存在。
 
-本章的编辑器会把你写的 Python 放进容器里的文件，用 `python3` 执行，`print` 的输出会直接返回。
+Cloudflare Containers 是针对 isolate 无法解决的挑战的**最后手段**。它能将自定义的 Docker 镜像直接部署到边缘端，并在 Durable Objects 后面根据需要启动和停止完整的 Linux 容器。
 
-## 有什么不同
+## isolate 与容器的权衡
 
-|      | isolate         | container                       |
-| ---- | --------------- | ------------------------------- |
-| 启动 | 毫秒            | 秒                              |
-| 可用 | Web 标准 + 绑定 | 系统命令、任意二进制、pip / apt |
-| 文件 | 无              | 有（但不持久）                  |
-| 计费 | 请求 + CPU      | 运行时间 + 内存                 |
+| 比较项目 | V8 isolate（Dynamic Workers） | Cloudflare Containers |
+| --- | --- | --- |
+| 启动时间 | 数毫秒（立即开始响应） | 数秒量级（等待容器启动） |
+| 内存上限 | 128MB 起（轻量级设计） | 可分配数 GB |
+| 可执行文件 | JS、TS、Wasm、Pyodide | 任意 Linux 可执行文件、共享库 |
+| 计费单位 | 执行 CPU 时间 | 容器启动时间（vCPU 分钟、GiB 小时） |
 
-Python、ffmpeg、Playwright、带原生扩展的科学计算在 isolate 里跑不了。反过来，只是「等 HTTP」或「查数据库」的话，isolate 更快更便宜。
+如果仅是中继 Web API 请求，isolate 要快得多，且成本更低。**首先彻底思考是否能单独通过 Workers 实现，仅在绝对不可能的情况下才引入容器**，这是边缘端设计的铁律。
 
-## 本站的做法
+## 通过 Sandbox SDK 控制容器
 
-- 镜像用 `Dockerfile.sandbox`（Node 基础镜像 + `python3`）
-- 用 `getSandbox('lesson-container')` 取一个容器并复用
-- 每次运行写入 `/workspace/run-<id>.py`，执行 `python3`，结束删除
-- 对外网络已关闭
+若要从代码中操作容器，则使用 Cloudflare 的 Sandbox SDK（`@cloudflare/sandbox`）。可以在 Worker 内部按需调用容器实例，执行 shell 命令或开放端口。
 
 ```ts
-const sandbox = await getSandbox('lesson-container');
-await sandbox.files.writeFile('/workspace/main.py', code);
-const result = await sandbox.run(['python3', 'main.py'], { cwd: '/workspace' });
+import { getSandbox } from '@cloudflare/sandbox';
+
+// 为每个用户 ID 或会话预留独立的沙箱
+const sandbox = await getSandbox(env.SANDBOX, 'user-session-123');
+
+// 在容器内部执行命令并接收标准输出
+const result = await sandbox.run('node --version');
+console.log('Container Node.js:', result.stdout);
 ```
 
-## 注意
-
-- 容器**启动要秒级**，空闲会停止，所以第一次运行较慢
-- 运行期间计费，不适合高频处理
-- 状态不会保留。要留下的东西放 D1 / R2 / KV
-
-isolate 与容器的分界见 [深入运行时](/docs/runtimes)。
+容器在请求中断时会自动进入睡眠状态，仅计费其被主动使用的时间。

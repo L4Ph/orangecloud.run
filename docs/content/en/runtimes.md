@@ -1,38 +1,42 @@
-# Inside the runtime: what an isolate actually does
+# Comparing Runtime Structures (Node.js vs. V8 Isolate)
 
-"V8 isolate" sounds like a speed claim. It is really a statement about what Workers leaves out, and that is what tells you when to stop using it.
+The history of server-side JavaScript has long been equated with the architecture of Node.js. However, in the face of the requirements of edge computing—"ultra-short startup times," "extremely high capacity density," and "secure multi-tenant isolation"—the underlying structure of Node.js becomes a significant hindrance.
 
-## Processes versus isolates
+By understanding what **V8 isolate**, which powers Cloudflare Workers, stripped away and what it retained, it becomes possible to make accurate design decisions for the edge.
 
-Node.js has one V8 isolate inside one process, plus libuv's event loop, a thread pool, file descriptors, and sockets. Starting a process per request is too heavy, so everyone shares one — and with it, state and privileges.
+## Fundamental Differences in Process Models and Isolation Architectures
 
-A Worker has **just the isolate**. No process, no sockets, no files; the outside world is `fetch()` and bindings. That is why thousands of them fit on one machine and start in milliseconds. Not sharing state is simultaneously the safety model and the density trick.
+Node.js assigns a single V8 instance to a single OS process. Outside of that lies a web of libuv event loops, multithreading pools, file descriptor tables, and raw socket management mechanisms. This structure assumes that a single process remains resident indefinitely, making it utterly unsuitable for operations where a process is created and destroyed for every request.
 
-## JIT and startup
+```
+[Node.js Process Structure]
+OS Process ── libuv (C++ / Thread Pool / File I/O / Network Sockets)
+             └── Single V8 Instance (Shares heap and state across all requests)
 
-V8 starts by running bytecode and only compiles hot functions to machine code. Isolate startup is "allocate a heap, compile the script" — no process spawn, no image unpacking. That gap is the decisive difference from containers.
+[Workers' Isolate Structure]
+Single Host Process ── Isolation Boundary (Memory Protection / Privileged Sandbox)
+                      ├── Isolate A (User A's heap / Independent memory space)
+                      ├── Isolate B (User B's heap / Independent memory space)
+                      └── Isolate C (User C's heap / Independent memory space)
+```
 
-|           | isolate                  | container                         |
-| --------- | ------------------------ | --------------------------------- |
-| Startup   | milliseconds             | hundreds of ms to tens of seconds |
-| Isolation | heap and capabilities    | kernel namespaces                 |
-| Can do    | web standards + bindings | anything                          |
-| Billing   | requests + CPU ms        | wall time + memory                |
+Cloudflare Workers completely hides the OS process layer and treats **V8 isolate alone** as the basic unit of execution. Within a single host process, thousands of isolates—with strictly decoupled memory spaces—are packed tightly together.
 
-## Limits shape the design
+By stripping away privileged system calls, such as file system access and direct socket control, from the outset, it fundamentally eliminates the risk of other code peering into adjacent memory regions on the same host.
 
-- 128MB memory: no giant arrays. Stream instead
-- 30s CPU (paid, 5 min max): waiting is free, computing is not
-- No filesystem: scratch data goes to R2 or KV
-- Subrequest caps: do not fan out hundreds of API calls per request
+## Physical Limits of Cold Starts
 
-`nodejs_compat` fills in parts of Node's API, but not `fs`. When you truly need that, you need a container.
+Starting a container (such as Docker) requires a series of essential steps: unpacking the container image, initializing the Linux namespace, configuring virtual network interfaces, and launching the guest process. No matter how much you optimize, this process takes several hundred milliseconds to several seconds.
 
-## Where to branch
+In contrast, launching an isolate is completed simply by "initializing the V8 heap area" and "loading precompiled bytecode." Since there are no network or virtual machine boot sequences, as a physical constraint, request processing can begin within 1 to 5 milliseconds.
 
-1. Waiting on HTTP, querying a database, a little compute → **isolate**
-2. Native binaries, heavy dependencies, >128MB, long-running processes → **container**
-3. Minutes-to-days choreography → **Workflows**
-4. Exactly one execution at a time → **Durable Objects**
+## Architectural Selection Boundary
 
-Ask "can this be a Worker?" first and the architecture stays small.
+| Process Nature | Optimal Choice | Rationale |
+| --- | --- | --- |
+| Web APIs, lightweight business logic, data relay | **V8 isolate (Workers)** | Startup is in milliseconds; zero idle cost |
+| Long-running batches, FFmpeg, Playwright | **Cloudflare Containers** | A full Linux kernel and binary execution environment are essential |
+| Waiting for external connections (DB queries, external REST APIs) | **V8 isolate (Workers)** | Free network wait time due to CPU time billing |
+| Serialization to a single resource and exclusive control | **Durable Objects** | Consolidate requests into a single instance globally |
+
+When bringing in libraries for Node.js, the `nodejs_compat` compatibility flag can be used, but this only provides a subset of abstraction layers close to Web standards, such as `Buffer`, `crypto`, and `events`. Designs that assume local disk operations via `fs` are fundamentally incompatible with the philosophy of isolate.

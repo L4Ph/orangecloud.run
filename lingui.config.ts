@@ -6,7 +6,7 @@ export default defineConfig({
   catalogs: [
     {
       path: '<rootDir>/locales/{locale}/messages',
-      include: ['pages', 'lessons', 'docs', 'middleware'],
+      include: ['pages', 'lib', 'lessons', 'docs', 'middleware'],
     },
   ],
 });

@@ -1,37 +1,33 @@
-# Running code in Containers
+# Containers (Container Execution Environment)
 
-An isolate is fast and cheap, and it has no OS commands, no native libraries, no filesystem. **Containers** are where you give those up. You run a Docker image as it is.
+V8 isolates spin up in milliseconds and handle thousands of requests effortlessly. However, when you want to transcode video with FFmpeg, drive a headless browser with Playwright, or run massive binaries written in C, you are blocked by the isolate wall. This is because neither OS kernel features nor arbitrary file execution permissions exist there.
 
-The editor in this chapter writes your Python into a file inside a container and runs `python3`. Whatever it prints comes back.
+Cloudflare Containers is the **last resort** for challenges that isolates simply cannot solve. You deploy your own Docker images directly to the edge, launching and stopping full Linux containers on demand behind Durable Objects.
 
-## What changes
+## Trade-offs Between Isolates and Containers
 
-|           | isolate                  | container                          |
-| --------- | ------------------------ | ---------------------------------- |
-| Startup   | milliseconds             | seconds                            |
-| Available | web standards + bindings | OS commands, any binary, pip / apt |
-| Files     | none                     | yes, but ephemeral                 |
-| Billing   | requests + CPU           | wall time + memory                 |
+| Comparison Item | V8 isolate (Dynamic Workers) | Cloudflare Containers |
+| --- | --- | --- |
+| Startup Time | Few milliseconds (immediate response) | Order of seconds (waiting for container to start) |
+| Memory Limit | 128MB+ (lightweight design) | Gigabytes available |
+| Executable Files | JS, TS, Wasm, Pyodide | Any Linux executables, shared libraries |
+| Billing Unit | Executed CPU time | Container startup time (vCPU minutes/GiB hours) |
 
-Python, ffmpeg, Playwright, and scientific stacks with native extensions do not run in an isolate. If all you do is wait on HTTP or query a database, the isolate is faster and cheaper.
+If you are only intermediating Web API requests, isolates are overwhelmingly faster and cheaper. The golden rule of edge design is to **first think thoroughly about whether Workers alone can achieve the goal, and introduce containers only if that proves impossible**.
 
-## How this site does it
+## Container Control via Sandbox SDK
 
-- The image is `Dockerfile.sandbox` (Node base plus `python3`)
-- `getSandbox('lesson-container')` gives one container that is reused
-- Each run writes `/workspace/run-<id>.py`, executes `python3`, then deletes it
-- Outbound networking is disabled
+To operate containers from code, use Cloudflare's Sandbox SDK (`@cloudflare/sandbox`). You can call container instances on-demand from within a Worker to execute shell commands or expose ports.
 
 ```ts
-const sandbox = await getSandbox('lesson-container');
-await sandbox.files.writeFile('/workspace/main.py', code);
-const result = await sandbox.run(['python3', 'main.py'], { cwd: '/workspace' });
+import { getSandbox } from '@cloudflare/sandbox';
+
+// Allocate a separate sandbox for each user ID or session
+const sandbox = await getSandbox(env.SANDBOX, 'user-session-123');
+
+// Execute a command inside the container and receive standard output
+const result = await sandbox.run('node --version');
+console.log('Container Node.js:', result.stdout);
 ```
 
-## Caveats
-
-- Containers take **seconds** to start and stop when idle, so the first run is slow
-- You are billed while they run; this is not the place for high-frequency work
-- State does not survive. Put what matters in D1 / R2 / KV
-
-Where to draw the line between isolate and container is covered in [Inside the runtime](/docs/runtimes).
+Containers automatically enter a sleep state when requests stop, and only the time they are actively in use is billed.

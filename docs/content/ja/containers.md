@@ -1,36 +1,35 @@
-# Containers
+# Containers（エッジコンテナ）
 
-Workers（isolate）で足りないときの**最後の手段**。Docker イメージをそのまま動かせます。Cloudflare 側が Durable Object の裏でコンテナを起動・停止します。
+V8 isolate の制約は意図されたものである。ファイルシステムを奪い、常駐プロセスを禁止し、メモリを 128MB に絞ることで、ミリ秒単位の起動と数万並行のスケールを手に入れた。しかし、現実のワークロードには isolate の境界線を超えてしまう処理が確実に存在する。
 
-## isolate で足りない例
+FFmpeg による動画エンコード、Playwright によるヘッドレスブラウザの制御、C/C++ で書かれた既存バイナリの実行、あるいは数ギガバイトのメモリを要する重厚なデータ処理。これらは Linux カーネルの完全な機能なしには動かない。
 
-- ネイティブバイナリや重い依存（ffmpeg、Python の科学計算、Playwright）
-- 長時間動き続けるプロセス（WebSocket サーバ、ゲームサーバ）
-- メモリを 128MB 以上使う処理
-- 既存の Docker イメージをそのまま使いたい
+Cloudflare Containers は、そうした局面に対する**最後の切り札**である。標準的な Docker イメージをエッジ環境へ持ち込み、Durable Objects のライフサイクル制御と結びつけることで、完全な Linux コンテナをオンデマンドで稼働させる。
 
-逆に「HTTP を待つだけ」「DB を引くだけ」なら isolate の方が速くて安い。**まず Workers で書けないか考える**のが原則です。
+## アーキテクチャの対比
 
-## 動かし方の形
+| 評価軸 | V8 isolate（Workers） | Cloudflare Containers |
+| --- | --- | --- |
+| 起動レイテンシ | 1 〜 5 ミリ秒 | 数秒オーダー（イメージ展開・起動） |
+| メモリ割り当て | 128MB 〜 | 複数 GiB 単位で構成可能 |
+| ランタイム環境 | Web 標準 API、Wasm、Pyodide | 完全な Linux（Debian、Alpine、Ubuntu 等） |
+| 最適な領域 | API ルーティング、認証、軽量変換 | 重厚なバッチ、メディア変換、サンドボックス実行 |
+
+「HTTP リクエストを受信してデータベースを叩く」といった典型的な処理であれば、isolate の方が圧倒的に俊敏で、リソース効率も優れている。**あらゆる手段を Workers 単体で模索し、OS ネイティブのバイナリや大量メモリが不可欠であると判明したときに初めてコンテナを採用する**のが、エッジ設計において破綻を避ける原則である。
+
+## Sandbox SDK によるライフサイクル制御
+
+コンテナの呼び出しには Cloudflare Sandbox SDK（`@cloudflare/sandbox`）を使用する。Worker 側からプログラムを通じてコンテナインスタンスのライフサイクルを束ね、コマンド実行や内部ポートへのトンネリングを制御する。
 
 ```ts
 import { getSandbox } from '@cloudflare/sandbox';
 
-const sandbox = await getSandbox(env.SANDBOX, 'user-123');
-const result = await sandbox.run('node --version');
+// セッション単位で隔離されたサンドボックス環境を特定
+const sandbox = await getSandbox(env.SANDBOX, 'session-456');
+
+// 独立した Linux 環境のシェル上でコマンドを実行
+const execution = await sandbox.run('python3 -c "print(1 + 1)"');
+console.log('stdout:', execution.stdout.trim());
 ```
 
-Cloudflare の Sandbox SDK（`@cloudflare/sandbox`）を使うと、Worker から `getSandbox()` でコンテナを取り、`run` / ファイル操作 / ポート公開ができます。
-
-## 料金と起動
-
-| 項目   | 有料プラン                         |
-| ------ | ---------------------------------- |
-| メモリ | 25 GiB 時間/月 込み                |
-| CPU    | 375 vCPU 分/月 込み                |
-| 起動   | 秒オーダー（isolate はミリ秒）     |
-| 停止   | 一定時間でスリープ。利用中だけ課金 |
-
-**起動に秒がかかり、使っていなくてもイメージのビルドと配置にコストがかかる**ので、教育用サンドボックスに向くのは isolate（Dynamic Workers）の方です。このサイトもその構成です。
-
-コンテナのビルドには Docker と Workers の有料プランが必要なので、ここではコード例だけを示します。
+コンテナは無通信状態が続くと自動的に停止し、CPU リソースの消費を最小限に抑える。長時間のアイドル状態に対して不要な課金が発生しない構造になっている。

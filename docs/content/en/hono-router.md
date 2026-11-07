@@ -1,78 +1,52 @@
-# Hono's router and middleware
+# Hono's Internal Design (Router and Middleware Composition)
 
-For after the basics: how the router is chosen, how middleware composes, and how types reach the client.
+Beneath the surface-level routing syntax, Hono employs advanced optimizations to withstand the severe resource constraints of edge environments. This section unravels the router engine switching mechanism and the composition structure that flattens multi-layered middleware into a single asynchronous function.
 
-## Routers are swappable
+## Automatic Selection of Optimized Routers
 
-`SmartRouter` picks an implementation for you. By default it combines `RegExpRouter`, which compiles routes into a single regular expression, with `TrieRouter` so large route tables stay stable. You can also pass one explicitly: `new Hono({ router: new TrieRouter() })`.
+Hono features a governing layer called `SmartRouter`, which automatically selects the optimal routing engine based on the characteristics of the registered routes.
 
-Matching is not registration order: static segments beat parameters beat wildcards. `/users/me` will not be swallowed by `/users/:id`.
+- **RegExpRouter**: Compiles all registered paths into a single, lengthy regular expression to identify the target handler in a single regular expression match. It completes branching with overwhelming speed—nearly constant time—even for dozens or hundreds of routes.
+- **TrieRouter**: Searches URL segments character-by-character using a tries tree structure. It serves as a stable fallback for routes with complex wildcard and regular expression captures.
 
-## Middleware is function composition
+Matching priority is not determined by the registration order of the array. Exact-match static segments are evaluated most strongly, followed by path parameters, and wildcards (`*`) as the lowest priority. Consequently, by design, errors such as the special endpoint `/users/me` being mistakenly swallowed by the previously registered `/users/:id` do not occur.
 
-`await next()` simply calls the rest of the chain. Hono composes registered middleware into one function with `compose()` before running it.
+## Middleware Composition Mechanism
+
+The core of the middleware chain is function composition in functional programming. The registered multi-stage handler group undergoes a `compose()` operation at the start of request processing, collapsing into a single nested asynchronous callback.
 
 ```ts
 const timing = async (c, next) => {
   const start = performance.now();
-  await next();
-  c.header('server-timing', `app;dur=${performance.now() - start}`);
+  try {
+    await next(); // Pass processing to the next middleware or final handler
+  } finally {
+    const elapsed = performance.now() - start;
+    c.header('server-timing', `work;dur=${elapsed}`);
+  }
 };
 ```
 
-- Post-processing goes after `next()`; wrap in `try/finally` if it must always run
-- Returning early skips the rest of the chain (the usual auth pattern)
-- `c.set` / `c.get` are request-scoped; type them with `new Hono<{ Variables: { user: User } }>()`
-- Middleware can also be per-route: `app.get('/x', mw1, mw2, handler)`
+- A robust pattern is to wrap `await next()` in the `try / finally` syntax to ensure cleanup is performed even if an exception occurs in the post-processing.
+- By using `c.set(key, value)` and `c.get(key)`, user information decrypted by authentication middleware can be safely passed to subsequent handlers. Strict types can be applied to these context variables using TypeScript generics.
 
-## How types reach the endpoint
+## Control of Streaming Transmission
 
-Hono hands the route type itself to the client. `hc<typeof app>()` builds URLs and input/output types from `AppType`, so you never restate a path or a body shape.
+For sequential output of large language models or real-time transfer of large files, streaming helpers are used instead of standard response buffering.
 
 ```ts
-const api = new Hono().post('/posts', zValidator('json', schema), (c) => c.json({ id: 1 }, 201));
-
-export type AppType = typeof api;
-```
-
-```ts
-const client = hc<AppType>('https://api.example.com');
-await client.posts.$post({ json: { title: 'hello' } });
-```
-
-Mounting with `app.route('/v1', api)` keeps the types too. `InferRequestType` / `InferResponseType` pull out individual pieces.
-
-## Streaming
-
-```ts
+// Streaming text chunks
 return c.streamText(async (stream) => {
-  for (const token of tokens) await stream.write(token);
+  for (const token of textTokens) {
+    await stream.write(token);
+    await stream.sleep(20);
+  }
 });
 
+// Sending Server-Sent Events (SSE)
 return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: 'hello' });
+  await stream.writeSSE({ data: JSON.stringify({ event: 'ping' }) });
 });
 ```
 
-Use this for long LLM responses or log tails. `stream.onAbort()` catches disconnects.
-
-## Testing
-
-`app.request()` sends a request without starting a server, so the same test works on Workers and Node.
-
-```ts
-const res = await app.request('/users/1');
-expect(res.status).toBe(200);
-```
-
-## Performance notes
-
-- Do not add global middleware for everything; scope it per route
-- Read `c.req.json()` once. The body stream is empty the second time
-- Stream large responses with `c.body(stream)` instead of buffering
-- Past a few hundred routes, watch `RegExpRouter` registration limits and split routers
-
-## References
-
-- `hono.dev` docs (Router, Middleware, RPC, Testing)
-- `@hono/zod-validator` for validation plus inference
+By registering an `stream.onAbort()` listener within the stream, the system can detect the moment the client disconnects communication—such as by closing a browser tab—and immediately interrupt unnecessary upstream API usage or computational resource waste.

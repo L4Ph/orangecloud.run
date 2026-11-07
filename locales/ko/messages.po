@@ -15,11 +15,19 @@ msgstr "← 읽기"
 msgid "AI Gateway"
 msgstr ""
 
+#: lib/site-header.tsx:38
+msgid "Cloudflare Workers を動かして学ぶ"
+msgstr "Cloudflare Workers를 실행하며 배우기"
+
+#: lib/playground.tsx:425
+msgid "Cloudflare Workers 実践ガイド"
+msgstr "Cloudflare Workers 실전 가이드"
+
 #: docs/index.ts:72
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:88
+#: lessons/index.ts:96
 msgid "Containers で実行する"
 msgstr "Containers에서 실행하기"
 
@@ -27,11 +35,11 @@ msgstr "Containers에서 실행하기"
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:89
+#: lessons/index.ts:97
 msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
 msgstr "Docker 이미지 안에서 Python 실행. isolate로 불가능한 작업의 출구"
 
-#: lessons/index.ts:98
+#: lessons/index.ts:88
 msgid "Durable Objects"
 msgstr ""
 
@@ -42,6 +50,12 @@ msgstr "Durable Objects와 Actor 모델"
 #: docs/index.ts:85
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
+
+#. placeholder {0}: result.status
+#. placeholder {1}: result.ms
+#: lib/playground.tsx:328
+msgid "exit {0} · {1}ms"
+msgstr "exit {0} · {1}ms"
 
 #: lessons/index.ts:107
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -54,6 +68,12 @@ msgstr ""
 #: docs/index.ts:30
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono의 라우터와 미들웨어"
+
+#. placeholder {0}: result.status
+#. placeholder {1}: result.ms
+#: lib/playground.tsx:332
+msgid "HTTP {0} · {1}ms"
+msgstr "HTTP {0} · {1}ms"
 
 #: docs/index.ts:43
 msgid "isolate が何を省略しているか、コンテナとの分岐"
@@ -70,6 +90,10 @@ msgstr "isolate, 상태 없음, 제한, 과금"
 #: lessons/index.ts:39
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 엔진과 런타임"
+
+#: lib/playground.tsx:401
+msgid "JS がはじめてなら最初に"
+msgstr "JS가 처음이라면 먼저"
 
 #: lessons/index.ts:64
 msgid "KV"
@@ -107,6 +131,10 @@ msgstr "SQLite. SQL, 인덱스, 과금되는 '행 수'"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, 그리고 Node·Bun·Deno·Workers"
 
+#: lib/playground.tsx:415
+msgid "Web開発者のための［入門］Cloudflare Workers"
+msgstr "Web開発者のための［入門］Cloudflare Workers"
+
 #: lessons/index.ts:106
 msgid "Workers AI"
 msgstr ""
@@ -115,33 +143,25 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers의 실행 모델"
 
+#: lib/playground.tsx:268
+msgid "エディタ"
+msgstr "편집기"
+
+#: lib/playground.tsx:306
+msgid "コードエディタ"
+msgstr "코드 편집기"
+
 #: docs/index.ts:84
 msgid "このサイトの仕組み"
 msgstr "이 사이트의 구조"
 
-#: lessons/index.ts:144
-#~ msgid "この単元は手元のターミナルで実行してください"
-#~ msgstr "이 명령은 직접 터미널에서 실행하세요"
+#: lib/docs-shell.tsx:82
+msgid "このページ"
+msgstr "이 페이지"
 
-#: lessons/index.ts:114
-#~ msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
-#~ msgstr "자료만 제공 (Gateway 설정과 API 키 필요)"
-
-#: lessons/index.ts:43
-#~ msgid "この単元は資料のみ（Hono は事前にバンドルが必要です）"
-#~ msgstr "자료만 제공 (Hono는 미리 번들해야 합니다)"
-
-#: lessons/index.ts:127
-#~ msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
-#~ msgstr "자료만 제공 (이미지 빌드와 유료 플랜 필요)"
-
-#: lessons/index.ts:162
-#~ msgid "この単元は資料のみ（サイト自身の実装の話です）"
-#~ msgstr "자료만 제공 (사이트 자체 구현 이야기)"
-
-#: lessons/index.ts:90
-#~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
-#~ msgstr "자료만 제공 (공유 샌드박스에서는 큐를 실행할 수 없음)"
+#: lib/playground.tsx:358
+msgid "この単元は資料のみです。コードは参考として置いています。"
+msgstr "이 단원은 자료만 있습니다. 코드는 참고용입니다."
 
 #: lessons/index.ts:18
 msgid "ストレージ"
@@ -162,6 +182,10 @@ msgstr "왜 클래스인지, actor 모델의 경계는 어디까지인지"
 #: pages/lessons/index.tsx:22
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "브라우저 에디터에서 실행하며 진행하는 장입니다. 네트워크가 막혀 있어 무엇을 써도 안전합니다."
+
+#: lib/playground.tsx:189
+msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
+msgstr "봇 확인에 실패했습니다. 다시 시도하세요."
 
 #: docs/index.ts:15
 msgid "ランタイムとモデル"
@@ -195,36 +219,82 @@ msgstr "일관성·크기·과금으로 KV / D1 / R2 / Durable Objects 선택하
 msgid "公開と運用"
 msgstr "공개와 운영"
 
+#: lib/playground.tsx:290
+msgid "初期化"
+msgstr "초기화"
+
+#: lib/playground.tsx:378
+msgid "前の章"
+msgstr "이전 장"
+
+#: lib/playground.tsx:394
+msgid "前提知識"
+msgstr "사전 지식"
+
+#: lib/site-header.tsx:42
 #: pages/lessons/index.server.ts:20
 #: pages/lessons/index.tsx:18
 msgid "動かして学ぶ"
 msgstr "실행하며 배우기"
 
-#: lessons/index.ts:99
+#: lessons/index.ts:89
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "이름마다 하나의 실체. 상태와 직렬화"
+
+#: lib/playground.tsx:407
+msgid "型が読めないと先に進みにくい"
+msgstr "타입을 읽지 못하면 진행하기 어렵습니다"
 
 #: lessons/index.ts:16
 msgid "基礎"
 msgstr "기초"
 
+#: lib/site-header.tsx:40
+msgid "学び方"
+msgstr "학습 방법"
+
+#: lib/playground.tsx:284
+msgid "実行"
+msgstr "실행"
+
+#: lib/playground.tsx:353
+msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+msgstr "실행하면 여기에 응답과 console 출력이 표시됩니다. 네트워크는 차단되어 있어 망가뜨려도 문제없습니다."
+
 #: lessons/index.ts:19
 msgid "実行環境"
 msgstr "실행 환경"
+
+#: lib/playground.tsx:313
+msgid "実行結果"
+msgstr "실행 결과"
 
 #: pages/docs/index.tsx:20
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "직접 해보기 전후에 읽는 조금 더 깊은 이야기. 설계 판단의 기준을 여기에 두었습니다."
 
+#: lib/site-header.tsx:34
+msgid "本文へ移動"
+msgstr "본문으로 건너뛰기"
+
+#: lib/playground.tsx:417
+msgid "本気で使うなら"
+msgstr "본격적으로 쓴다면"
+
 #: lessons/index.ts:56
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "문법도 런타임도 다르지만 같은 Worker로 동작"
+
+#: lib/playground.tsx:389
+msgid "次の章"
+msgstr "다음 장"
 
 #: docs/index.ts:54
 msgid "状態の置き場所を選ぶ"
 msgstr "상태를 둘 곳 고르기"
 
 #: lessons/index.ts:17
+#: lib/site-header.tsx:53
 msgid "言語"
 msgstr "언어"
 
@@ -232,6 +302,19 @@ msgstr "언어"
 msgid "言語とフレームワーク"
 msgstr "언어와 프레임워크"
 
+#: lib/docs-shell.tsx:27
+msgid "記事"
+msgstr "글"
+
+#: lib/docs-shell.tsx:71
+msgid "記事の一覧"
+msgstr "글 목록"
+
+#: lib/playground.tsx:427
+msgid "設計・運用まで"
+msgstr "설계·운영까지"
+
+#: lib/site-header.tsx:45
 #: pages/docs/index.server.ts:20
 #: pages/docs/index.tsx:16
 msgid "読んで学ぶ"
@@ -241,9 +324,9 @@ msgstr "읽으며 배우기"
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 호출 비용은 이 사이트가 부담합니다. 로컬 개발에서만 Cloudflare 로그인이 필요합니다."
 
-#: pages/lessons/index.tsx:41
-#~ msgid "資料のみ"
-#~ msgstr "자료만"
+#: lib/playground.tsx:367
+msgid "資料"
+msgstr "자료"
 
 #: lessons/index.ts:65
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
@@ -252,3 +335,11 @@ msgstr "빠른 읽기와 최종 일관성. 캐시와 설정의 자리"
 #: docs/index.ts:61
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "비동기 처리와 재개 가능한 장기 작업"
+
+#: lib/playground.tsx:254
+msgid "章"
+msgstr "장"
+
+#: lib/playground.tsx:371
+msgid "章の移動"
+msgstr "장 이동"

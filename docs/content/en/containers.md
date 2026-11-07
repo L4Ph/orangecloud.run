@@ -1,36 +1,35 @@
-# Containers
+# Containers (Edge Containers)
 
-The **last resort** when Workers (isolates) are not enough. You can run a Docker image as-is; Cloudflare starts and stops containers behind a Durable Object.
+The constraints of V8 isolate are intentional. By seizing the filesystem, prohibiting resident processes, and limiting memory to 128MB, we achieved millisecond startup times and scaling to tens of thousands of concurrent processes. However, real-world workloads inevitably involve operations that push the boundaries of isolate.
 
-## When an isolate is not enough
+Video encoding via FFmpeg, headless browser control via Playwright, executing existing binaries written in C/C++, or heavy data processing requiring several gigabytes of memory—these cannot run without the full functionality of the Linux kernel.
 
-- Native binaries and heavy dependencies (ffmpeg, scientific Python, Playwright)
-- Long-running processes (WebSocket servers, game servers)
-- Work that needs more than 128MB of memory
-- Reusing an existing Docker image unchanged
+Cloudflare Containers is the **last resort** for such scenarios. By bringing standard Docker images to edge environments and integrating them with Durable Objects lifecycle control, we enable fully Linux containers to run on-demand.
 
-If you are only "waiting on HTTP" or "querying a database", the isolate is faster and cheaper. **First ask whether Workers can do it.**
+## Architectural Comparison
 
-## Shape of the code
+| Evaluation Metric | V8 isolate (Workers) | Cloudflare Containers |
+| --- | --- | --- |
+| Startup Latency | 1–5 ms | Order of seconds (image extraction/startup) |
+| Memory Allocation | 128MB+ | Configurable in multiple GiB units |
+| Runtime Environment | Web standard APIs, Wasm, Pyodide | Full Linux (Debian, Alpine, Ubuntu, etc.) |
+| Optimal Domain | API routing, authentication, lightweight transformations | Heavy-duty batch processing, media conversion, sandbox execution |
+
+For typical operations such as "receiving an HTTP request and hitting a database," isolate is overwhelmingly more agile and resource-efficient. The principle for avoiding pitfalls in edge design is to **explore every possible means using Workers alone, and only adopt containers when OS-native binaries or massive memory requirements prove indispensable**.
+
+## Lifecycle Control via Sandbox SDK
+
+The Cloudflare Sandbox SDK (`@cloudflare/sandbox`) is used to invoke containers. From the Worker side, the lifecycle of container instances is bundled via programming to control command execution and tunneling to internal ports.
 
 ```ts
 import { getSandbox } from '@cloudflare/sandbox';
 
-const sandbox = await getSandbox(env.SANDBOX, 'user-123');
-const result = await sandbox.run('node --version');
+// Identify a sandbox environment isolated on a per-session basis
+const sandbox = await getSandbox(env.SANDBOX, 'session-456');
+
+// Execute a command in a shell within an independent Linux environment
+const execution = await sandbox.run('python3 -c "print(1 + 1)"');
+console.log('stdout:', execution.stdout.trim());
 ```
 
-With Cloudflare's Sandbox SDK (`@cloudflare/sandbox`), `getSandbox()` gives a Worker a container with `run`, file operations, and port forwarding.
-
-## Pricing and startup
-
-|         | Paid plan                                     |
-| ------- | --------------------------------------------- |
-| Memory  | 25 GiB-hours/month included                   |
-| CPU     | 375 vCPU-minutes/month included               |
-| Startup | Seconds (isolates are milliseconds)           |
-| Sleep   | Scales down when idle; billed only while used |
-
-**Seconds to start, plus image build and placement costs even when idle**, so isolates (Dynamic Workers) are the better fit for an educational sandbox. This site is built that way.
-
-Building and running containers needs Docker and a paid Workers plan, so this article shows the code only.
+Containers automatically stop when no communication occurs, minimizing CPU resource consumption. The architecture is designed so that no unnecessary charges are incurred for prolonged idle states.

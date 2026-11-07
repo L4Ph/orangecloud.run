@@ -5,3 +5,16 @@
 
 /* Kumo drives dark mode with <html data-mode="dark">, not the `dark` class. */
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+/* Japanese copy: break at phrase boundaries and avoid one-character last lines. */
+html {
+  word-break: auto-phrase;
+  text-wrap: pretty;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}

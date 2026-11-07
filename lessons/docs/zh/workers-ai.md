@@ -1,47 +1,38 @@
 # Workers AI
 
-在 Cloudflare 的 GPU 上运行模型。**既不用自己维护推理引擎，也不用管理 GPU**，只传模型名和输入。Serverless，按用量计费。
+在尝试将大规模语言模型或图像生成模型集成到后端时，最大的头疼问题在于 GPU 基础设施的保障以及按量计费成本的失控。如果租用专用实例，闲置时的固定成本将消失；而如果依赖大型 AI API，则会面临代币计费与通信延迟的双重困扰。
 
-## 先从便宜的模型开始
+Workers AI 消除了推断服务器的置备和 API 密钥管理的需求。只需在 Workers 内部调用几行代码，即可直接在 Cloudflare 部署于全球各地数据中心的无服务器 GPU 集群上执行推断。
 
-| 模型                                           | 用途              | 大致费用         |
-| ---------------------------------------------- | ----------------- | ---------------- |
-| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 通用对话与摘要    | 便宜。先用它     |
-| `@cf/ibm-granite/granite-4.0-h-micro`          | 最便宜、偏英语    | 日语较弱         |
-| `@cf/openai/gpt-oss-20b`                       | 需要推理时        | 会消耗推理 token |
-| `@cf/baai/bge-small-en-v1.5`                   | 向量（检索、RAG） | 非常便宜         |
-| `@cf/openai/whisper`                           | 语音转文字        | 按秒计费         |
+## 主要模型特性与成本对比
 
-价格按输入与输出 token 计费。用便宜模型时单次不到一日元。先用便宜的模型，不够再升级。
+在选择模型时，最关键的是“输出代币单价”而非输入代币数量。因为计费的大部分取决于生成文本的长度。
 
-模型会频繁更替。使用前请到 [Workers AI 模型目录](https://developers.cloudflare.com/workers-ai/models/) 确认 ID 和是否计划废弃——上面列出的 ID 将来也会消失。
+| 模型名称 | 主要用途 | 特点与成本感 |
+| --- | --- | --- |
+| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 通用对话、摘要、翻译 | 输出 $0.555/1M 代币。日语准确率与成本的平衡最佳 |
+| `@cf/ibm-granite/granite-4.0-h-micro` | 英语文本处理、极小任务 | 输出 $0.112/1M 代币。极其低廉，但日语响应准确率显著逊色 |
+| `@cf/openai/gpt-oss-20b` | 逻辑推理、复杂思考步骤 | 因消耗大量思考用代币，总成本容易偏高 |
+| `@cf/baai/bge-small-en-v1.5` | 向量嵌入（RAG） | 用于构建搜索引擎。价格极低且速度快 |
+| `@cf/openai/whisper` | 语音转录 | 根据语音时长按量计费 |
 
-费用通常由输出 token 决定，所以比较输出单价：`mistral-small-3.1-24b` 是每百万输出 token $0.555，比 llama-3.3-70b 的 $2.253 便宜约四倍，并且把字符串放在 `response`。
+## 注意响应格式的差异
 
-`granite-4.0-h-micro` 更便宜，输出每百万 token $0.112（mistral 的五分之一），但对日语问题答非所问。日语用 mistral，纯英语用 granite 最省。
+需要注意的是，不同模型返回的对象形状有所不同。
 
-不同模型的返回结构不同。`@cf/mistralai/mistral-small-3.1-24b-instruct` 把字符串放在 `response`，而 gpt-oss-20b 这类推理模型放在 `choices[0].message.content`，并且会花很多 token 思考。先用返回 `response` 的模型更省心。
-
-## 调用方式
+像 `mistral-small-3.1-24b` 这样的轻量级模型，会直接将字符串本身作为结果对象的 `.response` 属性返回。而推断特化模型（如 gpt-oss 等）通常采用与 OpenAI 兼容的 `.choices[0].message.content` 结构。建议先从返回 `.response` 的简单模型开始尝试，这样最不容易犹豫。
 
 ```js
-const answer = await env.AI.run('@cf/google/gemma-4-26b-a4b-it', {
+const answer = await env.AI.run('@cf/mistralai/mistral-small-3.1-24b-instruct', {
   messages: [
-    { role: 'system', content: '回答要简短。' },
-    { role: 'user', content: '一句话说明 Cloudflare Workers' },
+    { role: 'system', content: '请用日语在 40 个字符以内简明地回答。' },
+    { role: 'user', content: '请用一句话概括 Cloudflare Workers 的优点' },
   ],
+  max_tokens: 80,
 });
-answer.response; // 字符串
+
+console.log(answer.response); // 生成的文本字符串
 ```
 
-- `stream: true` 可流式输出（SSE）
-- 向量：`env.AI.run('@cf/baai/bge-small-en-v1.5', { text: [...] })`，存进 Vectorize 即可检索
-- 图像生成、语音识别、翻译都用同一个 `run()`
-
-## 本环境的注意点
-
-**调用费用由本站承担。** 不需要 API 密钥（Workers AI 的绑定本身就是凭证）。
-
-但 Workers AI 没有本地模拟器，用 `npm run dev` 尝试时需要先登录 Cloudflare。遇到认证错误就执行 `npx wrangler login` 再试。部署后任何人都能直接用。
-
-公开前别忘了限制调用次数并固定使用便宜模型。把下一章的 **AI Gateway** 放在前面，就能一次性获得缓存、限流和费用可视化。
+- 如果希望将响应逐次流式传输至浏览器，请指定 `{ stream: true }` 将其作为 Server-Sent Events（SSE）处理。
+- 在生产环境中，为了防止因无限制调用导致计费事故，标准做法是在前端部署 **AI Gateway**，以强制执行缓存和速率限制。

@@ -1,37 +1,33 @@
-# Containers で実行する
+# Containers（コンテナ実行環境）
 
-isolate（Workers）は速くて安い代わりに、OS のコマンドも、ネイティブのライブラリも、ファイルシステムもありません。**Containers** はその制約を捨てる場所です。Docker イメージをそのまま動かせます。
+V8 isolate はミリ秒で立ち上がり、数千のリクエストを軽快に捌く。だが、FFmpeg で動画をトランスコードしたいとき、Playwright でヘッドレスブラウザを駆動したいとき、あるいは C 言語で書かれた巨大なバイナリを実行したいとき、isolate の壁に行く手を阻まれる。OS のカーネル機能も、任意ファイルの実行権限も、そこには存在しないからだ。
 
-この章のエディタは、書いた Python をコンテナの中のファイルに置いて `python3` で実行しています。`print` の出力がそのまま返ります。
+Cloudflare Containers は、isolate でどうしても解決できない課題に対する**最後の手段**である。独自の Docker イメージをそのままエッジへデプロイし、Durable Objects の背後で完全な Linux コンテナを必要に応じて起動・停止する。
 
-## 何が変わるか
+## isolate とコンテナのトレードオフ
 
-|            | isolate                   | container                              |
-| ---------- | ------------------------- | -------------------------------------- |
-| 起動       | ミリ秒                    | 秒                                     |
-| 使えるもの | Web 標準 + バインディング | OS コマンド、任意のバイナリ、pip / apt |
-| ファイル   | なし                      | あり（ただし揮発）                     |
-| 課金       | リクエスト + CPU          | 実行している時間 + メモリ              |
+| 比較項目 | V8 isolate（Dynamic Workers） | Cloudflare Containers |
+| --- | --- | --- |
+| 起動時間 | 数ミリ秒（即座に応答開始） | 数秒オーダー（コンテナの起動待ち） |
+| メモリ上限 | 128MB 〜（軽量設計） | ギガバイト単位で確保可能 |
+| 実行可能ファイル | JS、TS、Wasm、Pyodide | 任意の Linux 実行ファイル、共有ライブラリ |
+| 課金単位 | 実行 CPU 時間 | コンテナの起動時間（vCPU 分・GiB 時間） |
 
-Python、ffmpeg、Playwright、ネイティブ拡張を使う科学計算は、isolate では動きません。逆に「HTTP を待つ」「DB を引く」だけなら isolate の方が速くて安い。
+Web API のリクエストを仲介するだけであれば、isolate の方が圧倒的に高速で、かつ費用も安く済む。**まず Workers 単体で実現できないかを徹底的に考え、どうしても不可能な場合にのみコンテナを導入する**というのがエッジ設計の鉄則である。
 
-## このサイトでの作り
+## Sandbox SDK によるコンテナ制御
 
-- イメージは `Dockerfile.sandbox`（Node のイメージ + `python3`）
-- `getSandbox('lesson-container')` でコンテナを 1 つ取り、使い回す
-- 実行ごとに `/workspace/run-<id>.py` を書いて `python3` で走らせ、終わったら消す
-- 外向きの通信は切ってある
+コードからコンテナを操作する場合は、Cloudflare の Sandbox SDK（`@cloudflare/sandbox`）を利用する。Worker の内部からオンデマンドでコンテナインスタンスを呼び出し、シェルコマンドの実行やポートの公開を行える。
 
 ```ts
-const sandbox = await getSandbox('lesson-container');
-await sandbox.files.writeFile('/workspace/main.py', code);
-const result = await sandbox.run(['python3', 'main.py'], { cwd: '/workspace' });
+import { getSandbox } from '@cloudflare/sandbox';
+
+// ユーザー ID やセッションごとに独立したサンドボックスを確保
+const sandbox = await getSandbox(env.SANDBOX, 'user-session-123');
+
+// コンテナ内部でコマンドを実行し、標準出力を受け取る
+const result = await sandbox.run('node --version');
+console.log('Container Node.js:', result.stdout);
 ```
 
-## 注意
-
-- コンテナは**起動に秒**かかり、使っていないと止まる。初回の実行だけ遅い
-- 実行している間は課金される。回数が多い処理を置く場所ではない
-- 状態は残らない。残したいものは D1 / R2 / KV に置く
-
-どこで isolate とコンテナを分けるかは [ランタイムの深掘り](/docs/runtimes) にまとめています。
+コンテナはリクエストが途絶えると自動的にスリープ状態へ移行し、アクティブに利用されている時間だけが課金対象となる。

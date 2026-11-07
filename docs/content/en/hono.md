@@ -1,128 +1,87 @@
 # Hono
 
-Hono is a small web framework built on nothing but the standard `Request` / `Response`. The same code runs on Node.js, Bun, Deno, and Cloudflare Workers, and with few dependencies it starts fast. Treat it as a toolkit for routing and middleware and the rest follows.
+Frameworks like Express, which supported the early days of Node.js, were heavily dependent on OS `net.Socket` and Node-specific `http.IncomingMessage`. Consequently, they cannot be brought as-is into web-standards-compliant edge environments like Cloudflare Workers, which lack this legacy.
 
-## The smallest app
+Hono is a **web framework designed exclusively around `Request` and `Response` objects**—features built into browsers and edge runtimes. Whether using Node.js, Bun, Deno, or Cloudflare Workers, the same codebase runs with a tiny footprint and no dependencies.
+
+## Minimal Configuration
 
 ```ts
 import { Hono } from 'hono';
 
 const app = new Hono();
 
-app.get('/', (c) => c.text('hello'));
+// Route definition
+app.get('/', (c) => c.text('hello from hono'));
 
-export default app; // Works on Workers and Bun
+// Can be exposed as-is as a Cloudflare Workers entry point
+export default app;
 ```
 
-On Node.js, start it with `serve({ fetch: app.fetch })` from `@hono/node-server`.
-
-## Routing
+## Path Routing and Parameter Extraction
 
 ```ts
-app.get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
-app.get('/files/*', (c) => c.text(c.req.path));
-app.post('/users', (c) => c.text('created', 201));
-app.route('/admin', adminRoutes); // mount another router
+app.get('/users/:id', (c) => c.json({ userId: c.req.param('id') }));
+app.get('/static/*', (c) => c.text(c.req.path));
+app.post('/items', (c) => c.text('created', 201));
+
+// Module binding for sub-routers
+app.route('/api/v1', apiRoutes);
 ```
 
-- `:id` is a parameter, `*` is a wildcard
-- `app.route()` lets you keep routers in separate files (`routes/users.ts`)
-- Matching is not registration order: static beats parameter beats wildcard
+- Supports path parameter extraction via `:param` and wildcard catching with `*`.
+- When static paths, parameterized paths, and wildcards are mixed, the most specific path takes precedence regardless of definition order.
 
-## Requests
+## Input/Output Operations via Context
+
+Type-safe request parsing and response generation are handled through the `c` argument (Context).
 
 ```ts
-c.req.param('id');
-c.req.query('page');
-c.req.header('authorization');
-await c.req.json();
-await c.req.formData();
+// Extract request information
+const authHeader = c.req.header('authorization');
+const queryPage = c.req.query('page');
+const bodyJson = await c.req.json();
+
+// Send response
+return c.json({ status: 'ok', data: bodyJson }, 201);
 ```
 
-`c.req.raw` is the underlying `Request`.
+Since it merely thinly wraps native `Request` / `Response` internally, it is also possible to extract raw web-standard objects directly from `c.req.raw`.
 
-## Responses
-
-```ts
-c.text('ok');
-c.json({ ok: true }, 201);
-c.html('<h1>hi</h1>');
-c.redirect('/login');
-c.body(stream);
-```
-
-Status is the second argument; set headers with `c.header('x-foo', 'bar')`. `c.newResponse()` is there when you need full control.
-
-## Middleware
+## Middleware Pipeline Integration
 
 ```ts
+// Global execution timing middleware
 app.use('*', async (c, next) => {
   const start = performance.now();
   await next();
-  c.header('server-timing', `app;dur=${performance.now() - start}`);
+  const duration = performance.now() - start;
+  c.header('server-timing', `total;dur=${duration.toFixed(2)}`);
 });
 
+// Authentication check and early exit
 app.use('/admin/*', async (c, next) => {
-  if (!c.req.header('authorization')) return c.text('forbidden', 403);
+  if (!c.req.header('authorization')) {
+    return c.text('unauthorized', 401);
+  }
   await next();
 });
 ```
 
-- Before `await next()` is pre-processing, after is post-processing
-- Share values downstream with `c.set('user', user)` / `c.get('user')`
-- Built-ins cover the common cases: `logger()`, `cors()`, `basicAuth()`, and more
+By inserting `await next()`, preprocessing on request reception and postprocessing on response return can be naturally expressed within a single function. Early return when conditions are not met acts as a safety valve, terminating the process without triggering downstream handlers.
 
-## Validating input
+## Type-Safe RPC (Remote Procedure Call)
 
-```ts
-import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
-
-app.post('/users', zValidator('json', z.object({ name: z.string().min(1) })), (c) => {
-  const { name } = c.req.valid('json');
-  return c.json({ name }, 201);
-});
-```
-
-The validated value arrives with its type.
-
-## Errors
+One of Hono's greatest strengths is its ability to automatically derive the client-side RPC client type from the server-side route definition.
 
 ```ts
-app.onError((err, c) => {
-  console.error(err);
-  return c.json({ error: 'internal' }, 500);
-});
-
-app.notFound((c) => c.json({ error: 'not found' }, 404));
-```
-
-Throw an `HTTPException` and `onError` can pick it up.
-
-## Typed RPC
-
-```ts
-// server
-const api = new Hono().get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
+// Server side (exposing route type definition)
+const api = new Hono().get('/posts/:id', (c) => c.json({ id: c.req.param('id'), title: 'Demo' }));
 export type AppType = typeof api;
 
-// client
+// Client side (calling via autocomplete without writing any URL string)
 import { hc } from 'hono/client';
-const client = hc<AppType>('/');
-const res = await client.users[':id'].$get({ param: { id: '1' } });
+const client = hc<AppType>('https://example.com');
+const response = await client.posts[':id'].$get({ param: { id: '42' } });
+const data = await response.json(); // Inferred as { id: string, title: string }
 ```
-
-No hand-written paths on the client.
-
-## Running it locally
-
-```sh
-npm create hono@latest
-npm run dev
-```
-
-For the router internals and how RPC is typed, see [Hono's router and middleware](/docs/hono).
-
-## Why it does not run in this editor
-
-This site's editor cannot run it: resolving `import 'hono'` requires bundling first. Locally, `npm create hono@latest` gets you started.

@@ -1,36 +1,26 @@
-# Python
+# Python Workers
 
-Workers is not a JavaScript-only place. **Python Workers** run Python in the same isolate.
+Attempting to run Python scripts in edge environments has long been a formidable challenge. Attempting to launch a Docker container forces a several-second cold start, and memory consumption in virtual machines becomes a headache. Meanwhile, glue code for data processing, text analysis, and machine learning remains most naturally written in Python.
 
-## Shape
+Cloudflare's **Python Workers** takes an approach that bridges this gap. Rather than spinning up a container, it directly launches a Python execution platform (Pyodide) compiled to WebAssembly inside a V8 isolate. With the exact same agility as JavaScript Workers, Python code can start running while maintaining a cold start of just a few milliseconds.
+
+## Syntax Structure and Entry Points
 
 ```python
 from workers import Response, WorkerEntrypoint
 
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
-        return Response.json({"hello": "python"})
+        return Response.json({"runtime": "python", "status": "ok"})
 ```
 
-- `fetch` on the `Default` class is the entry point, the same role as `export default { fetch }`
-- `Response` is the standard response object; `Response.json()` returns JSON
-- Bindings and variables are on `self.env` (`self.env.KV`, …)
+- The `fetch` method of the `Default` class, which inherits from `WorkerEntrypoint`, serves as the request receiver. This performs the exact same role as `export default { fetch }` in JavaScript.
+- The `Response` class conforms to Web standard HTTP response specifications, allowing it to intuitively return JSON data via `Response.json()`.
+- Access to Cloudflare resources such as KV and D1 is handled transparently through the instance variable `self.env`.
 
-## Running it
+## Application Boundary
 
-The Worker needs a compatibility flag.
+- **Areas where it excels**: JSON data transformation, advanced text formatting using regular expressions, porting existing Python business logic, and post-processing of outputs received from LLMs.
+- **Areas to avoid**: Analysis of large-scale datasets spanning gigabytes, and heavy-duty scientific computing requiring native extension modules in C. Packages must be limited to those capable of running on WebAssembly; heavy-duty native libraries are disadvantageous in terms of initialization and execution speed. If a complete OS-level environment is required, Containers should be chosen.
 
-```jsonc
-{ "compatibility_flags": ["python_workers"] }
-```
-
-Locally `npx wrangler dev`, deployed with `npx wrangler deploy`. This site's editor passes the same flag when it runs your code.
-
-## When it fits
-
-- Good: shaping data, text processing, porting existing Python, post-processing AI output
-- Not good: heavy scientific work, native extensions, gigabytes of data. Packages are constrained like Pyodide; `numpy` may run but slowly. Use Containers when you truly need that
-
-## Logs
-
-`print()` goes to Workers logs (tail), not to this site's response. Put values you want to see inside `Response.json()`.
+Runtime `print()` outputs flow into the platform's monitoring logs (Tail). For variables that need to be returned immediately to the browser, it is most reliable to include them in the `Response.json()` response payload.

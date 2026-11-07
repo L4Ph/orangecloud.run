@@ -1,36 +1,26 @@
-# Python
+# Python Workers
 
-Workers は JavaScript だけの場所ではありません。**Python Workers** を使うと同じ実行環境（isolate）のまま Python が動きます。
+エッジ環境で Python スクリプトを動かす試みは、長らく難題であり続けた。Docker コンテナを起動しようとすれば数秒のコールドスタートを強いられ、仮想マシンのメモリ消費に頭を抱える。一方で、データ処理やテキスト解析、機械学習の接着コードは、依然として Python で書くのが最も自然である。
 
-## 形
+Cloudflare の **Python Workers** は、この溝を埋めるアプローチをとる。コンテナを立ち上げるのではなく、V8 isolate の内部で WebAssembly にコンパイルされた Python 実行基盤（Pyodide）を直接起動する。JavaScript の Workers と全く同じ俊敏さで、数ミリ秒のコールドスタートを維持したまま Python コードが走り始める。
+
+## 構文構造とエントリポイント
 
 ```python
 from workers import Response, WorkerEntrypoint
 
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
-        return Response.json({"hello": "python"})
+        return Response.json({"runtime": "python", "status": "ok"})
 ```
 
-- `Default` クラスの `fetch` がエントリポイント。JavaScript の `export default { fetch }` と同じ役割
-- `Response` は Web 標準のレスポンス。`Response.json()` で JSON を返せる
-- 環境変数やバインディングは `self.env` から触れる（`self.env.KV` など）
+- `WorkerEntrypoint` を継承した `Default` クラスの `fetch` メソッドがリクエストの受信口となる。これは JavaScript における `export default { fetch }` と全く同じ役割を果たす。
+- `Response` クラスは Web 標準の HTTP レスポンス仕様に準拠しており、`Response.json()` を介して直感的に JSON データを返却できる。
+- KV や D1 などの Cloudflare リソースへのアクセスは、インスタンス変数 `self.env` を通じて透過的に行われる。
 
-## 動かすには
+## 適用領域の境界線
 
-Worker の設定に互換フラグが必要です。
+- **強みを発揮する領域**: JSON データの変換、正規表現を用いた高度なテキスト整形、既存の Python 製ビジネスロジックの移植、LLM から受け取った出力の後処理。
+- **避けるべき領域**: ギガバイト単位の大規模データセットの解析、C 言語によるネイティブ拡張モジュールを要求する重厚な科学計算。パッケージは WebAssembly 上で動作可能なものに限られ、重厚なネイティブライブラリは初期化や実行速度の面で不利に働く。OS レベルの完全な環境が必要な場合は、コンテナ実行環境（Containers）を選択すべきである。
 
-```jsonc
-{ "compatibility_flags": ["python_workers"] }
-```
-
-ローカルでは `npx wrangler dev`、デプロイは `npx wrangler deploy`。このサイトのエディタでは、実行時に同じフラグを付けて動かしています。
-
-## 向き不向き
-
-- 向く：データ整形、テキスト処理、既存の Python ロジックの移植、AI の後処理
-- 向かない：重い科学計算、ネイティブ拡張、数 GB のデータ。パッケージは Pyodide 相当の制約があり、`numpy` などは動いても遅い。本気で必要なときは Containers
-
-## ログ
-
-`print()` は Workers のログ（tail）に出ます。このサイトのレスポンスには含まれないので、確認したい値は `Response.json()` に詰めて返してください。
+実行時の `print()` 出力はプラットフォームの監視ログ（Tail）へと流れる。ブラウザへ即座に結果を返したい変数は、`Response.json()` のレスポンスペイロードに含めて返すのが確実である。

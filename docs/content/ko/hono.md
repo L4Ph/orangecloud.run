@@ -1,128 +1,87 @@
 # Hono
 
-Hono는 표준 `Request` / `Response`만으로 동작하는 작은 웹 프레임워크입니다. 같은 코드가 Node.js, Bun, Deno, Cloudflare Workers에서 돌아가고, 의존성이 적어 기동도 빠릅니다. 먼저 "라우팅과 미들웨어 도구"로 익히면 충분합니다.
+Node.js 초기를 지탱한 Express 같은 프레임워크는 OS의 `net.Socket`이나 Node 고유의 `http.IncomingMessage`에 깊이 의존했다. 그 때문에 이러한 유산이 없는 Cloudflare Workers 같은 웹 표준 준수 엣지 환경으로 그대로 가져올 수 없다.
 
-## 가장 작은 앱
+Hono는 브라우저나 엣지 런타임이 기본으로 제공하는 **`Request`와 `Response` 객체만을 전제로 설계된 웹 프레임워크**이다. Node.js, Bun, Deno, Cloudflare Workers 어디서나 동일한 코드베이스가 의존성 없이 극소형 풋프린트로 동작한다.
+
+## 최소한의 구성
 
 ```ts
 import { Hono } from 'hono';
 
 const app = new Hono();
 
-app.get('/', (c) => c.text('hello'));
+// 루트 정의
+app.get('/', (c) => c.text('hello from hono'));
 
-export default app; // Workers / Bun에서 그대로 동작
+// Cloudflare Workers의 엔트리 포인트로 그대로 노출 가능
+export default app;
 ```
 
-Node.js에서는 `@hono/node-server`의 `serve({ fetch: app.fetch })`로 띄웁니다.
-
-## 라우팅
+## 경로 라우팅과 파라미터 추출
 
 ```ts
-app.get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
-app.get('/files/*', (c) => c.text(c.req.path));
-app.post('/users', (c) => c.text('created', 201));
-app.route('/admin', adminRoutes); // 다른 라우터를 붙임
+app.get('/users/:id', (c) => c.json({ userId: c.req.param('id') }));
+app.get('/static/*', (c) => c.text(c.req.path));
+app.post('/items', (c) => c.text('created', 201));
+
+// 서브 라우터의 모듈 결합
+app.route('/api/v1', apiRoutes);
 ```
 
-- `:id`는 파라미터, `*`는 와일드카드
-- `app.route()`로 라우터를 다른 파일(`routes/users.ts` 등)로 분리
-- 매칭은 등록 순서가 아니라 정적 > 파라미터 > 와일드카드 순
+- `:param` 형식의 경로 파라미터 추출과 `*`를 통한 와일드카드 캐치를 지원한다.
+- 정적 경로, 파라미터 포함 경로, 와일드카드가 섞여 있을 경우, 정의 순서와 상관없이 가장 구체적인 경로가 우선적으로 매칭된다.
 
-## 요청
+## 컨텍스트를 통한 입출력 작업
+
+인수 `c`(Context)를 통해 타입 안전한 요청 파싱과 응답 생성을 수행한다.
 
 ```ts
-c.req.param('id');
-c.req.query('page');
-c.req.header('authorization');
-await c.req.json();
-await c.req.formData();
+// 요청 정보 추출
+const authHeader = c.req.header('authorization');
+const queryPage = c.req.query('page');
+const bodyJson = await c.req.json();
+
+// 응답 전송
+return c.json({ status: 'ok', data: bodyJson }, 201);
 ```
 
-`c.req.raw`로 원본 `Request`에 접근합니다.
+내부적으로는 네이티브 `Request` / `Response`를 얇게 래핑한 것에 불과하므로, `c.req.raw`에서 원시 웹 표준 객체를 직접 추출하는 것도 가능하다.
 
-## 응답
-
-```ts
-c.text('ok');
-c.json({ ok: true }, 201);
-c.html('<h1>hi</h1>');
-c.redirect('/login');
-c.body(stream);
-```
-
-상태 코드는 두 번째 인자, 헤더는 `c.header('x-foo', 'bar')`. 세밀하게 조립할 때는 `c.newResponse()`.
-
-## 미들웨어
+## 미들웨어 파이프라인 결합
 
 ```ts
+// 글로벌 실행 시간 측정 미들웨어
 app.use('*', async (c, next) => {
   const start = performance.now();
   await next();
-  c.header('server-timing', `app;dur=${performance.now() - start}`);
+  const duration = performance.now() - start;
+  c.header('server-timing', `total;dur=${duration.toFixed(2)}`);
 });
 
+// 인증 체크와 조기 종료
 app.use('/admin/*', async (c, next) => {
-  if (!c.req.header('authorization')) return c.text('forbidden', 403);
+  if (!c.req.header('authorization')) {
+    return c.text('unauthorized', 401);
+  }
   await next();
 });
 ```
 
-- `await next()` 앞이 전처리, 뒤가 후처리
-- `c.set('user', user)` / `c.get('user')`로 하류에 값 전달
-- `logger()`, `cors()`, `basicAuth()` 같은 기본 미들웨어가 있습니다
+`await next()`를 끼워 넣음으로써, 요청 수신 시의 전처리와 응답 반환 시의 후처리를 단일 함수 내에서 자연스럽게 표현할 수 있다. 조건에 맞지 않을 때 조기 리턴을 수행하면, 하류 핸들러를 실행하지 않고 처리를 종료하는 안전 밸브로 작동한다.
 
-## 입력 검증
+## 타입 안전한 RPC(Remote Procedure Call)
 
-```ts
-import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
-
-app.post('/users', zValidator('json', z.object({ name: z.string().min(1) })), (c) => {
-  const { name } = c.req.valid('json');
-  return c.json({ name }, 201);
-});
-```
-
-검증된 값이 타입과 함께 핸들러에 도착합니다.
-
-## 에러 처리
+Hono의 가장 큰 강점 중 하나는 서버 측 루트 정의에서 클라이언트 측 RPC 클라이언트의 타입을 자동으로 도출할 수 있다는 점이다.
 
 ```ts
-app.onError((err, c) => {
-  console.error(err);
-  return c.json({ error: 'internal' }, 500);
-});
-
-app.notFound((c) => c.json({ error: 'not found' }, 404));
-```
-
-`HTTPException`을 던지면 `onError`가 잡습니다.
-
-## 타입 RPC
-
-```ts
-// 서버
-const api = new Hono().get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
+// 서버 측(루트의 타입 정의를 노출)
+const api = new Hono().get('/posts/:id', (c) => c.json({ id: c.req.param('id'), title: 'Demo' }));
 export type AppType = typeof api;
 
-// 클라이언트
+// 클라이언트 측(URL 문자열을 전혀 쓰지 않고 완전 타입 완성으로 호출)
 import { hc } from 'hono/client';
-const client = hc<AppType>('/');
-const res = await client.users[':id'].$get({ param: { id: '1' } });
+const client = hc<AppType>('https://example.com');
+const response = await client.posts[':id'].$get({ param: { id: '42' } });
+const data = await response.json(); // { id: string, title: string }로 추론
 ```
-
-경로 문자열을 직접 쓰지 않아도 됩니다.
-
-## 로컬에서 실행
-
-```sh
-npm create hono@latest
-npm run dev
-```
-
-라우터 내부와 RPC 타입의 원리는 [Hono의 라우터와 미들웨어](/docs/hono)에서 다룹니다.
-
-## 이 에디터에서 실행하지 않는 이유
-
-이 사이트의 에디터에서는 실행할 수 없습니다. `import 'hono'`를 해석하려면 미리 번들해야 하며, 로컬에서는 `npm create hono@latest`로 시작하면 됩니다.

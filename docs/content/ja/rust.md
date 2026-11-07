@@ -1,13 +1,15 @@
-# Rust（workers-rs）
+# Rust と WebAssembly（workers-rs）
 
-Workers は JavaScript と Python だけの場所ではありません。**Rust を WebAssembly にコンパイル**して動かせます。公式の `worker` クレート（workers-rs）を使うと、`fetch` ハンドラを Rust で書けます。
+暗号アルゴリズムの実装、複雑なバイナリプロトコルのパーサー、画像ピクセルの直接操作など、計算集約型のタスクにおいて、V8 の JIT コンパイルに頼った JavaScript はガベージコレクション（GC）の停止時間やメモリオーバーヘッドの壁に直面する。
 
-## 最小の Worker
+Cloudflare Workers は、**WebAssembly（Wasm）** の第一級サポートを備えている。公式の `workers-rs` クレートを用いることで、型安全性とメモリ安全性を極限まで高めた Rust コードを Wasm バイトコードへコンパイルし、isolate 内部でネイティブに近い速度で実行できる。
+
+## 最小限の構成
 
 ```toml
 # Cargo.toml
 [package]
-name = "rust-worker"
+name = "rust-wasm-worker"
 version = "0.1.0"
 edition = "2021"
 
@@ -24,30 +26,28 @@ use worker::*;
 
 #[event(fetch)]
 async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
-    Response::ok("hello from rust")
+    Response::ok("Rust と WebAssembly による高速なレスポンス")
 }
 ```
 
-## ビルドとデプロイ
+## ビルドとエッジデプロイの連鎖
+
+Rust ソースコードから Workers 実行バイナリへの変換には、公式ツールである `worker-build` を使用する。
 
 ```sh
+# ビルドツールの導入
 cargo install worker-build
-worker-build --release        # build/worker/shim.mjs と wasm を生成
+
+# Wasm バイナリと JS グルーコードの生成
+worker-build --release
+
+# エッジネットワークへのデプロイ
 npx wrangler deploy
 ```
 
-`wrangler.jsonc` の `main` は生成物の `build/worker/shim.mjs` を指します。`worker-build` が wasm と JavaScript の糊（wasm-bindgen の生成物）をまとめてくれます。
+`worker-build` は Rust コンパイラ（`rustc`）を介して `wasm32-unknown-unknown` ターゲットのバイナリをビルドし、V8 との境界を取り持つ JavaScript ラッパー（`wasm-bindgen` 由来のシム）を `build/worker/shim.mjs` へ出力する。設定ファイルの `main` プロパティはこのシムファイルを指定する。
 
-## なぜこのサイトのエディタでは動かせないか
+## JavaScript との棲み分けの境界線
 
-Rust は**ビルドが必須**です。ブラウザで書いた Rust をその場でコンパイルする Rust ツールチェーンは Workers の中にありません。このサイトのエディタは「送られたソースをそのまま実行する」ので、Rust は対象外です。
-
-Wasm 自体は Dynamic Workers でも扱えます（`modules` に `{ wasm: ArrayBuffer }` を渡せる）。ただし渡せるのは**ビルド済みの wasm** で、ソースからビルドするわけではありません。
-
-## どこで使うか
-
-- 計算が重い処理（パーサ、画像処理、暗号）
-- 既存の Rust クレートを使いたい
-- wasm のサイズと起動を許容できる
-
-逆に、HTTP を待つだけ、DB を引くだけなら JavaScript の方が小さくて速いです。Rust が本当に必要なときは、Containers で `rustc` を動かしてビルドする手もあります（ビルドに数十秒かかります）。
+- **Rust / Wasm が圧倒的に優位な領域**: CPU バウンドの重厚な演算処理（データ圧縮、トークナイザー、暗号処理、幾何計算）、C/C++ や Rust の成熟したクレートエコシステムをそのまま再利用したい局面。
+- **JavaScript が有利な領域**: 主な処理が外部 Web API のフェッチや D1/KV からのデータ取得待ちである I/O バウンドなタスク。Wasm バイナリの展開コストや境界越え（FFI）のオーバーヘッドが存在するため、純粋な I/O パイプラインでは JavaScript の方が初期化が速くフットプリントも小さく収まる。

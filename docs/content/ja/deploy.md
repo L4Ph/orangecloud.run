@@ -1,47 +1,40 @@
-# デプロイまで
+# エッジへのデプロイと運用
 
-ローカルで動いたら、Cloudflare のアカウントへ出します。ここでは公式 CLI の Wrangler を使います。
+ローカルのシミュレータ（Miniflare）で動作を確認したコードを、世界数百箇所のエッジデータセンターへ展開する。Cloudflare の公式 CLI ツールである **Wrangler** を通じて、設定ファイルとビルド成果物を瞬時に世界規模のネットワークへ同期させる。
 
-## 手順
+## 開発とデプロイの基本サイクル
 
 ```sh
-# 1. ログイン（ブラウザが開く）
+# 初回認証（ブラウザが起動しアカウント連携を行う）
 npx wrangler login
 
-# 2. ローカルで確認
+# ローカルエミュレータによる動作確認（高速なフィードバック）
 npx wrangler dev
 
-# 3. デプロイ
+# エッジネットワークへの本番デプロイ（通常数秒で全世界に伝播）
 npx wrangler deploy
 ```
 
-新規プロジェクトなら `npm create cloudflare@latest` でテンプレートから始めるのが早いです。
+新規プロジェクトを立ち上げる際は、公式スキャフォールドである `npm create cloudflare@latest` を利用すると、TypeScript の型定義や推奨設定が揃った状態で開始できる。
 
-## 秘密値とリソース
+## 機密情報と外部リソースの接続
+
+コードベース内に API キーや署名用シークレットを直接コミットする行為は厳禁である。環境変数には「公開されても良い静的設定（`vars`）」と「暗号化して保存すべき機密情報（`secrets`）」の明確な境界が存在する。
 
 ```sh
-# API キーなどはコードに書かず、Worker のシークレットに入れる
-npx wrangler secret put API_KEY
+# 暗号化シークレットの登録（ダッシュボード上でも値は隠蔽される）
+npx wrangler secret put STRIPE_API_KEY
 
-# D1 データベース
-npx wrangler d1 create my-db
-npx wrangler d1 migrations apply my-db --remote
-
-# KV / R2 / Queue も create コマンドで作り、wrangler.jsonc に binding を書く
+# D1 リレーショナルデータベースの作成と本番マイグレーションの適用
+npx wrangler d1 create my-production-db
+npx wrangler d1 migrations apply my-production-db --remote
 ```
 
-バインディングは `wrangler.jsonc` に定義します。ローカルでは Miniflare が同じ設定を読むので、コードは本番と同じ `env.DB` などで動きます。
+各種リソースへの接続設定はプロジェクトルートの `wrangler.jsonc`（または `wrangler.toml`）に記述する。ローカル開発時も Miniflare がこの定義ファイルを解釈するため、本番と同じ `env.DB` や `env.KV` のインターフェースで開発を継続できる。
 
-## デプロイ前に確認すること
+## デプロイ前に検証すべき境界線
 
-- [ ] 秘密情報は `wrangler secret put`。コードや `vars` に直書きしない
-- [ ] バインディング名が本番でも同じか（`wrangler.jsonc`）
-- [ ] 無限ループしないか（CPU 制限で殺されるが、その間のリクエストは失敗する）
-- [ ] 想定外に大きいレスポンスを返していないか
-- [ ] 課金が読める状態か（ダッシュボードの Usage）
-
-## 公開したあと
-
-- 独自ドメインを付ける（Workers の Custom Domain）
-- ログを見る：`npx wrangler tail`
-- アクセスが増えたらキャッシュ（Cache API / 静的アセット）を入れる
+- **シークレットの分離**: API トークンや秘密鍵が設定ファイルの `vars` 項目やソースコードに平文で残っていないか。
+- **バインディング名の完全一致**: ソースコード上で参照している `env` プロパティ名と、設定ファイル内の `binding` 定義名に差異がないか。
+- **CPU 制限時間の考慮**: 外部データ処理や重厚なループ処理が、プランの制限時間（無料枠 10ms、有料枠 30 秒）を超過して強制終了を招く恐れはないか。
+- **テールログによる監視体制**: デプロイ直後の実トラフィックの挙動は、`npx wrangler tail` を実行してエッジからの標準出力ログをリアルタイムに監視する。

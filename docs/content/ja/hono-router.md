@@ -1,78 +1,52 @@
-# Hono のルーターとミドルウェア
+# Hono の内部設計（ルーターとミドルウェア合成）
 
-基本を押さえたあとで読む、実装寄りの話。ルーターの選び方、ミドルウェアの合成、型と RPC がどう繋がっているかを見ます。
+表面的なルーティング構文の裏側で、Hono はエッジ環境の厳しいリソース制約に耐えうる高度な最適化を施している。ルーターエンジンの切り替えメカニズムと、多層ミドルウェアを単一の非同期関数へと平坦化する合成構造を解き明かす。
 
-## ルーターは差し替えられる
+## 最適化ルーターの自動選択
 
-Hono は `SmartRouter` が複数の実装を切り替えます。既定は `RegExpRouter`（1 本の正規表現にまとめて高速）と `TrieRouter` の組み合わせで、ルートが多くなっても崩れにくい構成です。`new Hono({ router: new TrieRouter() })` のように明示指定もできます。
+Hono は `SmartRouter` という統括層を持ち、登録されたルートの特性に応じて最適なルーティングエンジンを自動選択する。
 
-マッチングは登録順ではなく、静的なセグメント → パラメータ → ワイルドカードの順に強い方が勝ちます。`/users/me` が `/users/:id` に吸われることはありません。
+- **RegExpRouter**: 登録された全パスを単一の長大な正規表現へとコンパイルし、1 回の正規表現マッチングで対象ハンドラを特定する。数十〜数百のルートに対しても定数時間に近い圧倒的な速度で分岐を完了する。
+- **TrieRouter**: トライ木構造を用いて URL セグメントを一文字ずつ探索する。ワイルドカードや正規表現キャプチャが複雑に入り組んだルート群において安定したフォールバックとして機能する。
 
-## ミドルウェアは関数の合成
+マッチングの優先順位は配列の登録順ではない。完全一致の静的セグメントが最も強く、次いでパスパラメータ、最も優先度が低いものとしてワイルドカード（`*`）の順で評価される。したがって `/users/me` という特殊エンドポイントが、先に登録された `/users/:id` に誤って吸い込まれる事故は構造上発生しない。
 
-`await next()` は「残りの処理を呼ぶ」だけの関数です。Hono は登録されたミドルウェアを `compose()` で 1 本の関数に畳んでから実行します。
+## ミドルウェアの合成メカニズム
+
+ミドルウェアチェーンの実体は、関数型プログラミングにおける関数合成（Composition）である。登録された多段階のハンドラ群は、リクエスト処理開始時に `compose()` 処理を経て、1 本のネストした非同期コールバックへと畳み込まれる。
 
 ```ts
 const timing = async (c, next) => {
   const start = performance.now();
-  await next();
-  c.header('server-timing', `app;dur=${performance.now() - start}`);
+  try {
+    await next(); // 次のミドルウェアまたは最終ハンドラへ処理を移譲
+  } finally {
+    const elapsed = performance.now() - start;
+    c.header('server-timing', `work;dur=${elapsed}`);
+  }
 };
 ```
 
-- 後処理は `next()` の後に書く。例外が飛んでも `try/finally` で担保できる
-- 早期 return すると後続は実行されない（認証の定番）
-- `c.set` / `c.get` はリクエストスコープの変数。型は `new Hono<{ Variables: { user: User } }>()` で付けられる
-- ルート単位でも `app.get('/x', mw1, mw2, handler)` と並べられる
+- 後処理で例外が発生した場合でも確実にクリーンアップを行えるよう、`try / finally` 構文で `await next()` を囲むのが堅牢なパターンである。
+- `c.set(key, value)` と `c.get(key)` を用いることで、認証ミドルウェアで復号したユーザー情報などを後続のハンドラへ安全に伝達できる。このコンテキスト変数には TypeScript のジェネリクスで厳密な型を適用できる。
 
-## 型が端点まで届く仕組み
+## ストリーミング伝送の制御
 
-Hono の型は「ルート定義の型」をそのままクライアントへ渡します。`hc<typeof app>()` は `AppType` から URL と入出力の型を組み立てるので、パスやボディの形を文字列で再宣言しません。
+大規模言語モデルの逐次出力や、大容量ファイルのリアルタイム転送には、標準のレスポンスバッファリングではなくストリーミングヘルパーを用いる。
 
 ```ts
-const api = new Hono().post('/posts', zValidator('json', schema), (c) => c.json({ id: 1 }, 201));
-
-export type AppType = typeof api;
-```
-
-```ts
-const client = hc<AppType>('https://api.example.com');
-await client.posts.$post({ json: { title: 'hello' } });
-```
-
-分割したルーターは `app.route('/v1', api)` の型も保たれます。`InferRequestType` / `InferResponseType` で個別に取り出すこともできます。
-
-## ストリーミング
-
-```ts
+// テキストチャンクのストリーミング
 return c.streamText(async (stream) => {
-  for (const token of tokens) await stream.write(token);
+  for (const token of textTokens) {
+    await stream.write(token);
+    await stream.sleep(20);
+  }
 });
 
+// Server-Sent Events（SSE）の送出
 return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: 'hello' });
+  await stream.writeSSE({ data: JSON.stringify({ event: 'ping' }) });
 });
 ```
 
-長時間の LLM 応答やログ流しはここ。`stream.onAbort()` で切断も拾えます。
-
-## テスト
-
-`app.request()` はサーバーを立てずにリクエストを投げられます。Workers でも Node でも同じテストが書けます。
-
-```ts
-const res = await app.request('/users/1');
-expect(res.status).toBe(200);
-```
-
-## パフォーマンスの勘所
-
-- ミドルウェアはグローバルに増やさない。ルート単位で必要な分だけ
-- `c.req.json()` は 1 回だけ。二度読むとストリームが空になる
-- 大きいレスポンスは `c.body(stream)` で流す。`await res.text()` で全部メモリに載せない
-- ルートが数百を超えたら `RegExpRouter` の登録数上限に注意し、分割を検討する
-
-## 参考
-
-- `hono.dev` のドキュメント（Router、Middleware、RPC、Testing）
-- `@hono/zod-validator` でバリデーションと型推論を同時に
+ストリームの内部で `stream.onAbort()` リスナーを登録しておけば、クライアントがブラウザのタブを閉じるなどして通信を切断した瞬間に検知し、無駄な上流 API 消費や計算リソースの浪費を即座に中断できる。

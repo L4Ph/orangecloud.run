@@ -13,7 +13,7 @@ function LessonsIndex({ locale }: Props) {
   return (
     <div className="min-h-dvh bg-kumo-canvas text-sm text-kumo-default">
       <SiteHeader locale={locale} />
-      <main className="mx-auto w-full max-w-4xl px-6 py-10">
+      <main id="main" className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-6 sm:py-10">
         <Text as="h1" variant="heading" size="lg">
           <Trans>動かして学ぶ</Trans>
         </Text>
@@ -43,7 +43,7 @@ function LessonsIndex({ locale }: Props) {
                       <Link
                         href={routeUrl('/lessons/:id', { params: { id: lesson.id } })}
                         variant="plain"
-                        className="flex h-full w-full flex-col items-start gap-1 rounded-lg bg-kumo-base px-4 pt-3 pb-4 text-left ring ring-kumo-line hover:bg-kumo-tint"
+                        className="flex h-full w-full flex-col items-start gap-1 rounded-lg bg-kumo-base px-4 pt-3 pb-4 text-left ring ring-kumo-line transition-colors hover:bg-kumo-tint"
                       >
                         <span className="flex items-baseline gap-2">
                           <span className="font-mono text-xs text-kumo-subtle">

@@ -15,11 +15,19 @@ msgstr "← 阅读"
 msgid "AI Gateway"
 msgstr ""
 
+#: lib/site-header.tsx:38
+msgid "Cloudflare Workers を動かして学ぶ"
+msgstr "边运行边学 Cloudflare Workers"
+
+#: lib/playground.tsx:425
+msgid "Cloudflare Workers 実践ガイド"
+msgstr "Cloudflare Workers 实践指南"
+
 #: docs/index.ts:72
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:88
+#: lessons/index.ts:96
 msgid "Containers で実行する"
 msgstr "在 Containers 中运行"
 
@@ -27,11 +35,11 @@ msgstr "在 Containers 中运行"
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:89
+#: lessons/index.ts:97
 msgid "Docker イメージの中で Python を動かす。isolate では無理な処理の逃げ道"
 msgstr "在 Docker 镜像里运行 Python，isolate 做不到时的退路"
 
-#: lessons/index.ts:98
+#: lessons/index.ts:88
 msgid "Durable Objects"
 msgstr ""
 
@@ -42,6 +50,12 @@ msgstr "Durable Objects 与 Actor 模型"
 #: docs/index.ts:85
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、绑定中继、执行限制"
+
+#. placeholder {0}: result.status
+#. placeholder {1}: result.ms
+#: lib/playground.tsx:328
+msgid "exit {0} · {1}ms"
+msgstr "exit {0} · {1}ms"
 
 #: lessons/index.ts:107
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -54,6 +68,12 @@ msgstr ""
 #: docs/index.ts:30
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono 的路由器与中间件"
+
+#. placeholder {0}: result.status
+#. placeholder {1}: result.ms
+#: lib/playground.tsx:332
+msgid "HTTP {0} · {1}ms"
+msgstr "HTTP {0} · {1}ms"
 
 #: docs/index.ts:43
 msgid "isolate が何を省略しているか、コンテナとの分岐"
@@ -70,6 +90,10 @@ msgstr "isolate、无共享状态、限制、计费"
 #: lessons/index.ts:39
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
+
+#: lib/playground.tsx:401
+msgid "JS がはじめてなら最初に"
+msgstr "刚接触 JS 就从这里开始"
 
 #: lessons/index.ts:64
 msgid "KV"
@@ -107,6 +131,10 @@ msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
+#: lib/playground.tsx:415
+msgid "Web開発者のための［入門］Cloudflare Workers"
+msgstr "Web開発者のための［入門］Cloudflare Workers"
+
 #: lessons/index.ts:106
 msgid "Workers AI"
 msgstr ""
@@ -115,33 +143,25 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
+#: lib/playground.tsx:268
+msgid "エディタ"
+msgstr "编辑器"
+
+#: lib/playground.tsx:306
+msgid "コードエディタ"
+msgstr "代码编辑器"
+
 #: docs/index.ts:84
 msgid "このサイトの仕組み"
 msgstr "本站的运作方式"
 
-#: lessons/index.ts:144
-#~ msgid "この単元は手元のターミナルで実行してください"
-#~ msgstr "请在本地终端中运行这些命令"
+#: lib/docs-shell.tsx:82
+msgid "このページ"
+msgstr "本页内容"
 
-#: lessons/index.ts:114
-#~ msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
-#~ msgstr "仅作资料（需要配置 Gateway 和 API 密钥）"
-
-#: lessons/index.ts:43
-#~ msgid "この単元は資料のみ（Hono は事前にバンドルが必要です）"
-#~ msgstr "仅作资料（Hono 需要先打包）"
-
-#: lessons/index.ts:127
-#~ msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
-#~ msgstr "仅作资料（需要构建镜像和付费套餐）"
-
-#: lessons/index.ts:162
-#~ msgid "この単元は資料のみ（サイト自身の実装の話です）"
-#~ msgstr "仅作资料（讲本站自身的实现）"
-
-#: lessons/index.ts:90
-#~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
-#~ msgstr "仅作资料（共享沙箱中无法运行队列）"
+#: lib/playground.tsx:358
+msgid "この単元は資料のみです。コードは参考として置いています。"
+msgstr "本章只有资料，代码仅供参考。"
 
 #: lessons/index.ts:18
 msgid "ストレージ"
@@ -162,6 +182,10 @@ msgstr "为什么是 class，以及 actor 模型到哪为止"
 #: pages/lessons/index.tsx:22
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "在浏览器编辑器里边运行边学习的章节。网络已关闭，写坏了也不会有事。"
+
+#: lib/playground.tsx:189
+msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
+msgstr "机器人验证失败，请重试。"
 
 #: docs/index.ts:15
 msgid "ランタイムとモデル"
@@ -195,36 +219,82 @@ msgstr "按一致性、大小和费用选择 KV / D1 / R2 / Durable Objects"
 msgid "公開と運用"
 msgstr "发布与运维"
 
+#: lib/playground.tsx:290
+msgid "初期化"
+msgstr "重置"
+
+#: lib/playground.tsx:378
+msgid "前の章"
+msgstr "上一章"
+
+#: lib/playground.tsx:394
+msgid "前提知識"
+msgstr "前置知识"
+
+#: lib/site-header.tsx:42
 #: pages/lessons/index.server.ts:20
 #: pages/lessons/index.tsx:18
 msgid "動かして学ぶ"
 msgstr "动手学"
 
-#: lessons/index.ts:99
+#: lessons/index.ts:89
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
+
+#: lib/playground.tsx:407
+msgid "型が読めないと先に進みにくい"
+msgstr "读不懂类型就很难继续"
 
 #: lessons/index.ts:16
 msgid "基礎"
 msgstr "基础"
 
+#: lib/site-header.tsx:40
+msgid "学び方"
+msgstr "学习方式"
+
+#: lib/playground.tsx:284
+msgid "実行"
+msgstr "运行"
+
+#: lib/playground.tsx:353
+msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+msgstr "运行后，响应和 console 输出会显示在这里。网络已被封锁，随便改也不会有问题。"
+
 #: lessons/index.ts:19
 msgid "実行環境"
 msgstr "计算"
+
+#: lib/playground.tsx:313
+msgid "実行結果"
+msgstr "运行结果"
 
 #: pages/docs/index.tsx:20
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "在动手前后阅读的深入内容。设计判断的依据都在这里。"
 
+#: lib/site-header.tsx:34
+msgid "本文へ移動"
+msgstr "跳到正文"
+
+#: lib/playground.tsx:417
+msgid "本気で使うなら"
+msgstr "认真使用的话"
+
 #: lessons/index.ts:56
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "语法和运行时都不同，却仍然是同一个 Worker"
+
+#: lib/playground.tsx:389
+msgid "次の章"
+msgstr "下一章"
 
 #: docs/index.ts:54
 msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
 
 #: lessons/index.ts:17
+#: lib/site-header.tsx:53
 msgid "言語"
 msgstr "语言"
 
@@ -232,6 +302,19 @@ msgstr "语言"
 msgid "言語とフレームワーク"
 msgstr "语言与框架"
 
+#: lib/docs-shell.tsx:27
+msgid "記事"
+msgstr "文章"
+
+#: lib/docs-shell.tsx:71
+msgid "記事の一覧"
+msgstr "文章列表"
+
+#: lib/playground.tsx:427
+msgid "設計・運用まで"
+msgstr "直至设计与运维"
+
+#: lib/site-header.tsx:45
 #: pages/docs/index.server.ts:20
 #: pages/docs/index.tsx:16
 msgid "読んで学ぶ"
@@ -241,9 +324,9 @@ msgstr "阅读学"
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
 
-#: pages/lessons/index.tsx:41
-#~ msgid "資料のみ"
-#~ msgstr "仅资料"
+#: lib/playground.tsx:367
+msgid "資料"
+msgstr "资料"
 
 #: lessons/index.ts:65
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
@@ -252,3 +335,11 @@ msgstr "读取快，最终一致。适合缓存和配置"
 #: docs/index.ts:61
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "异步处理，以及可恢复的长时间任务"
+
+#: lib/playground.tsx:254
+msgid "章"
+msgstr "章节"
+
+#: lib/playground.tsx:371
+msgid "章の移動"
+msgstr "章节导航"

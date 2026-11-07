@@ -1,36 +1,42 @@
 # JavaScript エンジンとランタイム
 
-コードは魔法では動きません。**エンジン**が構文を解析して実行し、**ランタイム**がそのエンジンに「外の世界」を繋ぎます。この2つを分けて考えると、Cloudflare Workers の立ち位置が一気に見えます。
+JavaScript をブラウザの外で動かそうとした瞬間、実行環境は必ず二つの部品に分かれる。構文木を解釈して機械語へ落とす**エンジン**と、そのエンジンにネットワークやタイマーといった外の世界を繋ぐ**ランタイム**である。この境界線を意識しないと、Cloudflare Workers のアーキテクチャは見えてこない。
 
-## エンジン（JavaScript を実行する部分）
+## エンジン（実行を担う心臓部）
 
 | エンジン           | 主な利用先                                   | 特徴                                 |
 | ------------------ | -------------------------------------------- | ------------------------------------ |
-| **V8**             | Chrome / Node.js / Deno / Cloudflare Workers | JIT つき。最速級だがバイナリは大きい |
-| **SpiderMonkey**   | Firefox（Gecko）                             | 最初期からある実装。JIT（Ion）つき   |
-| **JavaScriptCore** | Safari（WebKit）/ Bun                        | Apple 製。JIT つきで軽量             |
-| **QuickJS**        | 組み込み・小さい環境                         | 数百 KB 級。JIT なしで起動が速い     |
-| **Hermes**         | React Native                                 | 起動時間とメモリ優先。AOT コンパイル |
+| **V8**             | Chrome / Node.js / Deno / Cloudflare Workers | JIT コンパイル搭載。高速だがバイナリは大きい |
+| **SpiderMonkey**   | Firefox（Gecko）                             | 最初期からある実装。JIT（Ion）搭載   |
+| **JavaScriptCore** | Safari（WebKit）/ Bun                        | Apple 製。JIT 搭載で起動とメモリ効率に優れる |
+| **QuickJS**        | 組み込み・軽量環境                           | 数百 KB 級。JIT なしで極小・即座に起動 |
+| **Hermes**         | React Native                                 | AOT コンパイル前提。起動時間とメモリを優先 |
 
-エンジンの仕事は、ソースを読む → 構文木にする → 実行する → 不要なメモリを回収する（GC）、まで。ファイルを開くことも、HTTP を待つこともできません。
+エンジンの責務は極めて狭い。ソースコードを読み、抽象構文木を組み立て、バイトコードまたは機械語として実行し、不要になったメモリをガベージコレクション（GC）で回収する。それだけだ。ファイルを開く機能も、ネットワークソケットを待ち受ける機能も、エンジン単体には一切備わっていない。
 
-## ランタイム（エンジンに世界を繋ぐ部分）
+## ランタイム（世界との接合点）
 
-| ランタイム             | エンジン       | 外の世界の作り                                                             |
+エンジンに「外の世界」と会話する手段を与えるのがランタイムである。
+
+| ランタイム             | エンジン       | 外の世界へのインターフェース                                               |
 | ---------------------- | -------------- | -------------------------------------------------------------------------- |
-| **Node.js**            | V8             | libuv + OS のシステムコール。`fs`、`net`、`process`                        |
-| **Bun**                | JavaScriptCore | Rust 製。`Bun.serve`、`Bun.file`                                           |
-| **Deno**               | V8             | Rust 製。権限モデル（`--allow-net` など）。**2025 年に Cloudflare が買収** |
-| **Cloudflare Workers** | V8 isolate     | エッジ上の isolate。`fetch` などの Web 標準 + バインディング               |
+| **Node.js**            | V8             | libuv 経由の OS システムコール。`fs`、`net`、`process`                     |
+| **Bun**                | JavaScriptCore | 自前のネイティブ実装（Zig/Rust）。`Bun.serve`、`Bun.file`                  |
+| **Deno**               | V8             | Rust 製。細粒度の権限モデル（`--allow-net` 等）。**2025 年に Cloudflare が買収** |
+| **Cloudflare Workers** | V8 isolate     | エッジ上の分離環境。Web 標準 API（`fetch` 等）+ Cloudflare バインディング  |
 
-`process` も `require` も無いのに `fetch` と `crypto` はある——それが Workers です。**isolate** はプロセスでもコンテナでもなく、1 プロセスの中に大量に詰められる V8 の実行単位で、起動は数ミリ秒です。
+同じ V8 エンジンを積んでいるのだから、Node.js と Workers は同じように動くはずだ——そう思ってコードを持ち込むと、最初の数行で足元をすくわれる。Workers には `process` も `require` も、ローカルファイルシステムすら存在しない。
 
-下のコードを実行すると、この Worker に何があって何が無いかがそのまま出ます。
+代わりに存在するのは、ブラウザでおなじみの Web 標準（`fetch`、`Request`、`Response`、`crypto`）と、プラットフォーム固有のバインディングである。
+
+Workers を支える **V8 isolate** は、OS のプロセスでも独立したコンテナでもない。単一の OS プロセス内に何千もの独立した実行空間を隙間なく詰め込む。独立したメモリ空間を持ちながら、起動にかかる時間は数ミリ秒にすぎない。
+
+エディタ上のコードを実行すると、グローバル空間の検証結果が出力される。この環境に何が存在し、何が削ぎ落とされているのかを確かめてほしい。
 
 ```js
-typeof process; // undefined
+typeof process; // undefined（Node.js の痕跡はない）
 typeof Deno; // undefined
 typeof Bun; // undefined
-typeof document; // undefined
-typeof caches; // object（Workers の Cache API）
+typeof document; // undefined（ブラウザの DOM もない）
+typeof caches; // object（Web 標準の Cache API）
 ```

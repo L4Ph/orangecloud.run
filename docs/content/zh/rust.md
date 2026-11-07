@@ -1,13 +1,15 @@
-# Rust（workers-rs）
+# Rust 与 WebAssembly（workers-rs）
 
-Workers 不只支持 JavaScript 和 Python。你还可以把 **Rust 编译成 WebAssembly** 运行。官方 `worker` クレート（workers-rs）让你用 Rust 写 `fetch` 处理函数。
+在加密算法实现、复杂二进制协议解析器、直接操作图像像素等计算密集型任务中，依赖 V8 JIT 编译的 JavaScript 会面临垃圾回收（GC）停机时间和内存开销的瓶颈。
 
-## 最小的 Worker
+Cloudflare Workers 提供了 **WebAssembly（Wasm）** 的一线支持。通过使用官方的 `workers-rs` crate，可以将类型安全性和内存安全性极高的 Rust 代码编译为 Wasm 字节码，并在 isolate 内部以接近原生的速度运行。
+
+## 最小配置
 
 ```toml
 # Cargo.toml
 [package]
-name = "rust-worker"
+name = "rust-wasm-worker"
 version = "0.1.0"
 edition = "2021"
 
@@ -24,30 +26,28 @@ use worker::*;
 
 #[event(fetch)]
 async fn fetch(_req: Request, _env: Env, _ctx: Context) -> Result<Response> {
-    Response::ok("hello from rust")
+    Response::ok("Rust 与 WebAssembly 实现的快速响应")
 }
 ```
 
-## 构建与部署
+## 构建与边缘部署的链式逻辑
+
+将 Rust 源代码转换为 Workers 可执行二进制文件时，使用官方工具 `worker-build`。
 
 ```sh
+# 安装构建工具
 cargo install worker-build
-worker-build --release        # 生成 build/worker/shim.mjs 和 wasm
+
+# 生成 Wasm 二进制文件和 JS 调用代码
+worker-build --release
+
+# 部署至边缘网络
 npx wrangler deploy
 ```
 
-`wrangler.jsonc` 的 `main` 指向生成的 `build/worker/shim.mjs`。`worker-build` 会把 wasm 和 wasm-bindgen 生成的 JavaScript 胶水一起打包。
+`worker-build` 通过 Rust 编译器（`rustc`）构建 `wasm32-unknown-unknown` 目标的二进制文件，并将起到 V8 边界作用的 JavaScript 包装器（源自 `wasm-bindgen` 的 shim）输出到 `build/worker/shim.mjs` 中。配置文件的 `main` 属性指定了该 shim 文件。
 
-## 为什么本站编辑器无法运行
+## 与 JavaScript 的分工界限
 
-Rust **必须编译**。Workers 里没有能在浏览器端即时编译 Rust 的工具链，而本站编辑器是“原样执行送来的源码”，所以 Rust 不在范围内。
-
-Wasm 本身在 Dynamic Workers 里可用（模块可以是 `{ wasm: ArrayBuffer }`），但传的是**已构建的 wasm**，不是源码。
-
-## 什么时候用
-
-- 计算密集的処理（解析器、图像处理、加密）
-- 想复用现有 Rust crate
-- 能接受 wasm 的体积和启动时间
-
-如果只是等 HTTP 或查数据库，JavaScript 更小更快。确实需要 Rust 时，也可以在容器里用 `rustc` 构建（每次构建要几十秒）。
+- **Rust / Wasm 占据绝对优势的领域**：CPU 绑定的高负载运算处理（数据压缩、分词器、加密处理、几何计算），以及希望直接复用 C/C++ 或 Rust 成熟 crate 生态系统的场景。
+- **JavaScript 占据优势的领域**：主要处理为获取外部 Web API 或等待 D1/KV 数据的 I/O 绑定任务。由于 Wasm 二进制文件的展开成本以及跨界限（FFI）的开销，在纯 I/O 流水线中，JavaScript 的初始化速度更快且占用空间更小。

@@ -1,47 +1,40 @@
-# 部署上线
+# 边缘部署与运维
 
-本地跑通后，发布到你的 Cloudflare 账号。本章使用官方 CLI Wrangler。
+将在本地模拟器（Miniflare）中确认可运行的代码，部署至全球数百个边缘数据中心。通过 Cloudflare 的官方 CLI 工具 **Wrangler**，将配置文件和构建成果物瞬间同步至全球规模的网络。
 
-## 步骤
+## 开发与部署的基本循环
 
 ```sh
-# 1. 登录（会打开浏览器）
+# 首次认证（启动浏览器并进行账号绑定）
 npx wrangler login
 
-# 2. 本地确认
+# 通过本地模拟器确认运行情况（快速反馈）
 npx wrangler dev
 
-# 3. 部署
+# 向边缘网络进行生产部署（通常数秒内传播至全球）
 npx wrangler deploy
 ```
 
-新项目可以用 `npm create cloudflare@latest` 从模板开始。
+启动新项目时，使用官方支架 `npm create cloudflare@latest` 即可在 TypeScript 类型定义和推荐设置就绪的状态下开始。
 
-## 密钥与资源
+## 机密信息与外部资源的连接
+
+严禁在代码库中直接提交 API 密钥或签名密钥。环境变量中存在“可公开的静态设置（`vars`）”与“应加密存储的机密信息（`secrets`）”之间的明确界限。
 
 ```sh
-# API 密钥不要写进代码，放到 Worker 的密钥里
-npx wrangler secret put API_KEY
+# 注册加密密钥（即使在仪表盘上也会隐藏其值）
+npx wrangler secret put STRIPE_API_KEY
 
-# D1 数据库
-npx wrangler d1 create my-db
-npx wrangler d1 migrations apply my-db --remote
-
-# KV / R2 / Queue 同样用 create 创建，再在 wrangler.jsonc 里绑定
+# 创建 D1 关系型数据库并应用生产迁移
+npx wrangler d1 create my-production-db
+npx wrangler d1 migrations apply my-production-db --remote
 ```
 
-绑定写在 `wrangler.jsonc`。本地由 Miniflare 读取同一份配置，所以代码里用 `env.DB` 等，和生产一致。
+各项资源的连接设置记载在项目根目录的 `wrangler.jsonc`（或 `wrangler.toml`）中。本地开发时 Miniflare 也会解析此定义文件，因此可以使用与生产环境相同的 `env.DB` 或 `env.KV` 接口继续开发。
 
-## 部署前检查
+## 部署前应验证的边界线
 
-- [ ] 密钥用 `wrangler secret put`，不要写进代码或 `vars`
-- [ ] 绑定名在生产也一致（`wrangler.jsonc`）
-- [ ] 没有死循环（CPU 限制会杀掉它，但期间的请求会失败）
-- [ ] 没有返回异常大的响应
-- [ ] 能看懂账单（仪表盘的 Usage）
-
-## 公开之后
-
-- 绑定自定义域名（Workers Custom Domain）
-- 看日志：`npx wrangler tail`
-- 访问量上来后加缓存（Cache API / 静态资源）
+- **密钥隔离**：API 令牌或私钥是否以明文形式残留在配置文件的 `vars` 项或源代码中。
+- **绑定名称完全一致**：源代码中引用的 `env` 属性名与配置文件内的 `binding` 定义名是否存在差异。
+- **考虑 CPU 限制时间**：外部数据处理或繁重的循环处理是否可能超过方案的时间限制（免费额度 10ms，付费额度 30 秒）从而导致强制终止。
+- **通过尾部日志进行监控**：部署后的实际流量行为，可通过执行 `npx wrangler tail` 实时监控来自边缘的标准输出日志。

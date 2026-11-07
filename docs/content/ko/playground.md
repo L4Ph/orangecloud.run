@@ -1,60 +1,44 @@
-# 이 사이트의 구조
+# 학습 환경의 아키텍처 (Dynamic Workers)
 
-지금까지 눌러 온 "실행" 버튼이 뒤에서 무엇을 하는지. 여기의 모든 것은 Cloudflare 기능만으로 만들어져 있어 그대로 자기 서비스에 옮길 수 있습니다.
+브라우저에서 사용자가 작성한 임의의 코드를 안전하게 실행하는 샌드박스를 구축하려면, 기존에는 무거운 Docker 컨테이너를 백엔드에서 돌리는 것이 일반적이었다. 하지만 컨테이너 방식에서는 실행 시마다 수 초의 부팅 지연이 발생하며, 서버 인스턴스의 유지비도 늘어난다.
 
-## 실행할 때마다 Worker를 만든다
+이 학습 환경에서는 컨테이너를 일절 사용하지 않고 **Dynamic Workers(Worker Loader 바인딩)**를 채택하고 있다. 부모 Worker가 수신한 요청에 따라, 온디맨드로 자식 V8 isolate를 메모리 상에 구축하고 밀리초 단위로 일회성으로 사용한다.
 
-이 사이트는 **Dynamic Workers**를 씁니다. 부모 Worker가 `env.LOADER`(Worker Loader 바인딩)를 들고, 요청마다 자식 Worker를 조립합니다.
+## 동적 Worker의 구축 및 기동
+
+부모 Worker는 사용자가 전송한 코드를 모듈로 묶고, `env.LOADER`를 통해 자식 Worker를 인스턴스화한다.
 
 ```ts
-const worker = env.LOADER.get(`run-${hash(code)}`, () => ({
+const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
   compatibilityDate: '2026-02-24',
   mainModule: 'index.js',
-  modules: { 'index.js': wrap(code) },
-  env: { KV: kvStub, DB: env.DB },
-  globalOutbound: null,
+  modules: { 'index.js': wrapUserCode(code) },
+  env: { KV: kvProxyStub, DB: env.DB },
+  globalOutbound: null, // 외부 네트워크로의 모든 외부 통신 차단
   limits: { cpuMs: 100, subRequests: 0 },
 }));
 
 const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
 ```
 
-- `load()`는 매번 새로, `get(id, callback)`은 id별로 isolate를 재사용
-- `globalOutbound: null`로 외부 통신을 막음. `fetch`도 `connect`도 실패
-- `limits`로 CPU와 서브리퀘스트를 제한. 폭주해도 Worker 하나 이상의 비용은 나지 않음
-- `compatibilityDate` / `compatibilityFlags`는 일반 Worker와 같은 의미
+- **`globalOutbound: null`을 통한 완전 격리**: 자식 Worker 내부에서는 인터넷상의 임의의 서버를 향한 `fetch()`나 Raw 소켓 설정이 일절 불가능하다. 악의적인 스크립트에 의한 부정 외부 통신이나 자격 증명 유출을 물리적으로 차단한다.
+- **엄격한 리소스 상한**: CPU 실행 시간을 최대 100ms로 제한한다. 무한 루프나 과도한 연산을 포함하는 코드가 투입되더라도, 부모 Worker의 리소스를 고갈시키지 않고 자식 isolate만 종료된다.
+- **isolate의 캐시 재사용**: `env.LOADER.get(id, factory)`를 사용하여 동일한 코드(해시값이 일치하는 코드)에 대해서는 기존 isolate를 재사용한다. 불필요한 메모리 재할당을 방지하여 비용과 지연 시간을 최소화한다.
 
-컨테이너 대신 isolate를 고른 이유는 기동이 밀리초이고 요청마다 버리기에 알맞기 때문입니다.
+## 바인딩의 인젝션 경계
 
-## 넘길 수 있는 바인딩과 없는 바인딩
+자식 Worker의 `env`에 직접 전달할 수 있는 객체에는 제한이 있다. 구조화 클론(Structured Clone)이 가능한 데이터 타입 및 Service Binding으로 한정된다.
 
-자식의 `env`에는 구조화 복제 가능한 값과 Service Binding만 넣을 수 있습니다.
+| 리소스 | 자식 Worker로 전달하는 방법 |
+| --- | --- |
+| D1 데이터베이스 | 네이티브로 구조화 클론을 지원하므로 그대로 전달 |
+| Durable Objects | `namespace.get(id)`로 가져온 스텁 객체(Service Binding)로 전달 |
+| KV / R2 / AI | 이름 공간 자체는 직접 클론할 수 없으므로, 부모 측에서 Durable Object나 Service Binding의 RPC 프록시를 통해 중계 |
 
-| 바인딩          | 전달 방식                                                 |
-| --------------- | --------------------------------------------------------- |
-| D1              | 그대로 (복제 가능)                                        |
-| Durable Objects | `namespace.get(id)`의 stub (Service Binding)              |
-| KV / R2 / AI    | namespace 자체는 전달 불가 → Durable Object 메서드로 중계 |
+예를 들어 KV의 경우, 부모 환경에 배치한 Durable Object가 `get` / `put` / `delete` / `list` 핸들러를 담당하고, 그 RPC 스텁을 자식 환경으로 `env.KV`로 인젝션한다. 자식 Worker 내부의 코드에서는 실제 KV 이름 공간과 완전히 동일한 인터페이스로 투명하게 이용할 수 있다.
 
-예를 들어 KV는 `get` / `put` / `delete` / `list`를 가진 Durable Object 하나를 두고 그 stub을 `env.KV`로 넘깁니다. 호출하는 쪽 코드는 실제 namespace와 거의 같습니다.
+## 멀티테넌트 실행의 방어선
 
-## Turnstile은 브라우저당 한 번
-
-입구에서 Turnstile을 검증하고 성공하면 서명된 쿠키를 설정합니다. 이후 요청은 챌린지를 건너뜁니다. 토큰은 일회용이라 검증마다 새것이 필요합니다.
-
-## 비용은 어디서 나오나
-
-- Dynamic Workers는 하루에 만든 고유 Worker 수로 과금되므로 같은 코드는 같은 `get()` id를 재사용합니다. 월 1,000개까지 포함이고, 초과하면 개당 하루 $0.002
-- id는 코드에서 만들며 줄바꿈과 끝 개행만 정규화하므로, 교재 코드를 그대로 실행하는 사람은 모두 하나의 Worker를 공유합니다
-- CPU는 100ms에서 끊고, 대기 시간은 무료라 외부 API 호출이 저렴
-- Workers AI는 저렴한 모델로 고정하고 실행 횟수 상한을 둠
-
-## 그대로 가져다 쓸 구조
-
-1. 부모 Worker가 Worker Loader를 가진다
-2. 사용자 코드를 `modules`에 넣고 `load()` / `get()` 호출
-3. 필요한 바인딩만 Service Binding으로 좁혀 전달
-4. 외부 통신을 막거나 중계 바인딩으로만 허용
-5. CPU와 서브리퀘스트 상한 설정
-
-이 다섯 가지로 남의 코드를 안전하게 실행하는 자리를 만들 수 있습니다.
+1. **암묵적 캐시 오염 방지**: 코드 내의 공백이나 줄 바꿈을 정규화한 후 해시값을 계산하여, 의도치 않은 캐시 분할을 방지한다.
+2. **Turnstile을 통한 봇 차단**: 실행 엔드포인트 전단에서 Cloudflare Turnstile을 검증하여, 자동화 스크립트에 의한 과부하 공격을 방지한다.
+3. **비용 방벽**: Dynamic Workers는 '하루에 생성된 고유 Worker 수'에 따라 과금된다. 교재 코드의 초기 상태를 많은 사용자가 공유함으로써, 과금 대상인 고유 Worker 수를 최소한으로 억제하는 설계를 채택하고 있다.

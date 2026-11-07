@@ -13,7 +13,8 @@ export default {
       randomUUID: crypto.randomUUID(),
     };
 
-    console.log('このランタイムの中身:');
+    // ランタイムに存在するグローバル変数を確認 / Inspect globals in this runtime
+    console.log('runtime globals:');
     for (const [key, value] of Object.entries(report)) {
       console.log(` ${key} = ${value}`);
     }

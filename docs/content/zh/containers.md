@@ -1,36 +1,35 @@
-# Containers
+# Containers（边缘容器）
 
-Workers（isolate）不够用时的**最后手段**。可以直接运行 Docker 镜像，Cloudflare 在 Durable Object 背后启停容器。
+V8 isolate 的限制是刻意设计的。通过占用文件系统、禁止常驻进程并将内存限制在 128MB，实现了毫秒级的启动速度和数万个并发的规模。然而，在实际工作负载中，必然存在会超出 isolate 边界的处理逻辑。
 
-## isolate 不够用的例子
+无论是使用 FFmpeg 进行视频编码、通过 Playwright 控制无头浏览器、运行 C/C++ 编写的现有二进制文件，还是需要数 GB 内存的高负载数据处理，这些都离不开 Linux 内核的完整功能。
 
-- 原生二进制或很重的依赖（ffmpeg、Python 科学计算、Playwright）
-- 长时间运行的进程（WebSocket 服务器、游戏服务器）
-- 需要超过 128MB 内存的处理
-- 想原样复用已有的 Docker 镜像
+Cloudflare Containers 正是针对此类场景的**最后一张王牌**。通过将标准 Docker 镜像引入边缘环境，并结合 Durable Objects 的生命周期控制，实现完全的 Linux 容器按需运行。
 
-反过来，如果只是“等 HTTP”或“查数据库”，isolate 更快也更便宜。**先想能不能用 Workers 写**是原则。
+## 架构对比
 
-## 代码形态
+| 评估维度 | V8 isolate（Workers） | Cloudflare Containers |
+| --- | --- | --- |
+| 启动延迟 | 1 〜 5 毫秒 | 数秒量级（镜像解压、启动） |
+| 内存分配 | 128MB 〜 | 可按多个 GiB 单位配置 |
+| 运行时环境 | Web 标准 API、Wasm、Pyodide | 完整的 Linux（Debian、Alpine、Ubuntu 等） |
+| 最适用领域 | API 路由、认证、轻量级转换 | 高负载批处理、媒体转换、沙箱执行 |
+
+对于“接收 HTTP 请求并访问数据库”这类典型处理，isolate 的响应速度要快得多，资源效率也更高。在边缘设计中，**首先尝试仅靠 Workers 解决所有问题，直到发现 OS 原生二进制文件或大量内存不可或缺时，才采用容器**，这是避免设计失效的原则。
+
+## 通过 Sandbox SDK 实现生命周期控制
+
+调用容器时使用 Cloudflare Sandbox SDK（`@cloudflare/sandbox`）。在 Workers 端通过程序统一管理容器实例的生命周期，从而控制命令执行和内部端口的隧道化。
 
 ```ts
 import { getSandbox } from '@cloudflare/sandbox';
 
-const sandbox = await getSandbox(env.SANDBOX, 'user-123');
-const result = await sandbox.run('node --version');
+// 获取以会话为单位隔离的沙箱环境
+const sandbox = await getSandbox(env.SANDBOX, 'session-456');
+
+// 在独立 Linux 环境的 shell 中执行命令
+const execution = await sandbox.run('python3 -c "print(1 + 1)"');
+console.log('stdout:', execution.stdout.trim());
 ```
 
-使用 Cloudflare 的 Sandbox SDK（`@cloudflare/sandbox`）时，Worker 可以通过 `getSandbox()` 拿到容器，执行 `run`、文件操作和端口公开。
-
-## 费用与启动
-
-| 项目 | 付费套餐                   |
-| ---- | -------------------------- |
-| 内存 | 每月含 25 GiB 小时         |
-| CPU  | 每月含 375 vCPU 分钟       |
-| 启动 | 秒级（isolate 是毫秒级）   |
-| 休眠 | 空闲后休眠，仅使用期间计费 |
-
-**启动要秒级，而且即使不用也要为镜像构建和放置付费**，所以教学沙箱更适合 isolate（Dynamic Workers）。本站也是这个架构。
-
-构建容器需要 Docker 与 Workers 付费套餐，所以这里只给出代码示例。
+容器在持续处于无通信状态时会自动停止，从而将 CPU 资源消耗降至最低。其结构设计确保了不会因长时间空闲状态而产生不必要的计费。
