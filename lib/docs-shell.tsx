@@ -65,10 +65,12 @@ export function DocsShell({
 
         {toc.length > 0 && (
           <aside className="hidden min-h-0 overflow-y-auto xl:block">
-            <TableOfContents>
-              <TableOfContents.Title>
+            <div className="mb-3">
+              <Text variant="secondary" size="xs">
                 <Trans>このページ</Trans>
-              </TableOfContents.Title>
+              </Text>
+            </div>
+            <TableOfContents>
               <TableOfContents.List>
                 {toc.map((heading) => (
                   <TableOfContents.Item key={heading.id} render={<a href={`#${heading.id}`} />}>
