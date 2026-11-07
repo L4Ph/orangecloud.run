@@ -4,19 +4,21 @@ Cloudflare の GPU 上でモデルを動かす仕組み。**推論エンジン�
 
 ## まずは安いモデルから
 
-| モデル                                     | 用途                  | 目安           |
-| ------------------------------------------ | --------------------- | -------------- |
-| `@cf/meta/llama-3.1-8b-instruct`           | 汎用の会話・要約      | 安い。まずこれ |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 難しい推論            | 高い           |
-| `@cf/baai/bge-small-en-v1.5`               | 埋め込み（検索・RAG） | 非常に安い     |
-| `@cf/openai/whisper`                       | 音声→文字             | 秒課金         |
+| モデル                          | 用途                  | 目安           |
+| ------------------------------- | --------------------- | -------------- |
+| `@cf/google/gemma-4-26b-a4b-it` | 汎用の会話・要約      | 安い。まずこれ |
+| `@cf/openai/gpt-oss-20b`        | 難しい推論            | 高い           |
+| `@cf/baai/bge-small-en-v1.5`    | 埋め込み（検索・RAG） | 非常に安い     |
+| `@cf/openai/whisper`            | 音声→文字             | 秒課金         |
 
-価格は「入力トークン」「出力トークン」の従量制。安いモデルなら 1 回数円未満です。まずは 8B で動かし、足りないときだけ上げる。
+価格は「入力トークン」「出力トークン」の従量制。安いモデルなら 1 回数円未満です。まずは小さいモデルで動かし、足りないときだけ上げる。
+
+モデルは頻繁に入れ替わります。使う前に [Workers AI のモデルカタログ](https://developers.cloudflare.com/workers-ai/models/) で ID と廃止予定を確認してください。ここに載せた ID も将来は消えます。
 
 ## 呼び方
 
 ```js
-const answer = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+const answer = await env.AI.run('@cf/google/gemma-4-26b-a4b-it', {
   messages: [
     { role: 'system', content: '短く答える。' },
     { role: 'user', content: 'Cloudflare Workers を一言で' },

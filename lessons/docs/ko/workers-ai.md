@@ -4,19 +4,21 @@ Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 
 
 ## 우선 저렴한 모델부터
 
-| 모델                                       | 용도              | 대략            |
-| ------------------------------------------ | ----------------- | --------------- |
-| `@cf/meta/llama-3.1-8b-instruct`           | 범용 대화·요약    | 저렴. 먼저 이것 |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 어려운 추론       | 비쌈            |
-| `@cf/baai/bge-small-en-v1.5`               | 임베딩(검색, RAG) | 매우 저렴       |
-| `@cf/openai/whisper`                       | 음성→문자         | 초 단위 과금    |
+| 모델                            | 용도              | 대략            |
+| ------------------------------- | ----------------- | --------------- |
+| `@cf/google/gemma-4-26b-a4b-it` | 범용 대화·요약    | 저렴. 먼저 이것 |
+| `@cf/openai/gpt-oss-20b`        | 어려운 추론       | 비쌈            |
+| `@cf/baai/bge-small-en-v1.5`    | 임베딩(검색, RAG) | 매우 저렴       |
+| `@cf/openai/whisper`            | 음성→문자         | 초 단위 과금    |
 
-가격은 입력·출력 토큰 종량제입니다. 저렴한 모델이면 1회에 몇 원 미만입니다. 먼저 8B로 돌리고 부족할 때만 올리세요.
+가격은 입력·출력 토큰 종량제입니다. 저렴한 모델이면 1회에 몇 원 미만입니다. 먼저 저렴한 모델로 돌리고 부족할 때만 올리세요.
+
+모델은 자주 바뀝니다. 쓰기 전에 [Workers AI 모델 카탈로그](https://developers.cloudflare.com/workers-ai/models/)에서 ID와 폐기 예정을 확인하세요. 위의 ID도 언젠가 사라집니다.
 
 ## 호출 방법
 
 ```js
-const answer = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+const answer = await env.AI.run('@cf/google/gemma-4-26b-a4b-it', {
   messages: [
     { role: 'system', content: '짧게 답한다.' },
     { role: 'user', content: 'Cloudflare Workers를 한 문장으로' },

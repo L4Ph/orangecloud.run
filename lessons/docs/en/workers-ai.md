@@ -4,19 +4,21 @@ Models running on Cloudflare's GPUs. **You own neither the inference engine nor 
 
 ## Start with a cheap model
 
-| Model                                      | Use                        | Rough cost        |
-| ------------------------------------------ | -------------------------- | ----------------- |
-| `@cf/meta/llama-3.1-8b-instruct`           | General chat and summaries | Cheap. Start here |
-| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Harder reasoning           | Expensive         |
-| `@cf/baai/bge-small-en-v1.5`               | Embeddings (search, RAG)   | Very cheap        |
-| `@cf/openai/whisper`                       | Speech to text             | Billed per second |
+| Model                           | Use                        | Rough cost        |
+| ------------------------------- | -------------------------- | ----------------- |
+| `@cf/google/gemma-4-26b-a4b-it` | General chat and summaries | Cheap. Start here |
+| `@cf/openai/gpt-oss-20b`        | Harder reasoning           | Expensive         |
+| `@cf/baai/bge-small-en-v1.5`    | Embeddings (search, RAG)   | Very cheap        |
+| `@cf/openai/whisper`            | Speech to text             | Billed per second |
 
-Pricing is per input and output token. With a cheap model a call is well under a yen. Run the 8B first and only step up when it is not enough.
+Pricing is per input and output token. With a cheap model a call is well under a yen. Run the cheap model first and only step up when it is not enough.
+
+Models churn. Check the [Workers AI model catalog](https://developers.cloudflare.com/workers-ai/models/) for the current ID and any planned deprecation before you ship — the IDs above will eventually disappear too.
 
 ## Calling it
 
 ```js
-const answer = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+const answer = await env.AI.run('@cf/google/gemma-4-26b-a4b-it', {
   messages: [
     { role: 'system', content: 'Answer briefly.' },
     { role: 'user', content: 'Cloudflare Workers in one sentence' },
