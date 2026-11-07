@@ -15,7 +15,7 @@ msgstr "← 前の章"
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
-#: pages/index.tsx:242
+#: pages/index.tsx:249
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "Cloudflare Workers を動かして学ぶ"
 
@@ -41,7 +41,7 @@ msgstr "GPU を持たずに推論。まずは安いモデルから"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:341
+#: pages/index.tsx:340
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -97,7 +97,7 @@ msgstr "Workers AI"
 msgid "Workers の実行モデル"
 msgstr "Workers の実行モデル"
 
-#: pages/index.tsx:306
+#: pages/index.tsx:310
 msgid "エディタ"
 msgstr "エディタ"
 
@@ -121,7 +121,7 @@ msgstr "この単元は資料のみ（共有サンドボックスではキュー
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
-#: pages/index.tsx:245
+#: pages/index.tsx:252
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "チュートリアル兼プレイグラウンド"
 
@@ -130,10 +130,10 @@ msgid "デプロイまで"
 msgstr "デプロイまで"
 
 #: pages/index.tsx:317
-msgid "ボット対策の確認が終わると実行できます"
-msgstr "ボット対策の確認が終わると実行できます"
+#~ msgid "ボット対策の確認が終わると実行できます"
+#~ msgstr "ボット対策の確認が終わると実行できます"
 
-#: pages/index.tsx:186
+#: pages/index.tsx:193
 msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
 msgstr "ボット対策の確認に失敗しました。もう一度お試しください。"
 
@@ -145,7 +145,7 @@ msgstr "ログ・キャッシュ・制限・フォールバックをモデルの
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "ログイン、秘密値、デプロイ、公開後の確認"
 
-#: pages/index.tsx:322
+#: pages/index.tsx:321
 msgid "初期化"
 msgstr "初期化"
 
@@ -161,15 +161,15 @@ msgstr "名前ごとに 1 つの実体。状態と直列化"
 msgid "型が読めないと先に進みにくい"
 msgstr "型が読めないと先に進みにくい"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:318
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "実行 ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:357
+#: pages/index.tsx:356
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:318
 msgid "実行中…"
 msgstr "実行中…"
 
@@ -181,15 +181,15 @@ msgstr "本気で使うなら"
 msgid "次の章 →"
 msgstr "次の章 →"
 
-#: pages/index.tsx:260
-#: pages/index.tsx:273
+#: pages/index.tsx:267
 #: pages/index.tsx:277
+#: pages/index.tsx:281
 msgid "目次"
 msgstr "目次"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:250
+#: pages/index.tsx:257
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "第 {0} 章 / 全 {1} 章"
 

@@ -28,6 +28,7 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 
 - 本番: ダッシュボードで widget の secret を確認し `void secret put TURNSTILE_SECRET`
 - siteverify は `action === 'run'` と、リクエストのホスト名と一致する `hostname` を確認
+- 検証に通ると署名付き Cookie（`run_pass`、12時間、HttpOnly）を発行し、以降は widget なしで実行できる。初回だけ Turnstile が動く
 - ローカルは `.env` の `TURNSTILE_SECRET`（本番と同じ widget の secret）で検証する
 - 公開するドメインを widget のドメイン一覧に追加するのを忘れない
 

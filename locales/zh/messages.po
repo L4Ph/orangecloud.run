@@ -15,7 +15,7 @@ msgstr "← 上一章"
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/index.tsx:242
+#: pages/index.tsx:249
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "动手运行，学习 Cloudflare Workers"
 
@@ -41,7 +41,7 @@ msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:341
+#: pages/index.tsx:340
 msgid "HTTP {0} · {1}ms"
 msgstr ""
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
-#: pages/index.tsx:306
+#: pages/index.tsx:310
 msgid "エディタ"
 msgstr "编辑器"
 
@@ -121,7 +121,7 @@ msgstr "仅作资料（共享沙箱中无法运行队列）"
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "本章仅为资料。代码供阅读参考。"
 
-#: pages/index.tsx:245
+#: pages/index.tsx:252
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "教程兼演练场"
 
@@ -130,10 +130,10 @@ msgid "デプロイまで"
 msgstr "部署上线"
 
 #: pages/index.tsx:317
-msgid "ボット対策の確認が終わると実行できます"
-msgstr "完成人机验证后即可运行。"
+#~ msgid "ボット対策の確認が終わると実行できます"
+#~ msgstr "完成人机验证后即可运行。"
 
-#: pages/index.tsx:186
+#: pages/index.tsx:193
 msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
 msgstr "人机验证失败，请重试。"
 
@@ -145,7 +145,7 @@ msgstr "在模型之前统一做日志、缓存、限流和回退"
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "登录、密钥、部署，以及上线后的检查"
 
-#: pages/index.tsx:322
+#: pages/index.tsx:321
 msgid "初期化"
 msgstr "重置"
 
@@ -161,15 +161,15 @@ msgstr "每个名字只有一个实例。状态与串行化"
 msgid "型が読めないと先に進みにくい"
 msgstr "读不懂类型就很难继续"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:318
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "运行 ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:357
+#: pages/index.tsx:356
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "运行后，响应和 console 输出会显示在这里。网络已关闭，写坏了也不会有事。"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:318
 msgid "実行中…"
 msgstr "运行中…"
 
@@ -181,15 +181,15 @@ msgstr "想认真使用时"
 msgid "次の章 →"
 msgstr "下一章 →"
 
-#: pages/index.tsx:260
-#: pages/index.tsx:273
+#: pages/index.tsx:267
 #: pages/index.tsx:277
+#: pages/index.tsx:281
 msgid "目次"
 msgstr "目录"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:250
+#: pages/index.tsx:257
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "第 {0} 章 / 共 {1} 章"
 

@@ -15,7 +15,7 @@ msgstr "← Previous"
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/index.tsx:242
+#: pages/index.tsx:249
 msgid "Cloudflare Workers を動かして学ぶ"
 msgstr "Learn Cloudflare Workers by running them"
 
@@ -41,7 +41,7 @@ msgstr "Inference without owning a GPU. Start with a cheap model"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: pages/index.tsx:341
+#: pages/index.tsx:340
 msgid "HTTP {0} · {1}ms"
 msgstr ""
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "The Workers execution model"
 
-#: pages/index.tsx:306
+#: pages/index.tsx:310
 msgid "エディタ"
 msgstr "Editor"
 
@@ -121,7 +121,7 @@ msgstr "Reference only (queues are not available in the shared sandbox)"
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reference only. The code is here to read."
 
-#: pages/index.tsx:245
+#: pages/index.tsx:252
 msgid "チュートリアル兼プレイグラウンド"
 msgstr "Tutorial and playground"
 
@@ -130,10 +130,10 @@ msgid "デプロイまで"
 msgstr "Deploying"
 
 #: pages/index.tsx:317
-msgid "ボット対策の確認が終わると実行できます"
-msgstr "Finish the bot check to enable Run."
+#~ msgid "ボット対策の確認が終わると実行できます"
+#~ msgstr "Finish the bot check to enable Run."
 
-#: pages/index.tsx:186
+#: pages/index.tsx:193
 msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
 msgstr "The bot check failed. Please try again."
 
@@ -145,7 +145,7 @@ msgstr "Logging, caching, limits, and fallbacks in front of the model"
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "Login, secrets, deploy, and what to check after"
 
-#: pages/index.tsx:322
+#: pages/index.tsx:321
 msgid "初期化"
 msgstr "Reset"
 
@@ -161,15 +161,15 @@ msgstr "One instance per name. State and serialization"
 msgid "型が読めないと先に進みにくい"
 msgstr "hard to continue without reading types"
 
-#: pages/index.tsx:319
+#: pages/index.tsx:318
 msgid "実行 ⌘/Ctrl+Enter"
 msgstr "Run ⌘/Ctrl+Enter"
 
-#: pages/index.tsx:357
+#: pages/index.tsx:356
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "Run the code and the response plus console output appear here. The network is blocked, so nothing can break."
 
-#: pages/index.tsx:319
+#: pages/index.tsx:318
 msgid "実行中…"
 msgstr "Running…"
 
@@ -181,15 +181,15 @@ msgstr "when you get serious"
 msgid "次の章 →"
 msgstr "Next →"
 
-#: pages/index.tsx:260
-#: pages/index.tsx:273
+#: pages/index.tsx:267
 #: pages/index.tsx:277
+#: pages/index.tsx:281
 msgid "目次"
 msgstr "Contents"
 
 #. placeholder {0}: lessonIndex + 1
 #. placeholder {1}: lessons.length
-#: pages/index.tsx:250
+#: pages/index.tsx:257
 msgid "第 {0} 章 / 全 {1} 章"
 msgstr "Chapter {0} of {1}"
 

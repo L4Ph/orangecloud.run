@@ -176,16 +176,19 @@ function Playground({
   }, [locale]);
 
   const execute = useCallback(
-    async (value: string, turnstileToken: string) => {
+    async (value: string, turnstileToken: string | null) => {
       setPending(true);
       setError(null);
       try {
         const data: RunResult = await apiFetch('/api/run', {
           method: 'POST',
-          body: { code: value, token: turnstileToken },
+          body: turnstileToken ? { code: value, token: turnstileToken } : { code: value },
           timeout: 20_000,
         });
-        if (data.errorCode === 'turnstile') {
+        if (data.errorCode === 'turnstile' && !turnstileToken) {
+          // No pass cookie yet: ask Turnstile once, then retry with its token.
+          setAwaitingToken(true);
+        } else if (data.errorCode === 'turnstile') {
           setResult(null);
           setError(t`ボット対策の確認に失敗しました。もう一度お試しください。`);
         } else if (data.error) {
@@ -208,10 +211,8 @@ function Playground({
 
   const run = useCallback(() => {
     if (!lesson.runnable || pending) return;
-    if (!token) {
-      setAwaitingToken(true);
-      return;
-    }
+    // The server already trusts this browser for a while, so send no token and
+    // only fall back to the widget when it asks for one.
     void execute(code, token);
   }, [code, execute, lesson.runnable, pending, token]);
 
@@ -313,12 +314,7 @@ function Playground({
               <p>{i18n._(lesson.summary)}</p>
             </div>
             <div className="controls">
-              <button
-                type="button"
-                onClick={run}
-                disabled={!lesson.runnable || pending}
-                title={!token ? t`ボット対策の確認が終わると実行できます` : undefined}
-              >
+              <button type="button" onClick={run} disabled={!lesson.runnable || pending}>
                 {pending ? <Trans>実行中…</Trans> : <Trans>実行 ⌘/Ctrl+Enter</Trans>}
               </button>
               <button type="button" className="ghost" onClick={() => setCode(lesson.code)}>
