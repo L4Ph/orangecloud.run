@@ -143,4 +143,22 @@ npx wrangler deploy
     runnable: false,
     hint: msg`この単元は手元のターミナルで実行してください`,
   },
+  {
+    id: 'playground',
+    title: msg`このサイトの仕組み`,
+    summary: msg`Dynamic Workers、バインディングの中継、実行の制限`,
+    code: `const worker = env.LOADER.get(\`run-\${hash(code)}\`, () => ({
+  compatibilityDate: '2026-02-24',
+  mainModule: 'index.js',
+  modules: { 'index.js': code },
+  globalOutbound: null,
+  limits: { cpuMs: 100, subRequests: 0 },
+}));
+
+const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
+console.log(await response.text());
+`,
+    runnable: false,
+    hint: msg`この単元は資料のみ（サイト自身の実装の話です）`,
+  },
 ];

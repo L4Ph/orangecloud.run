@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ja\n"
 
-#: pages/docs/[slug].tsx:21
+#: pages/docs/[slug].tsx:22
 msgid "← 読んで学ぶ"
 msgstr "← 読んで学ぶ"
 
@@ -26,6 +26,10 @@ msgstr "D1"
 #: lessons/index.ts:68
 msgid "Durable Objects"
 msgstr "Durable Objects"
+
+#: lessons/index.ts:149
+msgid "Dynamic Workers、バインディングの中継、実行の制限"
+msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
 #: lessons/index.ts:95
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -87,6 +91,10 @@ msgstr "Workers AI"
 msgid "Workers の実行モデル"
 msgstr "Workers の実行モデル"
 
+#: lessons/index.ts:148
+msgid "このサイトの仕組み"
+msgstr "このサイトの仕組み"
+
 #: lessons/index.ts:144
 msgid "この単元は手元のターミナルで実行してください"
 msgstr "この単元は手元のターミナルで実行してください"
@@ -102,6 +110,10 @@ msgstr "この単元は資料のみ（Hono は事前にバンドルが必要で�
 #: lessons/index.ts:127
 msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 msgstr "この単元は資料のみ（イメージのビルドと有料プランが必要）"
+
+#: lessons/index.ts:162
+msgid "この単元は資料のみ（サイト自身の実装の話です）"
+msgstr "この単元は資料のみ（サイト自身の実装の話です）"
 
 #: lessons/index.ts:90
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"

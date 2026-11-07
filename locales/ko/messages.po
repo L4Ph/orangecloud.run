@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ko\n"
 
-#: pages/docs/[slug].tsx:21
+#: pages/docs/[slug].tsx:22
 msgid "← 読んで学ぶ"
 msgstr "← 읽기"
 
@@ -26,6 +26,10 @@ msgstr ""
 #: lessons/index.ts:68
 msgid "Durable Objects"
 msgstr ""
+
+#: lessons/index.ts:149
+msgid "Dynamic Workers、バインディングの中継、実行の制限"
+msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
 
 #: lessons/index.ts:95
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -87,6 +91,10 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers의 실행 모델"
 
+#: lessons/index.ts:148
+msgid "このサイトの仕組み"
+msgstr "이 사이트의 구조"
+
 #: lessons/index.ts:144
 msgid "この単元は手元のターミナルで実行してください"
 msgstr "이 명령은 직접 터미널에서 실행하세요"
@@ -102,6 +110,10 @@ msgstr "자료만 제공 (Hono는 미리 번들해야 합니다)"
 #: lessons/index.ts:127
 msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 msgstr "자료만 제공 (이미지 빌드와 유료 플랜 필요)"
+
+#: lessons/index.ts:162
+msgid "この単元は資料のみ（サイト自身の実装の話です）"
+msgstr "자료만 제공 (사이트 자체 구현 이야기)"
 
 #: lessons/index.ts:90
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"

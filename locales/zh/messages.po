@@ -7,7 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh\n"
 
-#: pages/docs/[slug].tsx:21
+#: pages/docs/[slug].tsx:22
 msgid "← 読んで学ぶ"
 msgstr "← 阅读"
 
@@ -26,6 +26,10 @@ msgstr ""
 #: lessons/index.ts:68
 msgid "Durable Objects"
 msgstr ""
+
+#: lessons/index.ts:149
+msgid "Dynamic Workers、バインディングの中継、実行の制限"
+msgstr "Dynamic Workers、绑定中继、执行限制"
 
 #: lessons/index.ts:95
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -87,6 +91,10 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
+#: lessons/index.ts:148
+msgid "このサイトの仕組み"
+msgstr "本站的运作方式"
+
 #: lessons/index.ts:144
 msgid "この単元は手元のターミナルで実行してください"
 msgstr "请在本地终端中运行这些命令"
@@ -102,6 +110,10 @@ msgstr "仅作资料（Hono 需要先打包）"
 #: lessons/index.ts:127
 msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 msgstr "仅作资料（需要构建镜像和付费套餐）"
+
+#: lessons/index.ts:162
+msgid "この単元は資料のみ（サイト自身の実装の話です）"
+msgstr "仅作资料（讲本站自身的实现）"
 
 #: lessons/index.ts:90
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
