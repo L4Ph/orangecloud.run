@@ -237,7 +237,7 @@ function Playground({
       <SiteHeader locale={locale}>
         <Select
           aria-label={t`章`}
-          className="w-[260px]"
+          className="min-w-0 flex-1 sm:w-[260px] sm:flex-none"
           size="sm"
           value={lesson.id}
           onValueChange={(next) => {

@@ -29,11 +29,11 @@ export function SiteHeader({ locale, children }: { locale: Locale; children?: Re
         </nav>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center gap-2 sm:w-auto">
         {children}
         <Select
           aria-label={t`言語`}
-          className="w-[110px]"
+          className="w-[100px] shrink-0"
           size="sm"
           value={locale}
           onValueChange={(next) => {
