@@ -2,11 +2,11 @@ import { bindings, defineConfig, defineContainer, exports } from "cf/config";
 import * as entrypoint from "./src/server.tsx" with { type: "cf-worker" };
 
 // Python, Node.js and shell lessons run in this image. SandboxV1 picks the image and the size
-// when it starts the container, which is the "durable-object" scheduling policy. The application
-// that exists in the account has this policy and this name, and neither can change after it is
-// created: `cf deploy` stops if the name here differs from the one attached to SandboxV1.
+// when it starts the container, which is the "durable-object" scheduling policy. The policy
+// cannot change after the application is created, and `cf deploy` stops if the name here
+// differs from the application attached to SandboxV1.
 const sandbox = defineContainer({
-  name: "void-sandbox-v1",
+  name: "orangecloud-run-sandbox",
   schedulingPolicy: "durable-object",
   images: { default: { dockerfile: "./Dockerfile.sandbox" } },
 });
