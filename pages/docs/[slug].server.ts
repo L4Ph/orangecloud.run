@@ -1,10 +1,10 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { I18n } from '@lingui/core';
-import { marked } from 'marked';
 import { requestLocale } from '../../lib/request-locale';
 import { catalogs } from '../../lib/catalogs';
 import { docs } from '../../docs';
 import { docBody } from '../../docs/bodies';
+import { renderDoc } from '../../lib/markdown';
 
 export const loader = defineHandler((c) => {
   const doc = docs.find((item) => item.slug === c.req.param('slug'));
@@ -12,9 +12,7 @@ export const loader = defineHandler((c) => {
 
   const locale = requestLocale(c);
 
-  const docHtml = marked
-    .parse(docBody(locale, doc.slug), { async: false })
-    .replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>/, '');
+  const docHtml = renderDoc(`doc:${locale}:${doc.slug}`, docBody(locale, doc.slug));
 
   return { locale, slug: doc.slug, docHtml };
 });

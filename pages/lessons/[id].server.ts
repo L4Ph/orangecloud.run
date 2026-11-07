@@ -1,10 +1,10 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { I18n } from '@lingui/core';
-import { marked } from 'marked';
 import { requestLocale } from '../../lib/request-locale';
 import { catalogs } from '../../lib/catalogs';
 import { lessons } from '../../lessons';
 import { lessonDoc } from '../../lessons/docs';
+import { renderDoc } from '../../lib/markdown';
 
 export const loader = defineHandler((c) => {
   const lesson = lessons.find((item) => item.id === c.req.param('id'));
@@ -13,9 +13,7 @@ export const loader = defineHandler((c) => {
   const locale = requestLocale(c);
 
   // The pane header already shows the chapter title.
-  const docHtml = marked
-    .parse(lessonDoc(locale, lesson.id), { async: false })
-    .replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>/, '');
+  const docHtml = renderDoc(`lesson:${locale}:${lesson.id}`, lessonDoc(locale, lesson.id));
 
   return { locale, lessonId: lesson.id, docHtml };
 });
