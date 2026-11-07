@@ -1,14 +1,18 @@
+import { exports } from "cloudflare:workers";
+import UserDO from "../durable-objects/user-do";
+
 declare global {
   interface VoidGeneratedEnvBindings {
     LOADER: WorkerLoader;
-    LESSON_KV: DurableObjectNamespace;
-    LESSON_R2: DurableObjectNamespace;
-    LESSON_AI: DurableObjectNamespace;
-    LESSON_COUNTER: DurableObjectNamespace;
-    LESSON_USER_DO: DurableObjectNamespace;
-    DB: D1Database;
     RUN_LIMITER: RateLimit;
     CONTAINER_LIMITER: RateLimit;
+  }
+  namespace Cloudflare {
+    // What `wrangler types` writes for `ctx.exports`: the main module is Void's generated
+    // entry plus the classes vite.config.ts re-exports from it.
+    interface GlobalProps {
+      mainModule: typeof import("../.void/entry") & typeof import("./lesson-bindings");
+    }
   }
 }
 
@@ -23,7 +27,7 @@ export type RunResult = {
 // console is captured inside the sandbox; the wrapper always answers JSON so
 // the API shape stays stable whatever the learner writes.
 // Bump the version when the wrapper changes: it is part of the cache id.
-const WRAPPER_VERSION = 2;
+const WRAPPER_VERSION = 3;
 const wrap = () => `
 import user from './user.js';
 export default {
@@ -51,6 +55,9 @@ export default {
 };
 `;
 
+// KV and R2 are shared with the app, so a lesson's keys live under this prefix.
+const LESSON_SCOPE = { prefix: "playground/" };
+
 // Dynamic Workers bill per unique (id, code) per day, so the id is derived from
 // the code: every learner running an unedited snippet shares one worker, and a
 // re-run costs nothing. Normalise only what cannot change behaviour.
@@ -62,18 +69,8 @@ const hash = (text: string) => {
   return (h >>> 0).toString(36);
 };
 
-// Local dev rejects string ids on `get()`; resolving the id works everywhere.
-const stub = (namespace: DurableObjectNamespace, name: string) =>
-  namespace.get(namespace.idFromName(name));
-
 type SandboxEnv = {
   LOADER: WorkerLoader;
-  LESSON_KV: DurableObjectNamespace;
-  LESSON_R2: DurableObjectNamespace;
-  LESSON_AI: DurableObjectNamespace;
-  LESSON_COUNTER: DurableObjectNamespace;
-  LESSON_USER_DO: DurableObjectNamespace;
-  DB: D1Database;
 };
 
 export type RunLang = "javascript" | "python" | "container" | "durable-object";
@@ -126,13 +123,13 @@ async function runInContainer(code: string, runtime: ContainerRuntime): Promise<
 // A learner-written Durable Object class, run as a facet of a supervisor DO.
 // The id changes with the code, so an edit restarts the facet (in-memory state
 // resets) while its SQLite storage stays.
-async function runInDurableObject(env: SandboxEnv, code: string): Promise<RunResult> {
+async function runInDurableObject(code: string): Promise<RunResult> {
   const started = performance.now();
   try {
-    const supervisor = stub(env.LESSON_USER_DO, "lesson-user-do") as unknown as {
-      run(id: string, code: string): Promise<{ status: number; body: string }>;
-    };
-    const { status, body } = await supervisor.run(`do-${hash(normalize(code))}`, code);
+    const { status, body } = await UserDO.get("lesson-user-do").run(
+      `do-${hash(normalize(code))}`,
+      code,
+    );
     return { status, body, logs: [], ms: Math.round(performance.now() - started) };
   } catch (error) {
     return {
@@ -152,7 +149,7 @@ export async function runInSandbox(
   runtime: ContainerRuntime = "python",
 ): Promise<RunResult> {
   if (lang === "container") return runInContainer(code, runtime);
-  if (lang === "durable-object") return runInDurableObject(env, code);
+  if (lang === "durable-object") return runInDurableObject(code);
   const started = performance.now();
   const elapsed = () => Math.round(performance.now() - started);
 
@@ -168,15 +165,19 @@ export async function runInSandbox(
       compatibilityFlags: python ? ["python_workers"] : undefined,
       mainModule: python ? "worker.py" : "index.js",
       modules,
-      env: {
-        KV: stub(env.LESSON_KV, "lesson-kv"),
-        STORAGE: stub(env.LESSON_R2, "lesson-r2"),
-        AI: stub(env.LESSON_AI, "lesson-ai"),
-        COUNTER: stub(env.LESSON_COUNTER, "lesson-counter"),
-        DB: env.DB,
-      },
+      // The sandbox gets stubs of the classes in lesson-bindings.ts, nothing else.
+      env: python
+        ? {}
+        : {
+            KV: exports.LessonKv({ props: LESSON_SCOPE }),
+            STORAGE: exports.LessonR2({ props: LESSON_SCOPE }),
+            AI: exports.LessonAi({ props: {} }),
+            COUNTER: exports.LessonCounter({ props: {} }),
+            DB: exports.LessonDb({ props: {} }),
+          },
       globalOutbound: null,
-      limits: { cpuMs: 100, subRequests: 0 },
+      // Every binding call is a subrequest; the network itself stays closed.
+      limits: { cpuMs: 100, subRequests: python ? 0 : 20 },
     }));
     const response = await worker.getEntrypoint().fetch(new Request("https://sandbox.internal/"));
 

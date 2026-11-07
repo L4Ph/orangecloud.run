@@ -27,15 +27,18 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 ## 绑定的注入边界
 
-能够直接传递给子 Worker `env` 的对象有限制。仅限于支持结构化克隆（Structured Clone）的数据类型以及 Service Binding。
+能放进子 Worker `env` 的只有两类：支持结构化克隆（Structured Clone）的数据类型，以及 Service Binding。D1、KV、R2、AI 和 Durable Object 暂存对象都不属于这两类，因此无法直接传递。放进 `env` 后，在已部署的运行环境中会以 `This ServiceStub cannot be serialized.` 失败。
 
-| 资源            | 传递给子 Worker 的方式                                                                             |
-| --------------- | -------------------------------------------------------------------------------------------------- |
-| D1 数据库       | 由于原生支持结构化克隆，直接传递                                                                   |
-| Durable Objects | 作为通过 `namespace.get(id)` 获取的暂存对象（Service Binding）传递                                 |
-| KV / R2 / AI    | 由于命名空间本身无法直接克隆，因此由父端通过 Durable Object 或 Service Binding 的 RPC 代理进行中继 |
+因此，父 Worker 为每个绑定导出一个 `WorkerEntrypoint` 类，并把它的暂存对象（`ctx.exports.LessonKv({ props })`）交给子 Worker。子 Worker 可以像普通绑定一样调用 `env.KV.get()`。每次调用都是回到父端的 RPC，由父端针对真实资源执行。这些类位于 `lib/lesson-bindings.ts`。
 
-例如对于 KV，部署在父环境中的 Durable Object 负责 `get` / `put` / `delete` / `list` 的处理程序，并将该 RPC 暂存作为 `env.KV` 注入到子环境中。子 Worker 内部的代码可以将其作为与真实 KV 命名空间完全相同的接口透明地使用。
+| 资源            | 子 Worker 得到的东西                                                            |
+| --------------- | ------------------------------------------------------------------------------- |
+| KV / R2         | `LessonKv` / `LessonR2`。键被限制在 `props.prefix` 之下，因此碰不到应用的其他键 |
+| D1 数据库       | `LessonDb`。`prepare(sql).bind(...).run()` 的链式调用会依次返回暂存对象         |
+| Workers AI      | `LessonAi`。每次调用都会计费，因此只提供课程用的一个模型和较小的输入            |
+| Durable Objects | `LessonCounter`。转发到 Durable Object 的暂存对象                               |
+
+子 Worker 只能看到这五个暂存对象，无法触及父端的 `env`、`ctx`，以及类中未写出的方法。每次调用算一次子请求，每次执行最多 20 次。
 
 ## 多租户执行的防线
 

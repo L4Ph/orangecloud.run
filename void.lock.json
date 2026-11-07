@@ -24,7 +24,12 @@
         }
       }
     ],
-    "routes": [],
+    "routes": [
+      {
+        "pattern": "orangecloud.run.l4ph.moe",
+        "custom_domain": true
+      }
+    ],
     "workers_dev": true,
     "preview_urls": true
   },
@@ -34,7 +39,30 @@
         "binding": "LOADER"
       }
     ],
-    "routes": [],
+    "ratelimits": [
+      {
+        "name": "RUN_LIMITER",
+        "namespace_id": "810001",
+        "simple": {
+          "limit": 30,
+          "period": 60
+        }
+      },
+      {
+        "name": "CONTAINER_LIMITER",
+        "namespace_id": "810002",
+        "simple": {
+          "limit": 6,
+          "period": 60
+        }
+      }
+    ],
+    "routes": [
+      {
+        "pattern": "orangecloud.run.l4ph.moe",
+        "custom_domain": true
+      }
+    ],
     "workers_dev": true,
     "preview_urls": true,
     "durable_objects": {
@@ -104,26 +132,7 @@
         "binding": "STORAGE",
         "bucket_name": "orangecloud-run-storage"
       }
-    ],
-    "name": "orangecloud-run",
-    "ratelimits": [
-      {
-        "name": "RUN_LIMITER",
-        "namespace_id": "810001",
-        "simple": {
-          "limit": 30,
-          "period": 60
-        }
-      },
-      {
-        "name": "CONTAINER_LIMITER",
-        "namespace_id": "810002",
-        "simple": {
-          "limit": 6,
-          "period": 60
-        }
-      }
     ]
   },
-  "text": "{\n  \"worker_loaders\": [\n    {\n      \"binding\": \"LOADER\"\n    }\n  ],\n  \"routes\": [],\n  \"workers_dev\": true,\n  \"preview_urls\": true,\n  \"durable_objects\": {\n    \"bindings\": [\n      {\n        \"name\": \"LESSON_AI\",\n        \"class_name\": \"LessonAiDurableObject\"\n      },\n      {\n        \"name\": \"LESSON_COUNTER\",\n        \"class_name\": \"LessonCounterDurableObject\"\n      },\n      {\n        \"name\": \"LESSON_KV\",\n        \"class_name\": \"LessonKvDurableObject\"\n      },\n      {\n        \"name\": \"LESSON_R2\",\n        \"class_name\": \"LessonR2DurableObject\"\n      },\n      {\n        \"name\": \"LESSON_USER_DO\",\n        \"class_name\": \"LessonUserDoDurableObject\"\n      }\n    ]\n  },\n  \"migrations\": [\n    {\n      \"tag\": \"void-durable-lesson-ai-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonAiDurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-counter-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonCounterDurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-kv-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonKvDurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-r2-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonR2DurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-user-do-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonUserDoDurableObject\"\n      ]\n    }\n  ],\n  \"account_id\": \"0ce3c6916b7331f1aa251433a7c47c03\",\n  \"compatibility_date\": \"2026-02-24\",\n  \"d1_databases\": [\n    {\n      \"binding\": \"DB\",\n      \"database_name\": \"orangecloud-run-db\",\n      \"database_id\": \"927724c0-4cb3-4782-841e-3c107238b62d\",\n      \"migrations_dir\": \"./db/migrations\"\n    }\n  ],\n  \"kv_namespaces\": [\n    {\n      \"binding\": \"KV\",\n      \"id\": \"d9b6b0fecc614393888726ab65b6d0b5\"\n    }\n  ],\n  \"r2_buckets\": [\n    {\n      \"binding\": \"STORAGE\",\n      \"bucket_name\": \"orangecloud-run-storage\"\n    }\n  ],\n  \"name\": \"orangecloud-run\",\n  \"ratelimits\": [\n    {\n      \"name\": \"RUN_LIMITER\",\n      \"namespace_id\": \"810001\",\n      \"simple\": {\n        \"limit\": 30,\n        \"period\": 60\n      }\n    },\n    {\n      \"name\": \"CONTAINER_LIMITER\",\n      \"namespace_id\": \"810002\",\n      \"simple\": {\n        \"limit\": 6,\n        \"period\": 60\n      }\n    }\n  ]\n}\n"
+  "text": "{\n  \"worker_loaders\": [\n    {\n      \"binding\": \"LOADER\"\n    }\n  ],\n  \"ratelimits\": [\n    {\n      \"name\": \"RUN_LIMITER\",\n      \"namespace_id\": \"810001\",\n      \"simple\": {\n        \"limit\": 30,\n        \"period\": 60\n      }\n    },\n    {\n      \"name\": \"CONTAINER_LIMITER\",\n      \"namespace_id\": \"810002\",\n      \"simple\": {\n        \"limit\": 6,\n        \"period\": 60\n      }\n    }\n  ],\n  \"routes\": [\n    {\n      \"pattern\": \"orangecloud.run.l4ph.moe\",\n      \"custom_domain\": true\n    }\n  ],\n  \"workers_dev\": true,\n  \"preview_urls\": true,\n  \"durable_objects\": {\n    \"bindings\": [\n      {\n        \"name\": \"LESSON_AI\",\n        \"class_name\": \"LessonAiDurableObject\"\n      },\n      {\n        \"name\": \"LESSON_COUNTER\",\n        \"class_name\": \"LessonCounterDurableObject\"\n      },\n      {\n        \"name\": \"LESSON_KV\",\n        \"class_name\": \"LessonKvDurableObject\"\n      },\n      {\n        \"name\": \"LESSON_R2\",\n        \"class_name\": \"LessonR2DurableObject\"\n      },\n      {\n        \"name\": \"LESSON_USER_DO\",\n        \"class_name\": \"LessonUserDoDurableObject\"\n      }\n    ]\n  },\n  \"migrations\": [\n    {\n      \"tag\": \"void-durable-lesson-ai-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonAiDurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-counter-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonCounterDurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-kv-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonKvDurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-r2-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonR2DurableObject\"\n      ]\n    },\n    {\n      \"tag\": \"void-durable-lesson-user-do-v1\",\n      \"new_sqlite_classes\": [\n        \"LessonUserDoDurableObject\"\n      ]\n    }\n  ],\n  \"account_id\": \"0ce3c6916b7331f1aa251433a7c47c03\",\n  \"compatibility_date\": \"2026-02-24\",\n  \"d1_databases\": [\n    {\n      \"binding\": \"DB\",\n      \"database_name\": \"orangecloud-run-db\",\n      \"database_id\": \"927724c0-4cb3-4782-841e-3c107238b62d\",\n      \"migrations_dir\": \"./db/migrations\"\n    }\n  ],\n  \"kv_namespaces\": [\n    {\n      \"binding\": \"KV\",\n      \"id\": \"d9b6b0fecc614393888726ab65b6d0b5\"\n    }\n  ],\n  \"r2_buckets\": [\n    {\n      \"binding\": \"STORAGE\",\n      \"bucket_name\": \"orangecloud-run-storage\"\n    }\n  ]\n}\n"
 }

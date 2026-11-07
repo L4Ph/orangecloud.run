@@ -21,8 +21,9 @@ export default defineConfig({
     ],
     // The Worker existed before its first deploy (`void secret put` created it),
     // so Void has no earlier deployment to copy these from and needs them stated.
-    // routes: [] means no custom domain yet; add one here once a zone exists.
-    routes: [],
+    // The custom domain was attached in the dashboard. Keep it listed here, or a
+    // deploy that states `routes` detaches it.
+    routes: [{ pattern: "orangecloud.run.l4ph.moe", custom_domain: true }],
     workers_dev: true,
     preview_urls: true,
   },

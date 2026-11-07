@@ -27,15 +27,18 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 ## Binding Injection Boundaries
 
-There are restrictions on the objects that can be passed directly to the child Worker's `env`. These are limited to data types that support Structured Cloning and Service Bindings.
+The child Worker's `env` accepts only two kinds of values: data that supports Structured Cloning, and Service Bindings. D1, KV, R2, AI and Durable Object stubs are neither, so none of them can be passed in directly. Putting them in `env` fails on the deployed runtime with `This ServiceStub cannot be serialized.`
 
-| Resource        | How to Pass to Child Worker                                                                                                              |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| D1 Database     | Passed as-is, as it natively supports Structured Cloning                                                                                 |
-| Durable Objects | Passed as stub objects (Service Bindings) obtained via `namespace.get(id)`                                                               |
-| KV / R2 / AI    | Since the namespaces themselves cannot be cloned directly, they are relayed via the parent's Durable Object or Service Binding RPC proxy |
+Instead, the parent Worker exports a `WorkerEntrypoint` class for each binding and hands the child a stub of it (`ctx.exports.LessonKv({ props })`). The child calls `env.KV.get()` like any binding, and each call is an RPC back into the parent, which runs it against the real resource. The classes live in `lib/lesson-bindings.ts`.
 
-For example, in the case of KV, a Durable Object placed in the parent environment handles the `get` / `put` / `delete` / `list` handlers, and its RPC stub is injected into the child environment as `env.KV`. From the child Worker's internal code, this can be accessed transparently as an interface identical to the actual KV namespace.
+| Resource        | What the child Worker gets                                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------------------ |
+| KV / R2         | `LessonKv` / `LessonR2`. Keys are fenced under `props.prefix`, so a lesson cannot touch the app's other keys |
+| D1 Database     | `LessonDb`. The chain `prepare(sql).bind(...).run()` returns a further stub at each step                     |
+| Workers AI      | `LessonAi`. One model and a small input only, because every run is billed                                    |
+| Durable Objects | `LessonCounter`. A stub that forwards to the Durable Object                                                  |
+
+The child sees only these five stubs. It cannot reach the parent's `env`, its `ctx`, or any method the class does not list. Each call counts as a subrequest, limited to 20 per run.
 
 ## Multi-Tenant Execution Defense Lines
 

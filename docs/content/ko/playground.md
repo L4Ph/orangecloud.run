@@ -27,15 +27,18 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 ## 바인딩의 인젝션 경계
 
-자식 Worker의 `env`에 직접 전달할 수 있는 객체에는 제한이 있다. 구조화 클론(Structured Clone)이 가능한 데이터 타입 및 Service Binding으로 한정된다.
+자식 Worker의 `env`에 실을 수 있는 것은 구조화 클론(Structured Clone)이 가능한 데이터 타입과 Service Binding 두 가지뿐이다. D1, KV, R2, AI, Durable Object 스텁은 어느 쪽에도 해당하지 않으므로 직접 전달할 수 없다. `env`에 실으면 배포된 실행 환경에서 `This ServiceStub cannot be serialized.`로 실패한다.
 
-| 리소스          | 자식 Worker로 전달하는 방법                                                                                     |
-| --------------- | --------------------------------------------------------------------------------------------------------------- |
-| D1 데이터베이스 | 네이티브로 구조화 클론을 지원하므로 그대로 전달                                                                 |
-| Durable Objects | `namespace.get(id)`로 가져온 스텁 객체(Service Binding)로 전달                                                  |
-| KV / R2 / AI    | 이름 공간 자체는 직접 클론할 수 없으므로, 부모 측에서 Durable Object나 Service Binding의 RPC 프록시를 통해 중계 |
+그래서 부모 Worker는 바인딩마다 `WorkerEntrypoint` 클래스를 export하고, 그 스텁(`ctx.exports.LessonKv({ props })`)을 자식에게 전달한다. 자식은 `env.KV.get()`처럼 일반 바인딩으로 호출할 수 있다. 호출은 부모로의 RPC가 되어, 부모가 실제 리소스에 대해 실행한다. 클래스는 `lib/lesson-bindings.ts`에 있다.
 
-예를 들어 KV의 경우, 부모 환경에 배치한 Durable Object가 `get` / `put` / `delete` / `list` 핸들러를 담당하고, 그 RPC 스텁을 자식 환경으로 `env.KV`로 인젝션한다. 자식 Worker 내부의 코드에서는 실제 KV 이름 공간과 완전히 동일한 인터페이스로 투명하게 이용할 수 있다.
+| 리소스          | 자식 Worker가 받는 것                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| KV / R2         | `LessonKv` / `LessonR2`. 키를 `props.prefix` 아래로 가두므로 앱의 다른 키에는 닿지 않는다 |
+| D1 데이터베이스 | `LessonDb`. `prepare(sql).bind(...).run()`의 연쇄는 차례로 스텁을 반환한다                |
+| Workers AI      | `LessonAi`. 호출마다 과금되므로 수업용 모델 하나와 작은 입력으로 제한한다                 |
+| Durable Objects | `LessonCounter`. Durable Object로 중계하는 스텁                                           |
+
+자식에게 보이는 것은 이 다섯 개의 스텁뿐이며, 부모의 `env`나 `ctx`, 클래스에 쓰지 않은 메서드에는 닿지 않는다. 호출 1회는 서브리퀘스트 1회로 계산되며 1회 실행당 20회까지로 제한한다.
 
 ## 멀티테넌트 실행의 방어선
 

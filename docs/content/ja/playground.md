@@ -27,15 +27,18 @@ const response = await worker.getEntrypoint().fetch(new Request("https://sandbox
 
 ## バインディングの注入境界
 
-子 Worker の `env` に直接渡すことができるオブジェクトには制限がある。構造化クローン（Structured Clone）が可能なデータ型、および Service Binding に限られる。
+子 Worker の `env` に載せられるのは、構造化クローン（Structured Clone）が可能なデータ型と Service Binding の2種類だけである。D1、KV、R2、AI、Durable Object のスタブは、どちらにも当たらないので、直接は渡せない。`env` に載せると、デプロイ先の実行環境では `This ServiceStub cannot be serialized.` で失敗する。
 
-| リソース        | 子 Worker への渡し方                                                                                                 |
-| --------------- | -------------------------------------------------------------------------------------------------------------------- |
-| D1 データベース | ネイティブで構造化クローンに対応しているため、そのまま引き渡す                                                       |
-| Durable Objects | `namespace.get(id)` で取得したスタブオブジェクト（Service Binding）として渡す                                        |
-| KV / R2 / AI    | 名前空間そのものは直接クローンできないため、親側で Durable Object や Service Binding の RPC プロキシを介して中継する |
+そこで親 Worker は、バインディングごとに `WorkerEntrypoint` のクラスを export し、そのスタブ（`ctx.exports.LessonKv({ props })`）を子に渡す。子は `env.KV.get()` のように普通のバインディングとして呼べる。呼び出しは親への RPC になり、親が本物のリソースに対して実行する。クラスは `lib/lesson-bindings.ts` にある。
 
-たとえば KV の場合、親環境に配置した Durable Object が `get` / `put` / `delete` / `list` のハンドラを受け持ち、その RPC スタブを子環境へ `env.KV` として注入する。子 Worker 内部のコードからは、本物の KV 名前空間と全く同一のインターフェースとして透過的に利用できる。
+| リソース        | 子 Worker が受け取るもの                                                                            |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| KV / R2         | `LessonKv` / `LessonR2`。キーは `props.prefix` の下に閉じ込めるので、アプリ側の他のキーには触れない |
+| D1 データベース | `LessonDb`。`prepare(sql).bind(...).run()` の連鎖は、順にスタブを返す                               |
+| Workers AI      | `LessonAi`。呼び出しごとに課金されるので、授業のモデル1つと小さな入力に限る                         |
+| Durable Objects | `LessonCounter`。Durable Object へ中継するスタブ                                                    |
+
+子に見えるのはこの5つのスタブだけで、親の `env` や `ctx`、クラスに書いていないメソッドには届かない。呼び出し1回はサブリクエスト1回と数え、1回の実行あたり 20 回までに制限する。
 
 ## マルチテナント実行の防衛ライン
 

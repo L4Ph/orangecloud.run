@@ -5,6 +5,12 @@ import { defineDurableObject } from "void/durable";
 // supervisor. The facet has its own SQLite database that survives code edits;
 // aborting it on a code change throws its in-memory state away, which is what
 // the chapter demonstrates.
+//
+// Anyone can fill that database, so it must not outlive its use: after an hour
+// with no runs an alarm drops the facet and this object's own storage. A Durable
+// Object with no data and no alarm is not billed.
+const IDLE_MS = 60 * 60 * 1000;
+
 class UserDO extends DurableObject<{ LOADER: WorkerLoader }> {
   #loaded: string | null = null;
 
@@ -13,6 +19,7 @@ class UserDO extends DurableObject<{ LOADER: WorkerLoader }> {
       this.ctx.facets.abort("app", new Error("code changed"));
     }
     this.#loaded = id;
+    await this.ctx.storage.setAlarm(Date.now() + IDLE_MS);
 
     const facet = this.ctx.facets.get("app", () => {
       const worker = this.env.LOADER.get(id, () => ({
@@ -26,6 +33,12 @@ class UserDO extends DurableObject<{ LOADER: WorkerLoader }> {
     });
     const response = await facet.fetch(new Request("https://sandbox.internal/"));
     return { status: response.status, body: await response.text() };
+  }
+
+  async alarm() {
+    this.ctx.facets.delete("app");
+    this.#loaded = null;
+    await this.ctx.storage.deleteAll();
   }
 }
 

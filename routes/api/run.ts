@@ -12,11 +12,13 @@ export const POST = defineHandler.withValidator({
   // There are no accounts, so the client IP is the only stable key. Cloudflare
   // always sets this header; the fallback only matters in local development.
   const key = c.req.header("cf-connecting-ip") ?? "local";
-  const { RUN_LIMITER, CONTAINER_LIMITER } = c.env;
+  const { RUN_LIMITER, CONTAINER_LIMITER, LOADER } = c.env;
 
+  // Containers and Durable Object storage are the paths that cost real money.
+  const costly = body.lang === "container" || body.lang === "durable-object";
   const allowed =
     (await RUN_LIMITER.limit({ key })).success &&
-    (body.lang !== "container" || (await CONTAINER_LIMITER.limit({ key })).success);
+    (!costly || (await CONTAINER_LIMITER.limit({ key })).success);
   if (!allowed) {
     return Response.json(
       { error: "Rate limit exceeded" },
@@ -24,11 +26,5 @@ export const POST = defineHandler.withValidator({
     );
   }
 
-  const { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER, LESSON_USER_DO } = c.env;
-  return runInSandbox(
-    { LOADER, DB, LESSON_KV, LESSON_R2, LESSON_AI, LESSON_COUNTER, LESSON_USER_DO },
-    body.code,
-    body.lang,
-    body.runtime,
-  );
+  return runInSandbox({ LOADER }, body.code, body.lang, body.runtime);
 });
