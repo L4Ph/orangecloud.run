@@ -2,8 +2,10 @@
 import { readdir, readFile } from 'node:fs/promises';
 
 const base = process.argv[2] ?? 'http://localhost:5173';
+// Reference-only snippets import packages the sandbox cannot resolve.
+const referenceOnly = new Set(['hono.js']);
 const files = (await readdir(new URL('../lessons/code/', import.meta.url)))
-  .filter((file) => file.endsWith('.js'))
+  .filter((file) => file.endsWith('.js') && !referenceOnly.has(file))
   .sort();
 
 let failed = 0;

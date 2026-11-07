@@ -32,6 +32,12 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 - ローカルは `.env` の `TURNSTILE_SECRET`（本番と同じ widget の secret）で検証する
 - 公開するドメインを widget のドメイン一覧に追加するのを忘れない
 
+## 構成
+
+- `/lessons` — 動かして学ぶ章の一覧。各章は `/lessons/{id}` で、左エディタ・右に短い解説
+- `/docs` — 読んで学ぶ記事の一覧。各記事は `/docs/{slug}` で、Hono・ランタイム・状態設計などを深掘り
+- 記事本文は `docs/content/{locale}/{slug}.md`、章の本文は `lessons/docs/{locale}/{id}.md`
+
 ## UI
 
 コンポーネントは Cloudflare の [Kumo UI](https://kumo-ui.com/)（`@cloudflare/kumo`）、スタイルは Tailwind v4。`pages/app.css` は Tailwind の読み込みと Kumo のトークン登録だけで、独自 CSS はありません。本文（Markdown）は `@tailwindcss/typography` の `prose` に Kumo トークンを当てています。ダークモードは `<html data-mode>` を matchMedia で切り替え（初回描画前に head のスクリプトで設定）。

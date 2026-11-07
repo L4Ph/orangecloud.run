@@ -1,0 +1,50 @@
+import { defineHandler, defineHead, type InferProps } from 'void';
+import { I18n } from '@lingui/core';
+import { marked } from 'marked';
+import { resolveLocale, type Locale } from '../../lib/locales';
+import { catalogs } from '../../lib/catalogs';
+import { docs } from '../../docs';
+import { docBody } from '../../docs/bodies';
+
+export const loader = defineHandler((c) => {
+  const doc = docs.find((item) => item.slug === c.req.param('slug'));
+  if (!doc) return c.notFound();
+
+  const locale: Locale = resolveLocale(
+    (c.get('language') as string | undefined) ?? c.req.header('accept-language'),
+  );
+
+  const docHtml = marked
+    .parse(docBody(locale, doc.slug), { async: false })
+    .replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>/, '');
+
+  return { locale, slug: doc.slug, docHtml };
+});
+
+export type Props = InferProps<typeof loader>;
+
+export const head = defineHead<Props>((_c, props) => {
+  const doc = docs.find((item) => item.slug === props.slug);
+  const i18n = new I18n({
+    locale: props.locale,
+    messages: { [props.locale]: catalogs[props.locale] },
+  });
+
+  return {
+    title: doc ? i18n._(doc.title) : undefined,
+    meta: doc
+      ? [
+          { name: 'description', content: i18n._(doc.summary) },
+          { property: 'og:title', content: i18n._(doc.title) },
+          { property: 'og:description', content: i18n._(doc.summary) },
+        ]
+      : undefined,
+    htmlAttrs: { lang: props.locale },
+    script: [
+      {
+        innerHTML:
+          "document.documentElement.dataset.mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'",
+      },
+    ],
+  };
+});

@@ -13,6 +13,7 @@
   "include": [
     "crons",
     "db",
+    "docs",
     "durable-objects",
     "lessons",
     "lib",

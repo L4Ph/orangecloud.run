@@ -7,6 +7,7 @@ import d1Code from './code/04-d1.js?raw';
 import r2Code from './code/05-r2.js?raw';
 import doCode from './code/06-do.js?raw';
 import aiCode from './code/08-workers-ai.js?raw';
+import honoCode from './code/hono.js?raw';
 
 export type Lesson = {
   id: string;
@@ -32,6 +33,14 @@ export const lessons: Lesson[] = [
     summary: msg`isolate、状態を持たない、制限、課金`,
     code: workersCode,
     runnable: true,
+  },
+  {
+    id: 'hono',
+    title: msg`Hono`,
+    summary: msg`ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク`,
+    code: honoCode,
+    runnable: false,
+    hint: msg`この単元は資料のみ（Hono は事前にバンドルが必要です）`,
   },
   {
     id: 'kv',

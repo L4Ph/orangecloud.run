@@ -7,200 +7,172 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ja\n"
 
-#: lessons/index.ts:93
+#: pages/docs/[slug].tsx:21
+msgid "← 読んで学ぶ"
+msgstr "← 読んで学ぶ"
+
+#: lessons/index.ts:102
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
-#: pages/index.tsx:293
-msgid "Cloudflare Workers を動かして学ぶ"
-msgstr "Cloudflare Workers を動かして学ぶ"
-
-#: pages/index.tsx:458
-msgid "Cloudflare Workers 実践ガイド"
-msgstr "Cloudflare Workers 実践ガイド"
-
-#: lessons/index.ts:109
+#: lessons/index.ts:118
 msgid "Containers"
 msgstr "Containers"
 
-#: lessons/index.ts:45
+#: lessons/index.ts:54
 msgid "D1"
 msgstr "D1"
 
-#: lessons/index.ts:59
+#: lessons/index.ts:68
 msgid "Durable Objects"
 msgstr "Durable Objects"
 
-#: lessons/index.ts:86
+#: lessons/index.ts:95
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "GPU を持たずに推論。まずは安いモデルから"
 
-#. placeholder {0}: result.status
-#. placeholder {1}: result.ms
-#: pages/index.tsx:366
-msgid "HTTP {0} · {1}ms"
-msgstr "HTTP {0} · {1}ms"
+#: lessons/index.ts:39
+msgid "Hono"
+msgstr "Hono"
 
-#: lessons/index.ts:110
+#: docs/index.ts:13
+msgid "Hono のルーターとミドルウェア"
+msgstr "Hono のルーターとミドルウェア"
+
+#: docs/index.ts:19
+msgid "isolate が何を省略しているか、コンテナとの分岐"
+msgstr "isolate が何を省略しているか、コンテナとの分岐"
+
+#: lessons/index.ts:119
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate で足りないときの最後の手段"
 
-#: lessons/index.ts:32
+#: lessons/index.ts:33
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate、状態を持たない、制限、課金"
 
-#: lessons/index.ts:24
+#: lessons/index.ts:25
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript エンジンとランタイム"
 
-#: pages/index.tsx:434
-msgid "JS がはじめてなら最初に"
-msgstr "JS がはじめてなら最初に"
-
-#: lessons/index.ts:38
+#: lessons/index.ts:47
 msgid "KV"
 msgstr "KV"
 
-#: lessons/index.ts:66
+#: lessons/index.ts:75
 msgid "Queues / Workflows"
 msgstr "Queues / Workflows"
 
-#: lessons/index.ts:52
+#: lessons/index.ts:61
 msgid "R2"
 msgstr "R2"
 
-#: lessons/index.ts:53
+#: lessons/index.ts:62
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "S3 互換のオブジェクトストレージ。転送無料"
 
-#: lessons/index.ts:46
+#: lessons/index.ts:55
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite。SQL、索引、課金される「行数」"
 
-#: lessons/index.ts:25
+#: lessons/index.ts:26
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 
-#: pages/index.tsx:448
-msgid "Web開発者のための［入門］Cloudflare Workers"
-msgstr "Web開発者のための［入門］Cloudflare Workers"
-
-#: lessons/index.ts:85
+#: lessons/index.ts:94
 msgid "Workers AI"
 msgstr "Workers AI"
 
-#: lessons/index.ts:31
+#: lessons/index.ts:32
 msgid "Workers の実行モデル"
 msgstr "Workers の実行モデル"
 
-#: pages/index.tsx:318
-msgid "エディタ"
-msgstr "エディタ"
-
-#: lessons/index.ts:135
+#: lessons/index.ts:144
 msgid "この単元は手元のターミナルで実行してください"
 msgstr "この単元は手元のターミナルで実行してください"
 
-#: lessons/index.ts:105
+#: lessons/index.ts:114
 msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
 msgstr "この単元は資料のみ（Gateway の設定と API キーが必要）"
 
-#: lessons/index.ts:118
+#: lessons/index.ts:43
+msgid "この単元は資料のみ（Hono は事前にバンドルが必要です）"
+msgstr "この単元は資料のみ（Hono は事前にバンドルが必要です）"
+
+#: lessons/index.ts:127
 msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 msgstr "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 
-#: lessons/index.ts:81
+#: lessons/index.ts:90
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 msgstr "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 
-#: pages/index.tsx:391
-msgid "この単元は資料のみです。コードは参考として置いています。"
-msgstr "この単元は資料のみです。コードは参考として置いています。"
-
-#: pages/index.tsx:296
-msgid "チュートリアル兼プレイグラウンド"
-msgstr "チュートリアル兼プレイグラウンド"
-
-#: lessons/index.ts:122
+#: lessons/index.ts:131
 msgid "デプロイまで"
 msgstr "デプロイまで"
 
-#: pages/index.tsx:229
-msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
-msgstr "ボット対策の確認に失敗しました。もう一度お試しください。"
+#: pages/lessons/index.tsx:20
+msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
+msgstr "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 
-#: lessons/index.ts:94
+#: docs/index.ts:18
+msgid "ランタイムの深掘り"
+msgstr "ランタイムの深掘り"
+
+#: docs/index.ts:14
+msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
+msgstr "ルーターの仕組み、ミドルウェアの合成、型と RPC"
+
+#: lessons/index.ts:40
+msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
+msgstr "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
+
+#: lessons/index.ts:103
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 
-#: lessons/index.ts:123
+#: lessons/index.ts:132
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "ログイン、秘密値、デプロイ、公開後の確認"
 
-#: pages/index.tsx:337
-msgid "初期化"
-msgstr "初期化"
+#: docs/index.ts:24
+msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
+msgstr "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 
-#: pages/index.tsx:411
-msgid "前の章"
-msgstr "前の章"
+#: pages/lessons/index.server.ts:22
+#: pages/lessons/index.tsx:17
+msgid "動かして学ぶ"
+msgstr "動かして学ぶ"
 
-#: pages/index.tsx:427
-msgid "前提知識"
-msgstr "前提知識"
-
-#: lessons/index.ts:60
+#: lessons/index.ts:69
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "名前ごとに 1 つの実体。状態と直列化"
 
-#: pages/index.tsx:440
-msgid "型が読めないと先に進みにくい"
-msgstr "型が読めないと先に進みにくい"
+#: pages/docs/index.tsx:20
+msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
+msgstr "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 
-#: pages/index.tsx:334
-msgid "実行 ⌘/Ctrl+Enter"
-msgstr "実行 ⌘/Ctrl+Enter"
+#: docs/index.ts:23
+msgid "状態の置き場所を選ぶ"
+msgstr "状態の置き場所を選ぶ"
 
-#: pages/index.tsx:386
-msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
+#: pages/docs/index.server.ts:22
+#: pages/docs/index.tsx:17
+msgid "読んで学ぶ"
+msgstr "読んで学ぶ"
 
-#: pages/index.tsx:450
-msgid "本気で使うなら"
-msgstr "本気で使うなら"
-
-#: pages/index.tsx:422
-msgid "次の章"
-msgstr "次の章"
-
-#: pages/index.tsx:155
-msgid "言語"
-msgstr "言語"
-
-#: pages/index.tsx:460
-msgid "設計・運用まで"
-msgstr "設計・運用まで"
-
-#: lessons/index.ts:89
+#: lessons/index.ts:98
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 
-#: pages/index.tsx:400
-msgid "資料"
-msgstr "資料"
+#: pages/lessons/index.tsx:41
+msgid "資料のみ"
+msgstr "資料のみ"
 
-#: lessons/index.ts:39
+#: lessons/index.ts:48
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "速い読み取りと結果整合。キャッシュや設定の置き場"
 
-#: lessons/index.ts:67
+#: lessons/index.ts:76
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "非同期処理と、再開できる長時間ジョブ"
-
-#: pages/index.tsx:302
-msgid "章"
-msgstr "章"
-
-#: pages/index.tsx:404
-msgid "章の移動"
-msgstr "章の移動"

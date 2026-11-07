@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetch as apiFetch } from 'void/client';
 import { useRouter } from '@void/react';
-import { I18n } from '@lingui/core';
-import { I18nProvider } from '@lingui/react';
+import { I18nPage } from './i18n-page';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Button } from '@cloudflare/kumo/components/button';
 import { Link } from '@cloudflare/kumo/components/link';
@@ -10,29 +9,9 @@ import { Select } from '@cloudflare/kumo/components/select';
 import { ArrowLeftIcon, ArrowRightIcon, PlayIcon } from '@phosphor-icons/react';
 import { lessons } from '../lessons';
 import { Turnstile } from './turnstile';
-import { localeLabel, locales, type Locale } from './locales';
-import { catalogs } from './catalogs';
-import './app.css';
-
-const languageItems = Object.fromEntries(locales.map((item) => [item, localeLabel[item]]));
-
-const proseTokens = [
-  'prose prose-sm max-w-[680px]',
-  'prose-h1:mb-4 prose-h1:text-xl prose-h1:font-semibold',
-  'prose-h2:mt-8 prose-h2:mb-2 prose-h2:text-base prose-h2:font-semibold',
-  'prose-h3:text-sm prose-h3:font-semibold',
-  'prose-table:text-xs [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto',
-  'prose-headings:text-kumo-strong prose-headings:font-semibold',
-  'prose-p:text-kumo-default prose-li:text-kumo-default',
-  'prose-strong:text-kumo-strong prose-strong:font-medium',
-  'prose-a:text-kumo-link',
-  'prose-code:text-kumo-strong prose-code:before:content-none prose-code:after:content-none',
-  'prose-pre:bg-kumo-recessed prose-pre:text-kumo-default',
-  'prose-hr:border-kumo-line',
-  'prose-th:border-kumo-line prose-td:border-kumo-line',
-  'prose-blockquote:border-kumo-brand prose-blockquote:text-kumo-subtle',
-  'dark:prose-invert',
-].join(' ');
+import type { Locale } from './locales';
+import { SiteHeader } from './site-header';
+import { proseTokens } from './prose';
 
 type RunResult = {
   status: number;
@@ -128,29 +107,6 @@ function CodeEditor({
   }, [language]);
 
   return <div className="h-full w-full" ref={host} />;
-}
-
-function LanguageSwitcher({
-  locale,
-  onChange,
-}: {
-  locale: Locale;
-  onChange: (next: Locale) => void;
-}) {
-  const { t } = useLingui();
-
-  return (
-    <Select
-      aria-label={t`言語`}
-      className="w-[110px]"
-      size="sm"
-      value={locale}
-      onValueChange={(next) => {
-        if (next) onChange(next as Locale);
-      }}
-      items={languageItems}
-    />
-  );
 }
 
 function Playground({
@@ -278,30 +234,18 @@ function Playground({
 
   return (
     <div className="isolate flex h-dvh flex-col overflow-hidden bg-kumo-canvas text-sm text-kumo-default">
-      <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-kumo-line bg-kumo-base px-5 py-2.5">
-        <div className="flex min-w-0 items-baseline gap-3">
-          <strong className="truncate text-sm font-semibold text-kumo-strong">
-            <Trans>Cloudflare Workers を動かして学ぶ</Trans>
-          </strong>
-          <span className="hidden truncate text-xs text-kumo-subtle sm:inline">
-            <Trans>チュートリアル兼プレイグラウンド</Trans>
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Select
-            aria-label={t`章`}
-            className="w-[260px]"
-            size="sm"
-            value={lesson.id}
-            onValueChange={(next) => {
-              if (next) navigate(next);
-            }}
-            items={chapterItems}
-          />
-          <LanguageSwitcher locale={locale} onChange={(next) => navigate(lessonId, next)} />
-        </div>
-      </header>
+      <SiteHeader locale={locale}>
+        <Select
+          aria-label={t`章`}
+          className="w-[260px]"
+          size="sm"
+          value={lesson.id}
+          onValueChange={(next) => {
+            if (next) navigate(next);
+          }}
+          items={chapterItems}
+        />
+      </SiteHeader>
 
       {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
 
@@ -459,15 +403,9 @@ function Playground({
 }
 
 export default function LessonView(props: { locale: Locale; lessonId: string; docHtml: string }) {
-  const { locale, lessonId, docHtml } = props;
-  const i18n = useMemo(
-    () => new I18n({ locale, messages: { [locale]: catalogs[locale] } }),
-    [locale],
-  );
-
   return (
-    <I18nProvider i18n={i18n}>
-      <Playground locale={locale} lessonId={lessonId} docHtml={docHtml} />
-    </I18nProvider>
+    <I18nPage locale={props.locale}>
+      <Playground locale={props.locale} lessonId={props.lessonId} docHtml={props.docHtml} />
+    </I18nPage>
   );
 }

@@ -1,0 +1,17 @@
+export const proseTokens = [
+  'prose prose-sm max-w-[680px]',
+  'prose-h1:mb-4 prose-h1:text-xl prose-h1:font-semibold',
+  'prose-h2:mt-8 prose-h2:mb-2 prose-h2:text-base prose-h2:font-semibold',
+  'prose-h3:text-sm prose-h3:font-semibold',
+  'prose-table:text-xs [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto',
+  'prose-headings:text-kumo-strong prose-headings:font-semibold',
+  'prose-p:text-kumo-default prose-li:text-kumo-default',
+  'prose-strong:text-kumo-strong prose-strong:font-medium',
+  'prose-a:text-kumo-link',
+  'prose-code:text-kumo-strong prose-code:before:content-none prose-code:after:content-none',
+  'prose-pre:bg-kumo-recessed prose-pre:text-kumo-default',
+  'prose-hr:border-kumo-line',
+  'prose-th:border-kumo-line prose-td:border-kumo-line',
+  'prose-blockquote:border-kumo-brand prose-blockquote:text-kumo-subtle',
+  'dark:prose-invert',
+].join(' ');

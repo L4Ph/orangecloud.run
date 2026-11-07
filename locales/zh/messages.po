@@ -7,200 +7,172 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh\n"
 
-#: lessons/index.ts:93
+#: pages/docs/[slug].tsx:21
+msgid "← 読んで学ぶ"
+msgstr "← 阅读"
+
+#: lessons/index.ts:102
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/index.tsx:293
-msgid "Cloudflare Workers を動かして学ぶ"
-msgstr "动手运行，学习 Cloudflare Workers"
-
-#: pages/index.tsx:458
-msgid "Cloudflare Workers 実践ガイド"
-msgstr "Cloudflare Workers 实战指南（书）"
-
-#: lessons/index.ts:109
+#: lessons/index.ts:118
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:45
+#: lessons/index.ts:54
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:59
+#: lessons/index.ts:68
 msgid "Durable Objects"
 msgstr ""
 
-#: lessons/index.ts:86
+#: lessons/index.ts:95
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "无需自备 GPU 的推理。先从便宜的模型开始"
 
-#. placeholder {0}: result.status
-#. placeholder {1}: result.ms
-#: pages/index.tsx:366
-msgid "HTTP {0} · {1}ms"
+#: lessons/index.ts:39
+msgid "Hono"
 msgstr ""
 
-#: lessons/index.ts:110
+#: docs/index.ts:13
+msgid "Hono のルーターとミドルウェア"
+msgstr "Hono 的路由器与中间件"
+
+#: docs/index.ts:19
+msgid "isolate が何を省略しているか、コンテナとの分岐"
+msgstr "isolate 省略了什么，以及何时改用容器"
+
+#: lessons/index.ts:119
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate 不够用时的最后手段"
 
-#: lessons/index.ts:32
+#: lessons/index.ts:33
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate、无共享状态、限制、计费"
 
-#: lessons/index.ts:24
+#: lessons/index.ts:25
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 引擎与运行时"
 
-#: pages/index.tsx:434
-msgid "JS がはじめてなら最初に"
-msgstr "初次接触 JavaScript 从这里开始"
-
-#: lessons/index.ts:38
+#: lessons/index.ts:47
 msgid "KV"
 msgstr ""
 
-#: lessons/index.ts:66
+#: lessons/index.ts:75
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:52
+#: lessons/index.ts:61
 msgid "R2"
 msgstr ""
 
-#: lessons/index.ts:53
+#: lessons/index.ts:62
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "兼容 S3 的对象存储。出网流量免费"
 
-#: lessons/index.ts:46
+#: lessons/index.ts:55
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite。SQL、索引，以及被计费的“行数”"
 
-#: lessons/index.ts:25
+#: lessons/index.ts:26
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes，以及 Node、Bun、Deno、Workers"
 
-#: pages/index.tsx:448
-msgid "Web開発者のための［入門］Cloudflare Workers"
-msgstr "《面向 Web 开发者的 Cloudflare Workers 入门》（书）"
-
-#: lessons/index.ts:85
+#: lessons/index.ts:94
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:31
+#: lessons/index.ts:32
 msgid "Workers の実行モデル"
 msgstr "Workers 的执行模型"
 
-#: pages/index.tsx:318
-msgid "エディタ"
-msgstr "编辑器"
-
-#: lessons/index.ts:135
+#: lessons/index.ts:144
 msgid "この単元は手元のターミナルで実行してください"
 msgstr "请在本地终端中运行这些命令"
 
-#: lessons/index.ts:105
+#: lessons/index.ts:114
 msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
 msgstr "仅作资料（需要配置 Gateway 和 API 密钥）"
 
-#: lessons/index.ts:118
+#: lessons/index.ts:43
+msgid "この単元は資料のみ（Hono は事前にバンドルが必要です）"
+msgstr "仅作资料（Hono 需要先打包）"
+
+#: lessons/index.ts:127
 msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
 msgstr "仅作资料（需要构建镜像和付费套餐）"
 
-#: lessons/index.ts:81
+#: lessons/index.ts:90
 msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 msgstr "仅作资料（共享沙箱中无法运行队列）"
 
-#: pages/index.tsx:391
-msgid "この単元は資料のみです。コードは参考として置いています。"
-msgstr "本章仅为资料。代码供阅读参考。"
-
-#: pages/index.tsx:296
-msgid "チュートリアル兼プレイグラウンド"
-msgstr "教程兼演练场"
-
-#: lessons/index.ts:122
+#: lessons/index.ts:131
 msgid "デプロイまで"
 msgstr "部署上线"
 
-#: pages/index.tsx:229
-msgid "ボット対策の確認に失敗しました。もう一度お試しください。"
-msgstr "人机验证失败，请重试。"
+#: pages/lessons/index.tsx:20
+msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
+msgstr "在浏览器编辑器里边运行边学习的章节。网络已关闭，写坏了也不会有事。"
 
-#: lessons/index.ts:94
+#: docs/index.ts:18
+msgid "ランタイムの深掘り"
+msgstr "深入运行时"
+
+#: docs/index.ts:14
+msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
+msgstr "路由器的原理、中间件组合、类型与 RPC"
+
+#: lessons/index.ts:40
+msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
+msgstr "路由、中间件、校验——小而快的 Web 框架"
+
+#: lessons/index.ts:103
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "在模型之前统一做日志、缓存、限流和回退"
 
-#: lessons/index.ts:123
+#: lessons/index.ts:132
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "登录、密钥、部署，以及上线后的检查"
 
-#: pages/index.tsx:337
-msgid "初期化"
-msgstr "重置"
+#: docs/index.ts:24
+msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
+msgstr "按一致性、大小和费用选择 KV / D1 / R2 / Durable Objects"
 
-#: pages/index.tsx:411
-msgid "前の章"
-msgstr "上一章"
+#: pages/lessons/index.server.ts:22
+#: pages/lessons/index.tsx:17
+msgid "動かして学ぶ"
+msgstr "动手学"
 
-#: pages/index.tsx:427
-msgid "前提知識"
-msgstr "前置知识"
-
-#: lessons/index.ts:60
+#: lessons/index.ts:69
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "每个名字只有一个实例。状态与串行化"
 
-#: pages/index.tsx:440
-msgid "型が読めないと先に進みにくい"
-msgstr "读不懂类型就很难继续"
+#: pages/docs/index.tsx:20
+msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
+msgstr "在动手前后阅读的深入内容。设计判断的依据都在这里。"
 
-#: pages/index.tsx:334
-msgid "実行 ⌘/Ctrl+Enter"
-msgstr "运行 ⌘/Ctrl+Enter"
+#: docs/index.ts:23
+msgid "状態の置き場所を選ぶ"
+msgstr "选择状态的存放位置"
 
-#: pages/index.tsx:386
-msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
-msgstr "运行后，响应和 console 输出会显示在这里。网络已关闭，写坏了也不会有事。"
+#: pages/docs/index.server.ts:22
+#: pages/docs/index.tsx:17
+msgid "読んで学ぶ"
+msgstr "阅读学"
 
-#: pages/index.tsx:450
-msgid "本気で使うなら"
-msgstr "想认真使用时"
-
-#: pages/index.tsx:422
-msgid "次の章"
-msgstr "下一章"
-
-#: pages/index.tsx:155
-msgid "言語"
-msgstr "语言"
-
-#: pages/index.tsx:460
-msgid "設計・運用まで"
-msgstr "设计与运维"
-
-#: lessons/index.ts:89
+#: lessons/index.ts:98
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 调用费用由本站承担。只有本地开发才需要登录 Cloudflare。"
 
-#: pages/index.tsx:400
-msgid "資料"
-msgstr "资料"
+#: pages/lessons/index.tsx:41
+msgid "資料のみ"
+msgstr "仅资料"
 
-#: lessons/index.ts:39
+#: lessons/index.ts:48
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "读取快，最终一致。适合缓存和配置"
 
-#: lessons/index.ts:67
+#: lessons/index.ts:76
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "异步处理，以及可恢复的长时间任务"
-
-#: pages/index.tsx:302
-msgid "章"
-msgstr "章"
-
-#: pages/index.tsx:404
-msgid "章の移動"
-msgstr "章节导航"
