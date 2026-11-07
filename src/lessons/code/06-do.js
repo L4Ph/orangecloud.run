@@ -13,8 +13,8 @@ export default {
     return Response.json({
       before,
       after: again,
-      // この値は Worker の再起動でも消えない（DO ストレージに永続化）
-      // Persists across Worker restarts (saved in Durable Object storage)
+      // この値は Worker の再起動でも消えない（DO ストレージに永続化。24 時間呼ばれないと削除される）
+      // Persists across Worker restarts (saved in Durable Object storage; deleted after 24 hours without a call)
       note: "Durable Object storage",
     });
   },

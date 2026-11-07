@@ -1,6 +1,6 @@
 # 自己编写 Durable Object
 
-编辑器中的代码是名为 `App` 的 Durable Object 类。运行后，你的类会作为专用 DO 启动，并调用其 `fetch()`。
+编辑器中的代码是名为 `App` 的 Durable Object 类。运行后，你的类会作为本站 Durable Object 的子级启动，并调用其 `fetch()`。
 
 ## 试一试
 

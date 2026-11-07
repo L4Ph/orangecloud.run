@@ -1,6 +1,6 @@
 # Write Your Own Durable Object
 
-The code in the editor is a Durable Object class named `App`. When you run it, your class starts as a dedicated DO and its `fetch()` is called.
+The code in the editor is a Durable Object class named `App`. When you run it, your class starts as a child of this site's Durable Object and its `fetch()` is called.
 
 ## Try this
 

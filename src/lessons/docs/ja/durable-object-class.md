@@ -1,6 +1,6 @@
 # Durable Object を自分で書く
 
-エディタのコードは `App` という名前の Durable Object クラスである。実行すると、あなたのクラスが専用の DO として起動し、`fetch()` が呼ばれる。
+エディタのコードは `App` という名前の Durable Object クラスである。実行すると、あなたのクラスがこのサイトの Durable Object の子として起動し、`fetch()` が呼ばれる。
 
 ## 試すこと
 

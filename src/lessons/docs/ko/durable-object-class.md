@@ -1,6 +1,6 @@
 # Durable Object를 직접 작성하기
 
-에디터의 코드는 `App`이라는 이름의 Durable Object 클래스이다. 실행하면 작성한 클래스가 전용 DO로 시작되고 `fetch()`가 호출된다.
+에디터의 코드는 `App`이라는 이름의 Durable Object 클래스이다. 실행하면 작성한 클래스가 이 사이트의 Durable Object의 자식으로 시작되고 `fetch()`가 호출된다.
 
 ## 해 볼 것
 

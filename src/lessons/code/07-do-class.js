@@ -1,7 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 
-// App という名前のクラスが、あなた専用の Durable Object になる
-// A class named App becomes your own Durable Object
+// App という名前のクラスが、このサイトの Durable Object の子（facet）として動く
+// A class named App runs as a child (facet) of this site's Durable Object
 export class App extends DurableObject {
   // インメモリ状態：最速だが、退避やコード更新で消える
   // In-memory state: fastest, but lost on eviction or a code change

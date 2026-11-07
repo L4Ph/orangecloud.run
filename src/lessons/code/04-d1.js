@@ -15,8 +15,8 @@ export default {
     const count = await env.DB.prepare("SELECT COUNT(*) AS n FROM playground_notes").first();
     console.log("rows =", count.n);
 
-    // インデックスを作成してスキャン行数（＝課金対象）を抑える
-    // Create an index to speed up WHERE clauses and reduce scanned rows
+    // 注意: このインデックスは下の ORDER BY id では使われない。WHERE created_at … のためのもの
+    // Note: this index is not used by the ORDER BY id query below; it serves WHERE created_at … queries
     await env.DB.prepare(
       "CREATE INDEX IF NOT EXISTS idx_notes_created ON playground_notes (created_at)",
     ).run();
