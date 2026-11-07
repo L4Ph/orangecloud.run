@@ -9,15 +9,15 @@ msgstr ""
 
 #: lib/content-shell.tsx:42
 #: lib/site-header.tsx:56
-#: pages/books.tsx:35
+#: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
 msgstr "(opens in a new tab)"
 
-#: pages/index.tsx:22
+#: src/pages/Home.tsx:24
 msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
 msgstr "\"Run\" chapters let you execute code in a browser editor. The network is blocked, so nothing breaks if you make a mistake. \"Read\" pages are articles on how to make design decisions."
 
-#: pages/books.tsx:48
+#: src/pages/Books.tsx:50
 msgid "← 学ぶ"
 msgstr "← Learn"
 
@@ -25,7 +25,7 @@ msgstr "← Learn"
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/books.tsx:68
+#: src/pages/Books.tsx:70
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers Practical Guide"
 
@@ -71,7 +71,7 @@ msgstr "Dynamic Workers, relayed bindings, and run limits"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:282
+#: lib/playground.tsx:279
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +93,7 @@ msgstr "Hono's router and middleware"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:286
+#: lib/playground.tsx:283
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -157,7 +157,7 @@ msgstr "SQLite. SQL, indexes, and the rows you are billed for"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, plus Node, Bun, Deno, and Workers"
 
-#: pages/books.tsx:63
+#: src/pages/Books.tsx:65
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,19 +173,19 @@ msgstr "The Workers execution model"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "See the difference between in-memory state and SQLite by editing code"
 
-#: lib/playground.tsx:314
+#: lib/playground.tsx:311
 msgid "エディタ"
 msgstr "Editor"
 
-#: lib/playground.tsx:302
+#: lib/playground.tsx:299
 msgid "エディタへ移動"
 msgstr "Go to the editor"
 
-#: lib/playground.tsx:349
+#: lib/playground.tsx:346
 msgid "コードエディタ"
 msgstr "Code editor"
 
-#: pages/books.tsx:57
+#: src/pages/Books.tsx:59
 msgid "このサイトで足りなくなったら、本で通して学べます。"
 msgstr "When this site is not enough, these books teach it end to end."
 
@@ -193,12 +193,12 @@ msgstr "When this site is not enough, these books teach it end to end."
 msgid "このサイトの仕組み"
 msgstr "How this site works"
 
-#: pages/docs/[slug].tsx:38
-#: pages/docs/[slug].tsx:41
+#: src/pages/Doc.tsx:46
+#: src/pages/Doc.tsx:49
 msgid "このページ"
 msgstr "On this page"
 
-#: lib/playground.tsx:400
+#: lib/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "This chapter is reading only. The code is there for reference."
 
@@ -246,7 +246,7 @@ msgstr "Pipe any Linux binaries together. FFmpeg and friends are an extension of
 msgid "公開と運用"
 msgstr "Ship and operate"
 
-#: lib/playground.tsx:320
+#: lib/playground.tsx:317
 msgid "初期化"
 msgstr "Reset"
 
@@ -279,20 +279,20 @@ msgstr "Hard to go further without reading types"
 msgid "基礎"
 msgstr "Basics"
 
-#: pages/index.server.ts:20
-#: pages/index.tsx:18
+#: src/pages/Home.tsx:20
+#: src/server.tsx:30
 msgid "学ぶ"
 msgstr "Learn"
 
-#: lib/playground.tsx:330
+#: lib/playground.tsx:327
 msgid "実行"
 msgstr "Run"
 
-#: lib/playground.tsx:395
+#: lib/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "The response and console output appear here after you run. The network is blocked, so nothing breaks."
 
-#: lib/playground.tsx:254
+#: lib/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "Too many runs. Wait a moment and try again."
 
@@ -300,17 +300,17 @@ msgstr "Too many runs. Wait a moment and try again."
 msgid "実行環境"
 msgstr "Compute"
 
-#: lib/playground.tsx:357
+#: lib/playground.tsx:354
 msgid "実行結果"
 msgstr "Run output"
 
-#: pages/books.server.ts:20
-#: pages/books.tsx:52
+#: src/pages/Books.tsx:54
+#: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "Books"
 
 #: lib/content-shell.tsx:250
-#: pages/index.tsx:65
+#: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
 msgstr "Books →"
 
@@ -318,7 +318,7 @@ msgstr "Books →"
 msgid "本文へ移動"
 msgstr "Skip to content"
 
-#: pages/books.tsx:64
+#: src/pages/Books.tsx:66
 msgid "本気で使うなら"
 msgstr "For serious use"
 
@@ -339,7 +339,7 @@ msgstr "Choosing where state lives"
 msgid "言語"
 msgstr "Languages"
 
-#: pages/books.tsx:69
+#: src/pages/Books.tsx:71
 msgid "設計・運用まで"
 msgstr "Through design and operations"
 

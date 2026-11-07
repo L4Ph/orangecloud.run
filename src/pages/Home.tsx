@@ -1,11 +1,13 @@
 import { Link } from "@cloudflare/kumo/components/link";
 import { Text } from "@cloudflare/kumo/components/text";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { catalog, catalogSections } from "../lib/catalog";
-import { Kind } from "../lib/content-shell";
-import { SiteHeader } from "../lib/site-header";
-import { I18nPage } from "../lib/i18n-page";
-import type { Props } from "./index.server";
+import { catalog, catalogSections } from "../../lib/catalog";
+import { Kind } from "../../lib/content-shell";
+import { SiteHeader } from "../../lib/site-header";
+import { I18nPage } from "../../lib/i18n-page";
+import type { Locale } from "../../lib/locales";
+
+export type Props = { locale: Locale };
 
 function LessonsIndex({ locale }: Props) {
   const { i18n } = useLingui();
@@ -70,7 +72,7 @@ function LessonsIndex({ locale }: Props) {
   );
 }
 
-export default function Page(props: Props) {
+export default function Home(props: Props) {
   return (
     <I18nPage locale={props.locale}>
       <LessonsIndex {...props} />

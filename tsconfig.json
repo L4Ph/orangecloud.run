@@ -1,5 +1,4 @@
 {
-  "extends": "./.void/tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -7,22 +6,20 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["void/env", "vite/client"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["vite/client"],
     "jsx": "react-jsx"
   },
   "include": [
-    "crons",
-    "db",
+    "cloudflare.config.ts",
     "docs",
     "durable-objects",
     "lessons",
     "lib",
     "lingui.config.ts",
     "locales",
-    "middleware",
-    "pages",
-    "queues",
-    "routes",
-    "src"
+    "src",
+    ".cloudflare/types"
   ]
 }

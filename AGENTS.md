@@ -1,8 +1,5 @@
-<!--injected-by-void-v1.6.2-->
+## Cloudflare
 
-## Void
-
-- This project uses [Void](https://void.cloud), a full-stack Vite framework for Cloudflare Workers with file-based API routing, server-rendered pages, and typed backend services.
-- Use Void's CLI and typed APIs. Before working with Void, read the relevant Markdown docs in `node_modules/void/docs/`; start with `guide/quickstart.md` for setup and `reference/cli.md` for commands.
-
-<!--/injected-by-void-->
+- This project is a Hono app on Cloudflare Workers, configured with `cloudflare.config.ts` and deployed with the `cf` CLI (Cloudflare's CLI, in beta). It does not use Wrangler.
+- Run `cf cli search "<what you want to do>"` to find a command, and `cf docs search "<question>"` for the documentation.
+- `.cloudflare/types/index.d.ts` is generated from `cloudflare.config.ts` on every dev server start and build. It types `env` and `ctx.exports`, so do not declare binding types by hand. Add the binding to the config instead.

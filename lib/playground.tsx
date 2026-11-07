@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { fetch as apiFetch, FetchError } from "void/client";
 import { I18nPage } from "./i18n-page";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Button } from "@cloudflare/kumo/components/button";
@@ -212,19 +211,15 @@ function Playground({
     setError(null);
   }, [lesson.id, lesson.code]);
 
-  // Client navigation does not re-run head(), so keep the document in sync.
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-
   const execute = useCallback(
     async (value: string) => {
       setPending(true);
       setError(null);
       try {
-        const data: RunResult = await apiFetch("/api/run", {
+        const response = await fetch("/api/run", {
           method: "POST",
-          body: {
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
             code: value,
             ...(lesson.runner === "durable-object"
               ? { lang: "durable-object" as const }
@@ -239,9 +234,16 @@ function Playground({
                 : lesson.language === "python"
                   ? { lang: "python" as const }
                   : {}),
-          },
-          timeout: 20_000,
+          }),
+          signal: AbortSignal.timeout(20_000),
         });
+        if (response.status === 429) {
+          setResult(null);
+          setError(t`実行回数が多すぎます。少し待ってからもう一度お試しください。`);
+          return;
+        }
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const data: RunResult = await response.json();
         if (data.error) {
           setResult(null);
           setError(data.error);
@@ -250,13 +252,7 @@ function Playground({
         }
       } catch (err) {
         setResult(null);
-        setError(
-          err instanceof FetchError && err.status === 429
-            ? t`実行回数が多すぎます。少し待ってからもう一度お試しください。`
-            : err instanceof Error
-              ? err.message
-              : String(err),
-        );
+        setError(err instanceof Error ? err.message : String(err));
       } finally {
         setPending(false);
       }

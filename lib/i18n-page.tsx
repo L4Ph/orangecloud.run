@@ -5,7 +5,6 @@ import { LinkProvider } from "@cloudflare/kumo";
 import { AppLink } from "./app-link";
 import { catalogs } from "./catalogs";
 import type { Locale } from "./locales";
-import "./app.css";
 
 export function I18nPage({ locale, children }: { locale: Locale; children: ReactNode }) {
   const i18n = useMemo(

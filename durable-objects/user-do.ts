@@ -1,5 +1,4 @@
 import { DurableObject } from "cloudflare:workers";
-import { defineDurableObject } from "void/durable";
 
 // Runs a Durable Object class written by the learner as a facet of this
 // supervisor. The facet has its own SQLite database that survives code edits;
@@ -11,7 +10,7 @@ import { defineDurableObject } from "void/durable";
 // Object with no data and no alarm is not billed.
 const IDLE_MS = 60 * 60 * 1000;
 
-class UserDO extends DurableObject<{ LOADER: WorkerLoader }> {
+export class LessonUserDoDurableObject extends DurableObject<Cloudflare.Env> {
   #loaded: string | null = null;
 
   async run(id: string, code: string) {
@@ -41,9 +40,3 @@ class UserDO extends DurableObject<{ LOADER: WorkerLoader }> {
     await this.ctx.storage.deleteAll();
   }
 }
-
-export const UserDOResource = defineDurableObject({
-  name: "lesson-user-do",
-  class: UserDO,
-});
-export default UserDOResource;

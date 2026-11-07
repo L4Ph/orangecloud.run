@@ -7,7 +7,15 @@ import { Text } from "@cloudflare/kumo/components/text";
 import { ChapterFooter, ChapterHeader, ContentShell } from "../../lib/content-shell";
 import { I18nPage } from "../../lib/i18n-page";
 import { MarkdownArticle } from "../../lib/markdown-article";
-import type { Props } from "./[slug].server";
+import type { Locale } from "../../lib/locales";
+import type { parseDoc, tocOf } from "../../lib/markdown-source";
+
+export type Props = {
+  locale: Locale;
+  slug: string;
+  document: ReturnType<typeof parseDoc>;
+  headings: ReturnType<typeof tocOf>;
+};
 
 function DocPage({ locale, slug, document, headings }: Props) {
   const { t } = useLingui();
@@ -62,7 +70,7 @@ function DocPage({ locale, slug, document, headings }: Props) {
   );
 }
 
-export default function Page(props: Props) {
+export default function Doc(props: Props) {
   return (
     <I18nPage locale={props.locale}>
       <DocPage {...props} />

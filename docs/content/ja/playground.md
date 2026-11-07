@@ -13,7 +13,10 @@ const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
   compatibilityDate: "2026-02-24",
   mainModule: "index.js",
   modules: { "index.js": wrapUserCode(code) },
-  env: { KV: kvProxyStub, DB: env.DB },
+  env: {
+    KV: ctx.exports.LessonKv({ props: { prefix: "playground/" } }),
+    DB: ctx.exports.LessonDb({ props: {} }),
+  },
   globalOutbound: null, // 外部ネットワークへの全外向き通信を遮断
   limits: { cpuMs: 100, subRequests: 0 },
 }));

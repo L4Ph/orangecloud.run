@@ -9,15 +9,15 @@ msgstr ""
 
 #: lib/content-shell.tsx:42
 #: lib/site-header.tsx:56
-#: pages/books.tsx:35
+#: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
 msgstr "（新しいタブで開く）"
 
-#: pages/index.tsx:22
+#: src/pages/Home.tsx:24
 msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
 msgstr "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
 
-#: pages/books.tsx:48
+#: src/pages/Books.tsx:50
 msgid "← 学ぶ"
 msgstr "← 学ぶ"
 
@@ -25,7 +25,7 @@ msgstr "← 学ぶ"
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
-#: pages/books.tsx:68
+#: src/pages/Books.tsx:70
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 実践ガイド"
 
@@ -71,7 +71,7 @@ msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:282
+#: lib/playground.tsx:279
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +93,7 @@ msgstr "Hono のルーターとミドルウェア"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:286
+#: lib/playground.tsx:283
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -157,7 +157,7 @@ msgstr "SQLite。SQL、索引、課金される「行数」"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 
-#: pages/books.tsx:63
+#: src/pages/Books.tsx:65
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,19 +173,19 @@ msgstr "Workers の実行モデル"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 
-#: lib/playground.tsx:314
+#: lib/playground.tsx:311
 msgid "エディタ"
 msgstr "エディタ"
 
-#: lib/playground.tsx:302
+#: lib/playground.tsx:299
 msgid "エディタへ移動"
 msgstr "エディタへ移動"
 
-#: lib/playground.tsx:349
+#: lib/playground.tsx:346
 msgid "コードエディタ"
 msgstr "コードエディタ"
 
-#: pages/books.tsx:57
+#: src/pages/Books.tsx:59
 msgid "このサイトで足りなくなったら、本で通して学べます。"
 msgstr "このサイトで足りなくなったら、本で通して学べます。"
 
@@ -193,12 +193,12 @@ msgstr "このサイトで足りなくなったら、本で通して学べます
 msgid "このサイトの仕組み"
 msgstr "このサイトの仕組み"
 
-#: pages/docs/[slug].tsx:38
-#: pages/docs/[slug].tsx:41
+#: src/pages/Doc.tsx:46
+#: src/pages/Doc.tsx:49
 msgid "このページ"
 msgstr "このページ"
 
-#: lib/playground.tsx:400
+#: lib/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "この単元は資料のみです。コードは参考として置いています。"
 
@@ -246,7 +246,7 @@ msgstr "任意の Linux バイナリをパイプでつなぐ。FFmpeg なども�
 msgid "公開と運用"
 msgstr "公開と運用"
 
-#: lib/playground.tsx:320
+#: lib/playground.tsx:317
 msgid "初期化"
 msgstr "初期化"
 
@@ -279,20 +279,20 @@ msgstr "型が読めないと先に進みにくい"
 msgid "基礎"
 msgstr "基礎"
 
-#: pages/index.server.ts:20
-#: pages/index.tsx:18
+#: src/pages/Home.tsx:20
+#: src/server.tsx:30
 msgid "学ぶ"
 msgstr "学ぶ"
 
-#: lib/playground.tsx:330
+#: lib/playground.tsx:327
 msgid "実行"
 msgstr "実行"
 
-#: lib/playground.tsx:395
+#: lib/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 
-#: lib/playground.tsx:254
+#: lib/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 
@@ -300,17 +300,17 @@ msgstr "実行回数が多すぎます。少し待ってからもう一度お試
 msgid "実行環境"
 msgstr "実行環境"
 
-#: lib/playground.tsx:357
+#: lib/playground.tsx:354
 msgid "実行結果"
 msgstr "実行結果"
 
-#: pages/books.server.ts:20
-#: pages/books.tsx:52
+#: src/pages/Books.tsx:54
+#: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "書籍の紹介"
 
 #: lib/content-shell.tsx:250
-#: pages/index.tsx:65
+#: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
 msgstr "書籍の紹介 →"
 
@@ -318,7 +318,7 @@ msgstr "書籍の紹介 →"
 msgid "本文へ移動"
 msgstr "本文へ移動"
 
-#: pages/books.tsx:64
+#: src/pages/Books.tsx:66
 msgid "本気で使うなら"
 msgstr "本気で使うなら"
 
@@ -339,7 +339,7 @@ msgstr "状態の置き場所を選ぶ"
 msgid "言語"
 msgstr "言語"
 
-#: pages/books.tsx:69
+#: src/pages/Books.tsx:71
 msgid "設計・運用まで"
 msgstr "設計・運用まで"
 

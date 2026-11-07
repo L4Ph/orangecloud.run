@@ -9,15 +9,15 @@ msgstr ""
 
 #: lib/content-shell.tsx:42
 #: lib/site-header.tsx:56
-#: pages/books.tsx:35
+#: src/pages/Books.tsx:37
 msgid "（新しいタブで開く）"
 msgstr "(새 탭에서 열기)"
 
-#: pages/index.tsx:22
+#: src/pages/Home.tsx:24
 msgid "「動かす」はブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。「読む」は設計の判断基準をまとめた記事です。"
 msgstr "\"실행\"은 브라우저 에디터에서 코드를 실행하며 진행하는 장입니다. 네트워크가 차단되어 있어 망가뜨려도 아무 일도 일어나지 않습니다. \"읽기\"는 설계 판단 기준을 정리한 글입니다."
 
-#: pages/books.tsx:48
+#: src/pages/Books.tsx:50
 msgid "← 学ぶ"
 msgstr "← 학습"
 
@@ -25,7 +25,7 @@ msgstr "← 학습"
 msgid "AI Gateway"
 msgstr ""
 
-#: pages/books.tsx:68
+#: src/pages/Books.tsx:70
 msgid "Cloudflare Workers 実践ガイド"
 msgstr "Cloudflare Workers 실전 가이드"
 
@@ -71,7 +71,7 @@ msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:282
+#: lib/playground.tsx:279
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
 
@@ -93,7 +93,7 @@ msgstr "Hono의 라우터와 미들웨어"
 
 #. placeholder {0}: result.status
 #. placeholder {1}: result.ms
-#: lib/playground.tsx:286
+#: lib/playground.tsx:283
 msgid "HTTP {0} · {1}ms"
 msgstr "HTTP {0} · {1}ms"
 
@@ -157,7 +157,7 @@ msgstr "SQLite. SQL, 인덱스, 과금되는 '행 수'"
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, 그리고 Node·Bun·Deno·Workers"
 
-#: pages/books.tsx:63
+#: src/pages/Books.tsx:65
 msgid "Web開発者のための［入門］Cloudflare Workers"
 msgstr "Web開発者のための［入門］Cloudflare Workers"
 
@@ -173,19 +173,19 @@ msgstr "Workers의 실행 모델"
 msgid "インメモリ状態と SQLite の違いを、コードを書き換えて確かめる"
 msgstr "코드를 고쳐 가며 인메모리 상태와 SQLite의 차이를 확인한다"
 
-#: lib/playground.tsx:314
+#: lib/playground.tsx:311
 msgid "エディタ"
 msgstr "편집기"
 
-#: lib/playground.tsx:302
+#: lib/playground.tsx:299
 msgid "エディタへ移動"
 msgstr "에디터로 이동"
 
-#: lib/playground.tsx:349
+#: lib/playground.tsx:346
 msgid "コードエディタ"
 msgstr "코드 에디터"
 
-#: pages/books.tsx:57
+#: src/pages/Books.tsx:59
 msgid "このサイトで足りなくなったら、本で通して学べます。"
 msgstr "이 사이트로 부족하면 책으로 처음부터 끝까지 배울 수 있습니다."
 
@@ -193,12 +193,12 @@ msgstr "이 사이트로 부족하면 책으로 처음부터 끝까지 배울 �
 msgid "このサイトの仕組み"
 msgstr "이 사이트의 구조"
 
-#: pages/docs/[slug].tsx:38
-#: pages/docs/[slug].tsx:41
+#: src/pages/Doc.tsx:46
+#: src/pages/Doc.tsx:49
 msgid "このページ"
 msgstr "이 페이지"
 
-#: lib/playground.tsx:400
+#: lib/playground.tsx:397
 msgid "この単元は資料のみです。コードは参考として置いています。"
 msgstr "이 단원은 자료만 있습니다. 코드는 참고용입니다."
 
@@ -246,7 +246,7 @@ msgstr "임의의 Linux 바이너리를 파이프로 연결한다. FFmpeg 등도
 msgid "公開と運用"
 msgstr "공개와 운영"
 
-#: lib/playground.tsx:320
+#: lib/playground.tsx:317
 msgid "初期化"
 msgstr "초기화"
 
@@ -279,20 +279,20 @@ msgstr "타입을 읽지 못하면 진행하기 어렵습니다"
 msgid "基礎"
 msgstr "기초"
 
-#: pages/index.server.ts:20
-#: pages/index.tsx:18
+#: src/pages/Home.tsx:20
+#: src/server.tsx:30
 msgid "学ぶ"
 msgstr "학습"
 
-#: lib/playground.tsx:330
+#: lib/playground.tsx:327
 msgid "実行"
 msgstr "실행"
 
-#: lib/playground.tsx:395
+#: lib/playground.tsx:392
 msgid "実行するとここにレスポンスと console の出力が出ます。ネットワークは塞がれていて、壊しても何も起きません。"
 msgstr "실행하면 여기에 응답과 console 출력이 표시됩니다. 네트워크는 차단되어 있어 망가뜨려도 문제없습니다."
 
-#: lib/playground.tsx:254
+#: lib/playground.tsx:242
 msgid "実行回数が多すぎます。少し待ってからもう一度お試しください。"
 msgstr "실행 횟수가 너무 많습니다. 잠시 후 다시 시도하세요."
 
@@ -300,17 +300,17 @@ msgstr "실행 횟수가 너무 많습니다. 잠시 후 다시 시도하세요.
 msgid "実行環境"
 msgstr "실행 환경"
 
-#: lib/playground.tsx:357
+#: lib/playground.tsx:354
 msgid "実行結果"
 msgstr "실행 결과"
 
-#: pages/books.server.ts:20
-#: pages/books.tsx:52
+#: src/pages/Books.tsx:54
+#: src/server.tsx:39
 msgid "書籍の紹介"
 msgstr "도서 소개"
 
 #: lib/content-shell.tsx:250
-#: pages/index.tsx:65
+#: src/pages/Home.tsx:67
 msgid "書籍の紹介 →"
 msgstr "도서 소개 →"
 
@@ -318,7 +318,7 @@ msgstr "도서 소개 →"
 msgid "本文へ移動"
 msgstr "본문으로 건너뛰기"
 
-#: pages/books.tsx:64
+#: src/pages/Books.tsx:66
 msgid "本気で使うなら"
 msgstr "본격적으로 쓴다면"
 
@@ -339,7 +339,7 @@ msgstr "상태를 둘 곳 고르기"
 msgid "言語"
 msgstr "언어"
 
-#: pages/books.tsx:69
+#: src/pages/Books.tsx:71
 msgid "設計・運用まで"
 msgstr "설계·운영까지"
 

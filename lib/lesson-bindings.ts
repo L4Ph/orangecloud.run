@@ -1,10 +1,9 @@
 import { RpcTarget, WorkerEntrypoint } from "cloudflare:workers";
 import * as v from "valibot";
-import Counter from "../durable-objects/counter";
 
 // Custom bindings for the lesson sandbox (Dynamic Workers: "Bindings"). The sandbox's env
 // holds only stubs of these classes, and each method call is an RPC back into this Worker,
-// so a lesson can reach nothing but what is written here. vite.config.ts re-exports the
+// so a lesson can reach nothing but what is written here. src/server.tsx exports the
 // classes from the Worker entry, which is what makes them available as `ctx.exports.*`.
 
 type Scope = { prefix: string };
@@ -94,13 +93,18 @@ export class LessonAi extends WorkerEntrypoint<Cloudflare.Env> {
   }
 }
 
-export class LessonCounter extends WorkerEntrypoint {
+export class LessonCounter extends WorkerEntrypoint<Cloudflare.Env> {
   increment() {
-    return Counter.get("lesson-counter").increment();
+    return this.#counter().increment();
   }
 
   read() {
-    return Counter.get("lesson-counter").read();
+    return this.#counter().read();
+  }
+
+  #counter() {
+    const counters = this.ctx.exports.LessonCounterDurableObject;
+    return counters.get(counters.idFromName("lesson-counter"));
   }
 }
 

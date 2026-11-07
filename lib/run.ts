@@ -1,20 +1,4 @@
 import { exports } from "cloudflare:workers";
-import UserDO from "../durable-objects/user-do";
-
-declare global {
-  interface VoidGeneratedEnvBindings {
-    LOADER: WorkerLoader;
-    RUN_LIMITER: RateLimit;
-    CONTAINER_LIMITER: RateLimit;
-  }
-  namespace Cloudflare {
-    // What `wrangler types` writes for `ctx.exports`: the main module is Void's generated
-    // entry plus the classes vite.config.ts re-exports from it.
-    interface GlobalProps {
-      mainModule: typeof import("../.void/entry") & typeof import("./lesson-bindings");
-    }
-  }
-}
 
 export type RunResult = {
   status: number;
@@ -69,13 +53,9 @@ const hash = (text: string) => {
   return (h >>> 0).toString(36);
 };
 
-type SandboxEnv = {
-  LOADER: WorkerLoader;
-};
+type SandboxEnv = Pick<Cloudflare.Env, "LOADER">;
 
 export type RunLang = "javascript" | "python" | "container" | "durable-object";
-
-import { getSandbox } from "void/sandbox";
 
 // Containers are a separate runtime: a real filesystem, real binaries, no isolate.
 export type ContainerRuntime = "python" | "node" | "sh";
@@ -92,20 +72,14 @@ async function runInContainer(code: string, runtime: ContainerRuntime): Promise<
   const elapsed = () => Math.round(performance.now() - started);
 
   try {
-    const sandbox = await getSandbox("lesson-container");
     const file = `run-${crypto.randomUUID()}.${ext}`;
-    await sandbox.files.writeFile(`/workspace/${file}`, code);
-    const result = await sandbox.run([cmd, file], {
-      cwd: "/workspace",
-      signal: AbortSignal.timeout(20_000),
-    });
-    await sandbox.files.remove(`/workspace/${file}`).catch(() => {});
-
-    const stdout = new TextDecoder().decode(result.stdout);
-    const stderr = new TextDecoder().decode(result.stderr);
+    const sandboxes = exports.SandboxV1;
+    const result = await sandboxes
+      .get(sandboxes.idFromName("lesson-container"))
+      .run([cmd, file], { name: file, content: code });
     return {
       status: result.exitCode,
-      body: [stdout, stderr].filter(Boolean).join("\n").slice(0, 16_000),
+      body: [result.stdout, result.stderr].filter(Boolean).join("\n").slice(0, 16_000),
       logs: [],
       ms: elapsed(),
     };
@@ -126,10 +100,10 @@ async function runInContainer(code: string, runtime: ContainerRuntime): Promise<
 async function runInDurableObject(code: string): Promise<RunResult> {
   const started = performance.now();
   try {
-    const { status, body } = await UserDO.get("lesson-user-do").run(
-      `do-${hash(normalize(code))}`,
-      code,
-    );
+    const supervisors = exports.LessonUserDoDurableObject;
+    const { status, body } = await supervisors
+      .get(supervisors.idFromName("lesson-user-do"))
+      .run(`do-${hash(normalize(code))}`, code);
     return { status, body, logs: [], ms: Math.round(performance.now() - started) };
   } catch (error) {
     return {

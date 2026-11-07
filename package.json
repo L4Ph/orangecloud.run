@@ -6,14 +6,15 @@
     "dev": "vp dev",
     "build": "vp build",
     "preview": "vp preview",
-    "postinstall": "void prepare",
     "i18n:extract": "lingui extract --clean",
     "check": "vp check",
     "lint": "vp lint",
-    "fmt": "vp fmt"
+    "fmt": "vp fmt",
+    "deploy": "cf deploy"
   },
   "dependencies": {
     "@cloudflare/kumo": "^2.17.0",
+    "@cloudflare/sandbox": "1.0.3",
     "@codemirror/autocomplete": "^6.20.4",
     "@codemirror/commands": "^6.11.1",
     "@codemirror/lang-javascript": "^6.2.5",
@@ -34,19 +35,21 @@
     "valibot": "^1.5.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-beta.v.12",
     "@lingui/cli": "^6.12.0",
     "@lingui/vite-plugin": "^6.12.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@void/react": "1.6.2",
+    "@vitejs/plugin-react": "6.2.1",
+    "cf": "1.0.0-beta.28",
     "oxc-transform-react": "^0.152.0",
     "tailwindcss": "^4.3.5",
     "typescript": "^7.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@^1.4.0",
     "vite-plus": "^1.4.0",
-    "void": "^1.6.2"
+    "vite-ssr-components": "0.9.0"
   },
   "overrides": {
     "vite": "$vite"

@@ -2,9 +2,11 @@ import { Link } from "@cloudflare/kumo/components/link";
 import { Text } from "@cloudflare/kumo/components/text";
 import { ArrowUpRightIcon } from "@phosphor-icons/react";
 import { Trans } from "@lingui/react/macro";
-import { SiteHeader } from "../lib/site-header";
-import { I18nPage } from "../lib/i18n-page";
-import type { Props } from "./books.server";
+import { SiteHeader } from "../../lib/site-header";
+import { I18nPage } from "../../lib/i18n-page";
+import type { Locale } from "../../lib/locales";
+
+export type Props = { locale: Locale };
 
 function BookCard({
   href,
@@ -74,7 +76,7 @@ function BooksPage({ locale }: Props) {
   );
 }
 
-export default function Page(props: Props) {
+export default function Books(props: Props) {
   return (
     <I18nPage locale={props.locale}>
       <BooksPage {...props} />
