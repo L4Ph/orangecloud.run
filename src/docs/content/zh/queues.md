@@ -6,10 +6,10 @@
 
 ## Queues（异步消息队列）
 
-Queues 是一种用于安全地解耦短时间内完成的单次后台任务的机制。生产者（Worker）将消息投入队列，消费者（另一个 Worker）则以批次形式异步处理这些消息。
+Queues 是一种用于安全地解耦短时间内完成的单次后台任务的机制。生产者（Worker）将消息投入队列，消费者（带有 `queue` 处理程序的 Worker，也可以与生产者是同一个 Worker）则以批次形式异步处理这些消息。也可以使用通过 HTTP 拉取消息的拉取型消费者。
 
 ```js
-// 生产者端：立即放入消息并返回 HTTP 响应
+// 生产者端（在 fetch 处理程序中）：立即放入消息并返回 HTTP 响应
 await env.EMAIL_QUEUE.send({
   to: "user@example.com",
   template: "welcome_v1",
@@ -24,15 +24,16 @@ export default {
         await deliverEmail(message.body);
         message.ack(); // 通知正常完成
       } catch (err) {
-        message.retry(); // 失败时自动重试
+        message.retry(); // 报告失败并要求重新投递（最多到 max_retries）
       }
     }
   },
 };
 ```
 
-- 消息最大大小为 64KB，队列内的最大保留期限默认为 4 天（最多 14 天）。
-- 如果消费者端抛出异常，将根据设定的策略进行自动重试；若超过上限，则被移至死信队列（DLQ）。
+- 消息最大大小为 128 KB。队列内的保留期限在 Workers Paid 上默认为 4 天（最多 14 天），在 Workers Free 上固定为 24 小时。
+- 投递语义为 at-least-once，同一条消息可能被投递多次，且不保证顺序。消费者的处理应当保持幂等。
+- 如果消费者端抛出异常，整个批次会被重新投递（已用 `ack()` 确认的消息除外）。重试最多到 `max_retries`（默认 3 次）为止；超过上限的消息，若配置了死信队列（DLQ）则移入 DLQ，未配置则被删除。
 - 最佳用途：事务性邮件发送、日志汇总的批处理、向外部 Webhook 进行异步分发。
 
 ## Workflows（具有持久性的长时间编排）
@@ -43,13 +44,13 @@ export default {
 import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from "cloudflare:workers";
 
 export class UserOnboardingWorkflow extends WorkflowEntrypoint {
-  async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
+  async run(event: WorkflowEvent<{ email: string }>, step: WorkflowStep) {
     // 步骤 1：创建外部支付账户
     const account = await step.do("create-billing-account", async () => {
       return await createStripeCustomer(event.payload.email);
     });
 
-    // 步骤 2：等待 3 天（不消耗 CPU 时间或进程，无需付费）
+    // 步骤 2：等待 3 天（不消耗 CPU 时间，但 sleep 也算作一个步骤，保存的状态会计费）
     await step.sleep("wait-trial-period", "3 days");
 
     // 步骤 3：发送跟进通知
@@ -60,13 +61,13 @@ export class UserOnboardingWorkflow extends WorkflowEntrypoint {
 }
 ```
 
-每个步骤的执行结果将作为检查点保存在基础设施层。即使进程在途中被强制终止，已经完成的步骤也不会重复执行，而是严格地从未完成的步骤开始重新执行。
+每个步骤的执行结果将作为检查点保存在基础设施层（每个步骤最多 1 MiB）。即使进程在途中被强制终止，已经完成的步骤也不会重新执行，而是从未完成的步骤继续。不过，正在执行的步骤可能会被重试，写在步骤之外的处理也可能重复执行。发送邮件这类有副作用的处理，应放在步骤之内并保持幂等。
 
 ## 架构选择的判断标准
 
 | 需求                                                | 应采用的机制                                   |
 | --------------------------------------------------- | ---------------------------------------------- |
-| 数秒内完成的单次异步任务                            | `ctx.waitUntil()`（在同一 isolate 内后台执行） |
+| 返回响应后 30 秒内完成的单次异步任务                | `ctx.waitUntil()`（在同一 isolate 内后台执行） |
 | 需要平滑大量任务并以批次形式进行异步处理            | **Queues**                                     |
 | 具有等待期间（`sleep`）或多阶段顺序依赖的长时间处理 | **Workflows**                                  |
 | 需要将针对同一资源的并发写入在同一处串行化          | **Durable Objects**                            |

@@ -6,10 +6,10 @@ HTTP リクエストを受信したその場で、メールの送信や画像の
 
 ## Queues（非同期メッセージキュー）
 
-Queues は、短時間で完了する単発のバックグラウンドタスクを安全に切り離すための仕組みである。プロデューサー（Worker）がメッセージをキューへ投入し、コンシューマー（別の Worker）がそれらをバッチ単位で非同期に消化する。
+Queues は、短時間で完了する単発のバックグラウンドタスクを安全に切り離すための仕組みである。プロデューサー（Worker）がメッセージをキューへ投入し、コンシューマー（`queue` ハンドラを持つ Worker。プロデューサーと同じ Worker でもよい）がそれらをバッチ単位で非同期に消化する。HTTP で取り出すプルコンシューマーも使える。
 
 ```js
-// プロデューサー側: 即座にメッセージを積んで HTTP レスポンスを返す
+// プロデューサー側（fetch ハンドラ内）: 即座にメッセージを積んで HTTP レスポンスを返す
 await env.EMAIL_QUEUE.send({
   to: "user@example.com",
   template: "welcome_v1",
@@ -24,15 +24,16 @@ export default {
         await deliverEmail(message.body);
         message.ack(); // 正常完了を通知
       } catch (err) {
-        message.retry(); // 失敗時は自動再試行
+        message.retry(); // 失敗を伝えて再配信させる（max_retries まで）
       }
     }
   },
 };
 ```
 
-- メッセージの最大サイズは 64KB、キュー内の最大保持期間は既定で 4 日間（最大 14 日間）。
-- コンシューマー側で例外が送出された場合、設定されたポリシーに従って自動再試行が行われ、上限を超えた場合はデッドレターキュー（DLQ）へと退避される。
+- メッセージの最大サイズは 128 KB。キュー内の保持期間は Workers Paid で既定 4 日間（最大 14 日間）、Workers Free では 24 時間で固定。
+- 配信は at-least-once で、同じメッセージが複数回届くことがある。順序も保証されない。コンシューマーの処理は冪等にする。
+- コンシューマー側で例外が送出されると、バッチ全体が再配信される（`ack()` 済みのメッセージを除く）。再試行は `max_retries`（既定 3 回）までで、上限を超えたメッセージは、デッドレターキュー（DLQ）を設定していれば DLQ へ退避され、設定していなければ削除される。
 - 最適な用途: トランザクションメール送信、ログ集計のバッチ処理、外部 Webhook への非同期ディスパッチ。
 
 ## Workflows（耐久性を持つ長時間オーケストレーション）
@@ -43,13 +44,13 @@ export default {
 import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from "cloudflare:workers";
 
 export class UserOnboardingWorkflow extends WorkflowEntrypoint {
-  async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
+  async run(event: WorkflowEvent<{ email: string }>, step: WorkflowStep) {
     // ステップ 1: 外部決済アカウントの作成
     const account = await step.do("create-billing-account", async () => {
       return await createStripeCustomer(event.payload.email);
     });
 
-    // ステップ 2: 3 日間の待機（CPU 時間やプロセスは消費されず課金ゼロ）
+    // ステップ 2: 3 日間の待機（CPU 時間は消費しないが、sleep も 1 ステップで、保存した状態は課金対象）
     await step.sleep("wait-trial-period", "3 days");
 
     // ステップ 3: フォローアップ通知の送出
@@ -60,13 +61,13 @@ export class UserOnboardingWorkflow extends WorkflowEntrypoint {
 }
 ```
 
-各ステップの実行結果はインフラ層にチェックポイントとして保存される。途中でプロセスが強制終了されても、すでに完了したステップが重複実行されることはなく、未完了のステップから厳密に再開される。
+各ステップの実行結果はインフラ層にチェックポイントとして保存される（1 ステップあたり 1 MiB まで）。途中でプロセスが強制終了されても、完了済みのステップは再実行されず、未完了のステップから再開される。ただし実行中だったステップは再試行されることがあり、ステップの外に書いた処理は重複しうる。メール送信のような副作用のある処理は、ステップの中に置き、冪等にする。
 
 ## アーキテクチャ選定の判断基準
 
 | 要件                                                    | 採用すべき機構                                             |
 | ------------------------------------------------------- | ---------------------------------------------------------- |
-| 数秒以内に完了する単発の非同期タスク                    | `ctx.waitUntil()`（同一 isolate 内でバックグラウンド実行） |
+| 応答を返してから 30 秒以内に終わる単発の非同期タスク    | `ctx.waitUntil()`（同一 isolate 内でバックグラウンド実行） |
 | 大量のタスクを平滑化し、バッチで非同期処理したい        | **Queues**                                                 |
 | 待機期間（`sleep`）や多段階の順序依存がある長時間処理   | **Workflows**                                              |
 | 同一リソースに対する並行書き込みを 1 箇所で直列化したい | **Durable Objects**                                        |
