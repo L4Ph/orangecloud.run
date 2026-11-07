@@ -19,7 +19,7 @@ KV에 쓰기 작업은 먼저 중앙 스토리지로 전송되며, 그곳에서 
 에디터상의 `env.KV`는 학습용 샌드박스를 위해 실제 KV 인프라를 RPC로 중계한 것이다. 제공되는 메서드의 인수와 반환값 동작은 프로덕션 환경과 완전히 일치한다.
 
 ```js
-await env.KV.put('user:1', 'Alice');
-const user = await env.KV.get('user:1'); // 'Alice'
-const list = await env.KV.list({ prefix: 'user:' }); // { keys: [...] }
+await env.KV.put("user:1", "Alice");
+const user = await env.KV.get("user:1"); // 'Alice'
+const list = await env.KV.list({ prefix: "user:" }); // { keys: [...] }
 ```

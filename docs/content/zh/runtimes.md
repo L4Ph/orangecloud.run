@@ -32,11 +32,11 @@ Cloudflare Workers 完全隐藏了 OS 进程层，将 **V8 isolate 单体** 作�
 
 ## 架构选择边界
 
-| 处理性质 | 最佳选择 | 依据 |
-| --- | --- | --- |
-| Web API、轻量级业务逻辑、数据中继 | **V8 isolate（Workers）** | 启动在毫秒量级，空闲成本为零 |
+| 处理性质                               | 最佳选择                  | 依据                                      |
+| -------------------------------------- | ------------------------- | ----------------------------------------- |
+| Web API、轻量级业务逻辑、数据中继      | **V8 isolate（Workers）** | 启动在毫秒量级，空闲成本为零              |
 | 长时间运行的批处理、FFmpeg、Playwright | **Cloudflare Containers** | 必须具备完整的 Linux 内核和二进制执行环境 |
-| 等待外部连接（DB 查询、外部 REST API） | **V8 isolate（Workers）** | 因 CPU 时间计费，网络等待时间免费 |
-| 对单一资源的串行化与互斥控制 | **Durable Objects** | 将请求聚合至全球唯一的实例 |
+| 等待外部连接（DB 查询、外部 REST API） | **V8 isolate（Workers）** | 因 CPU 时间计费，网络等待时间免费         |
+| 对单一资源的串行化与互斥控制           | **Durable Objects**       | 将请求聚合至全球唯一的实例                |
 
 在引入适用于 Node.js 的库时，可以使用 `nodejs_compat` 兼容性标志，但这仅能提供 `Buffer`、`crypto`、`events` 等接近 Web 标准的部分抽象层。以 `fs` 进行本地磁盘操作为前提的设计，与 isolate 的理念根本不兼容。

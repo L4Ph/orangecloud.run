@@ -13,11 +13,11 @@ At its core, a Worker is nothing more than a **pure function called every time a
 
 ## Comparison of Limits
 
-| Item       | Free Plan | Paid Plan            |
-| ---------- | ---------- | --------------------- |
-| Requests | 100k/day   | 10M/month + usage-based    |
-| CPU Time   | 10ms/request    | 30 seconds/request (max 5 min) |
-| Memory     | 128MB      | 128MB                 |
+| Item     | Free Plan    | Paid Plan                      |
+| -------- | ------------ | ------------------------------ |
+| Requests | 100k/day     | 10M/month + usage-based        |
+| CPU Time | 10ms/request | 30 seconds/request (max 5 min) |
+| Memory   | 128MB        | 128MB                          |
 
 "A clean, disposable room provided for every request." Once this mental model takes hold, you will no longer fall into the serverless trap.
 
@@ -27,7 +27,7 @@ export default {
     // request: received HTTP request
     // env: bindings (KV, D1, secrets, etc.)
     // ctx: lifecycle control such as waitUntil
-    return new Response('hello from workers');
+    return new Response("hello from workers");
   },
 };
 ```

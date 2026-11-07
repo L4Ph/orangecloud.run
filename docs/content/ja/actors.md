@@ -15,14 +15,14 @@ Erlang のプロセスや Akka の Actor に代表される Actor モデルは�
 
 ## Durable Objects と Actor の対応関係
 
-| Actor モデルの概念 | Cloudflare Durable Objects の実装 |
-| --- | --- |
-| アクターの識別名 | `env.ROOM.idFromName('room-1')` で生成される一意の ID |
-| 私有された状態 | `this.ctx.storage`（内蔵 SQLite）および `this` のインスタンス変数 |
-| メッセージ | クラスに定義された型付き RPC メソッド、または `fetch()` |
-| 受信箱と直列化 | インフラ層が完全保証。メソッド呼び出しは 1 件ずつ直列に実行 |
+| Actor モデルの概念   | Cloudflare Durable Objects の実装                                   |
+| -------------------- | ------------------------------------------------------------------- |
+| アクターの識別名     | `env.ROOM.idFromName('room-1')` で生成される一意の ID               |
+| 私有された状態       | `this.ctx.storage`（内蔵 SQLite）および `this` のインスタンス変数   |
+| メッセージ           | クラスに定義された型付き RPC メソッド、または `fetch()`             |
+| 受信箱と直列化       | インフラ層が完全保証。メソッド呼び出しは 1 件ずつ直列に実行         |
 | アクターの消滅と復活 | メモリ不足時の退避（Hibernation）と、次期リクエスト到着時の即時復元 |
-| 物理的な配置位置 | 原則として、その実体に最初にリクエストを送ったエッジ（Colo）近傍 |
+| 物理的な配置位置     | 原則として、その実体に最初にリクエストを送ったエッジ（Colo）近傍    |
 
 ## なぜ関数ではなくクラスで書くのか
 
@@ -33,10 +33,10 @@ Erlang のプロセスや Akka の Actor に代表される Actor モデルは�
 ```ts
 export class ChatRoom extends DurableObject {
   async join(user: string) {
-    const members = (await this.ctx.storage.get<string[]>('members')) ?? [];
+    const members = (await this.ctx.storage.get<string[]>("members")) ?? [];
     if (!members.includes(user)) {
       members.push(user);
-      await this.ctx.storage.put('members', members);
+      await this.ctx.storage.put("members", members);
     }
     return members;
   }

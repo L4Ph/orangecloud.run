@@ -6,12 +6,12 @@ Cloudflare Containers は、isolate でどうしても解決できない課題�
 
 ## isolate とコンテナのトレードオフ
 
-| 比較項目 | V8 isolate（Dynamic Workers） | Cloudflare Containers |
-| --- | --- | --- |
-| 起動時間 | 数ミリ秒（即座に応答開始） | 数秒オーダー（コンテナの起動待ち） |
-| メモリ上限 | 128MB 〜（軽量設計） | ギガバイト単位で確保可能 |
-| 実行可能ファイル | JS、TS、Wasm、Pyodide | 任意の Linux 実行ファイル、共有ライブラリ |
-| 課金単位 | 実行 CPU 時間 | コンテナの起動時間（vCPU 分・GiB 時間） |
+| 比較項目         | V8 isolate（Dynamic Workers） | Cloudflare Containers                     |
+| ---------------- | ----------------------------- | ----------------------------------------- |
+| 起動時間         | 数ミリ秒（即座に応答開始）    | 数秒オーダー（コンテナの起動待ち）        |
+| メモリ上限       | 128MB 〜（軽量設計）          | ギガバイト単位で確保可能                  |
+| 実行可能ファイル | JS、TS、Wasm、Pyodide         | 任意の Linux 実行ファイル、共有ライブラリ |
+| 課金単位         | 実行 CPU 時間                 | コンテナの起動時間（vCPU 分・GiB 時間）   |
 
 Web API のリクエストを仲介するだけであれば、isolate の方が圧倒的に高速で、かつ費用も安く済む。**まず Workers 単体で実現できないかを徹底的に考え、どうしても不可能な場合にのみコンテナを導入する**というのがエッジ設計の鉄則である。
 
@@ -20,14 +20,14 @@ Web API のリクエストを仲介するだけであれば、isolate の方が�
 コードからコンテナを操作する場合は、Cloudflare の Sandbox SDK（`@cloudflare/sandbox`）を利用する。Worker の内部からオンデマンドでコンテナインスタンスを呼び出し、シェルコマンドの実行やポートの公開を行える。
 
 ```ts
-import { getSandbox } from '@cloudflare/sandbox';
+import { getSandbox } from "@cloudflare/sandbox";
 
 // ユーザー ID やセッションごとに独立したサンドボックスを確保
-const sandbox = await getSandbox(env.SANDBOX, 'user-session-123');
+const sandbox = await getSandbox(env.SANDBOX, "user-session-123");
 
 // コンテナ内部でコマンドを実行し、標準出力を受け取る
-const result = await sandbox.run('node --version');
-console.log('Container Node.js:', result.stdout);
+const result = await sandbox.run("node --version");
+console.log("Container Node.js:", result.stdout);
 ```
 
 コンテナはリクエストが途絶えると自動的にスリープ状態へ移行し、アクティブに利用されている時間だけが課金対象となる。

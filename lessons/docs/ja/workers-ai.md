@@ -8,13 +8,13 @@ Workers AI は、推論サーバーのプロビジョニングも API キーの�
 
 モデル選定において最も重要なのは、入力トークンよりも「出力トークン単価」である。生成テキストの長さに応じて請求の大半が決まるからだ。
 
-| モデル名 | 主な用途 | 特徴とコスト感 |
-| --- | --- | --- |
-| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 汎用会話、要約、翻訳 | 出力 $0.555/1M トークン。日本語の精度とコストのバランスが最も良い |
-| `@cf/ibm-granite/granite-4.0-h-micro` | 英語テキスト処理、極小タスク | 出力 $0.112/1M トークン。極めて安価だが日本語の応答精度は大きく劣る |
-| `@cf/openai/gpt-oss-20b` | 論理推論、複雑な思考ステップ | 思考用トークンを大量に消費するため、総コストは高くなりやすい |
-| `@cf/baai/bge-small-en-v1.5` | ベクトル埋め込み（RAG） | 検索エンジン構築用。極めて低価格で高速 |
-| `@cf/openai/whisper` | 音声文字起こし | 音声の秒数に応じた従量課金 |
+| モデル名                                       | 主な用途                     | 特徴とコスト感                                                      |
+| ---------------------------------------------- | ---------------------------- | ------------------------------------------------------------------- |
+| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 汎用会話、要約、翻訳         | 出力 $0.555/1M トークン。日本語の精度とコストのバランスが最も良い   |
+| `@cf/ibm-granite/granite-4.0-h-micro`          | 英語テキスト処理、極小タスク | 出力 $0.112/1M トークン。極めて安価だが日本語の応答精度は大きく劣る |
+| `@cf/openai/gpt-oss-20b`                       | 論理推論、複雑な思考ステップ | 思考用トークンを大量に消費するため、総コストは高くなりやすい        |
+| `@cf/baai/bge-small-en-v1.5`                   | ベクトル埋め込み（RAG）      | 検索エンジン構築用。極めて低価格で高速                              |
+| `@cf/openai/whisper`                           | 音声文字起こし               | 音声の秒数に応じた従量課金                                          |
 
 ## 応答フォーマットの違いに注意する
 
@@ -23,10 +23,10 @@ Workers AI は、推論サーバーのプロビジョニングも API キーの�
 `mistral-small-3.1-24b` のような軽量モデルは、結果オブジェクトの `.response` プロパティに文字列そのものを直接返す。一方で、推論特化型モデル（gpt-oss 等）は OpenAI 互換の `.choices[0].message.content` 構造をとることが多い。まずは `.response` を返す素直なモデルから触り始めるのが最も迷いが少ない。
 
 ```js
-const answer = await env.AI.run('@cf/mistralai/mistral-small-3.1-24b-instruct', {
+const answer = await env.AI.run("@cf/mistralai/mistral-small-3.1-24b-instruct", {
   messages: [
-    { role: 'system', content: '日本語で40文字以内で簡潔に答えてください。' },
-    { role: 'user', content: 'Cloudflare Workers の利点を一言で' },
+    { role: "system", content: "日本語で40文字以内で簡潔に答えてください。" },
+    { role: "user", content: "Cloudflare Workers の利点を一言で" },
   ],
   max_tokens: 80,
 });

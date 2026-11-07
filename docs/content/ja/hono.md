@@ -7,12 +7,12 @@ Hono は、ブラウザやエッジランタイムが標準装備する **`Reque
 ## 最小限の構成
 
 ```ts
-import { Hono } from 'hono';
+import { Hono } from "hono";
 
 const app = new Hono();
 
 // ルート定義
-app.get('/', (c) => c.text('hello from hono'));
+app.get("/", (c) => c.text("hello from hono"));
 
 // Cloudflare Workers のエントリポイントとしてそのまま公開できる
 export default app;
@@ -21,12 +21,12 @@ export default app;
 ## パスルーティングとパラメータ抽出
 
 ```ts
-app.get('/users/:id', (c) => c.json({ userId: c.req.param('id') }));
-app.get('/static/*', (c) => c.text(c.req.path));
-app.post('/items', (c) => c.text('created', 201));
+app.get("/users/:id", (c) => c.json({ userId: c.req.param("id") }));
+app.get("/static/*", (c) => c.text(c.req.path));
+app.post("/items", (c) => c.text("created", 201));
 
 // サブルーターのモジュール結合
-app.route('/api/v1', apiRoutes);
+app.route("/api/v1", apiRoutes);
 ```
 
 - `:param` 形式によるパスパラメータの抽出と、`*` によるワイルドカードキャッチに対応する。
@@ -38,12 +38,12 @@ app.route('/api/v1', apiRoutes);
 
 ```ts
 // リクエスト情報の取り出し
-const authHeader = c.req.header('authorization');
-const queryPage = c.req.query('page');
+const authHeader = c.req.header("authorization");
+const queryPage = c.req.query("page");
 const bodyJson = await c.req.json();
 
 // レスポンスの送出
-return c.json({ status: 'ok', data: bodyJson }, 201);
+return c.json({ status: "ok", data: bodyJson }, 201);
 ```
 
 内部的にはネイティブの `Request` / `Response` を薄くラップしているにすぎないため、`c.req.raw` から生の Web 標準オブジェクトを直接取り出すことも可能である。
@@ -52,17 +52,17 @@ return c.json({ status: 'ok', data: bodyJson }, 201);
 
 ```ts
 // グローバルな実行時間計測ミドルウェア
-app.use('*', async (c, next) => {
+app.use("*", async (c, next) => {
   const start = performance.now();
   await next();
   const duration = performance.now() - start;
-  c.header('server-timing', `total;dur=${duration.toFixed(2)}`);
+  c.header("server-timing", `total;dur=${duration.toFixed(2)}`);
 });
 
 // 認証チェックと早期離脱
-app.use('/admin/*', async (c, next) => {
-  if (!c.req.header('authorization')) {
-    return c.text('unauthorized', 401);
+app.use("/admin/*", async (c, next) => {
+  if (!c.req.header("authorization")) {
+    return c.text("unauthorized", 401);
   }
   await next();
 });
@@ -76,12 +76,12 @@ Hono の最大の強みの一つは、サーバー側のルート定義からク
 
 ```ts
 // サーバー側（ルートの型定義を公開）
-const api = new Hono().get('/posts/:id', (c) => c.json({ id: c.req.param('id'), title: 'Demo' }));
+const api = new Hono().get("/posts/:id", (c) => c.json({ id: c.req.param("id"), title: "Demo" }));
 export type AppType = typeof api;
 
 // クライアント側（URL 文字列を一切書かずに完全型補完で呼び出す）
-import { hc } from 'hono/client';
-const client = hc<AppType>('https://example.com');
-const response = await client.posts[':id'].$get({ param: { id: '42' } });
+import { hc } from "hono/client";
+const client = hc<AppType>("https://example.com");
+const response = await client.posts[":id"].$get({ param: { id: "42" } });
 const data = await response.json(); // { id: string, title: string } として推論
 ```

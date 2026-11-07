@@ -22,7 +22,7 @@ const timing = async (c, next) => {
     await next(); // 将处理权限移交给下一段中间件或最终处理器
   } finally {
     const elapsed = performance.now() - start;
-    c.header('server-timing', `work;dur=${elapsed}`);
+    c.header("server-timing", `work;dur=${elapsed}`);
   }
 };
 ```
@@ -45,7 +45,7 @@ return c.streamText(async (stream) => {
 
 // Server-Sent Events（SSE）的发送
 return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: JSON.stringify({ event: 'ping' }) });
+  await stream.writeSSE({ data: JSON.stringify({ event: "ping" }) });
 });
 ```
 

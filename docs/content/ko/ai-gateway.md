@@ -20,15 +20,15 @@ AI Gateway는 모델 호출 **직전에 배치하는 리버스 프록시**이다
 const response = await fetch(
   `https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.AI_GATEWAY_NAME}/anthropic/v1/messages`,
   {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'content-type': 'application/json',
-      'x-api-key': env.ANTHROPIC_API_KEY,
+      "content-type": "application/json",
+      "x-api-key": env.ANTHROPIC_API_KEY,
     },
     body: JSON.stringify({
-      model: 'claude-3-5-haiku-20241022',
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 256,
-      messages: [{ role: 'user', content: 'Workers의 특징을 요약해 주세요.' }],
+      messages: [{ role: "user", content: "Workers의 특징을 요약해 주세요." }],
     }),
   },
 );

@@ -15,14 +15,14 @@ Durable Objects（DO）通常被介绍为“具有状态的小型服务器”。
 
 ## Durable Objects 与 Actor 的对应关系
 
-| Actor 模型概念 | Cloudflare Durable Objects 的实现 |
-| --- | --- |
-| Actor 的标识名称 | `env.ROOM.idFromName('room-1')` 生成的唯一 ID |
-| 私有状态 | `this.ctx.storage`（内置 SQLite）以及 `this` 的实例变量 |
-| 消息 | 定义在类中的类型化 RPC 方法，或 `fetch()` |
-| 收件箱与串行执行 | 基础设施层完全保证。方法调用逐一串行执行 |
+| Actor 模型概念     | Cloudflare Durable Objects 的实现                             |
+| ------------------ | ------------------------------------------------------------- |
+| Actor 的标识名称   | `env.ROOM.idFromName('room-1')` 生成的唯一 ID                 |
+| 私有状态           | `this.ctx.storage`（内置 SQLite）以及 `this` 的实例变量       |
+| 消息               | 定义在类中的类型化 RPC 方法，或 `fetch()`                     |
+| 收件箱与串行执行   | 基础设施层完全保证。方法调用逐一串行执行                      |
 | Actor 的消亡与复活 | 内存不足时的休眠（Hibernation），以及下次请求到达时的即时恢复 |
-| 物理位置 | 原则上在首次向该实体发送请求的边缘（Colo）附近 |
+| 物理位置           | 原则上在首次向该实体发送请求的边缘（Colo）附近                |
 
 ## 为什么使用类而非函数
 
@@ -33,10 +33,10 @@ Durable Objects（DO）通常被介绍为“具有状态的小型服务器”。
 ```ts
 export class ChatRoom extends DurableObject {
   async join(user: string) {
-    const members = (await this.ctx.storage.get<string[]>('members')) ?? [];
+    const members = (await this.ctx.storage.get<string[]>("members")) ?? [];
     if (!members.includes(user)) {
       members.push(user);
-      await this.ctx.storage.put('members', members);
+      await this.ctx.storage.put("members", members);
     }
     return members;
   }

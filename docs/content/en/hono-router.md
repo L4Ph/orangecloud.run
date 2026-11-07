@@ -22,7 +22,7 @@ const timing = async (c, next) => {
     await next(); // Pass processing to the next middleware or final handler
   } finally {
     const elapsed = performance.now() - start;
-    c.header('server-timing', `work;dur=${elapsed}`);
+    c.header("server-timing", `work;dur=${elapsed}`);
   }
 };
 ```
@@ -45,7 +45,7 @@ return c.streamText(async (stream) => {
 
 // Sending Server-Sent Events (SSE)
 return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: JSON.stringify({ event: 'ping' }) });
+  await stream.writeSSE({ data: JSON.stringify({ event: "ping" }) });
 });
 ```
 

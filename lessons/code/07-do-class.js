@@ -1,4 +1,4 @@
-import { DurableObject } from 'cloudflare:workers';
+import { DurableObject } from "cloudflare:workers";
 
 // App という名前のクラスが、あなた専用の Durable Object になる
 // A class named App becomes your own Durable Object
@@ -13,9 +13,9 @@ export class App extends DurableObject {
     // SQLite：ディスクに残り、コードを書き換えても消えない
     // SQLite: durable, survives even a code change
     const sql = this.ctx.storage.sql;
-    sql.exec('CREATE TABLE IF NOT EXISTS hits (n INTEGER)');
-    sql.exec('INSERT INTO hits VALUES (1)');
-    const sqlite = sql.exec('SELECT COUNT(*) AS c FROM hits').one().c;
+    sql.exec("CREATE TABLE IF NOT EXISTS hits (n INTEGER)");
+    sql.exec("INSERT INTO hits VALUES (1)");
+    const sqlite = sql.exec("SELECT COUNT(*) AS c FROM hits").one().c;
 
     // 数字を書き換えて再実行すると、memory は 1 に戻り、sqlite は増え続ける
     // Edit anything and re-run: memory resets to 1, sqlite keeps counting

@@ -40,33 +40,23 @@
     "migrations": [
       {
         "tag": "void-durable-lesson-ai-v1",
-        "new_sqlite_classes": [
-          "LessonAiDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonAiDurableObject"]
       },
       {
         "tag": "void-durable-lesson-counter-v1",
-        "new_sqlite_classes": [
-          "LessonCounterDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonCounterDurableObject"]
       },
       {
         "tag": "void-durable-lesson-kv-v1",
-        "new_sqlite_classes": [
-          "LessonKvDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonKvDurableObject"]
       },
       {
         "tag": "void-durable-lesson-r2-v1",
-        "new_sqlite_classes": [
-          "LessonR2DurableObject"
-        ]
+        "new_sqlite_classes": ["LessonR2DurableObject"]
       },
       {
         "tag": "void-durable-lesson-user-do-v1",
-        "new_sqlite_classes": [
-          "LessonUserDoDurableObject"
-        ]
+        "new_sqlite_classes": ["LessonUserDoDurableObject"]
       }
     ],
     "account_id": "0ce3c6916b7331f1aa251433a7c47c03",

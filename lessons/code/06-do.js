@@ -7,15 +7,15 @@ export default {
     const now = await env.COUNTER.increment();
     const again = await env.COUNTER.increment();
 
-    console.log('before =', before);
-    console.log('increment ->', now, again);
+    console.log("before =", before);
+    console.log("increment ->", now, again);
 
     return Response.json({
       before,
       after: again,
       // この値は Worker の再起動でも消えない（DO ストレージに永続化）
       // Persists across Worker restarts (saved in Durable Object storage)
-      note: 'Durable Object storage',
+      note: "Durable Object storage",
     });
   },
 };

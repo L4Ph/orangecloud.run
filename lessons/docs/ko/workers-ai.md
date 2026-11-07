@@ -8,13 +8,13 @@ Workers AI는 추론 서버 프로비저닝과 API 키 관리가 필요 없게 �
 
 모델 선정 시 가장 중요한 것은 입력 토큰보다 '출력 토큰 단가'다. 생성 텍스트의 길이에 따라 청구액의 대부분이 결정되기 때문이다.
 
-| 모델명 | 주요 용도 | 특징 및 비용 감 |
-| --- | --- | --- |
-| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화, 요약, 번역 | 출력 $0.555/1M 토큰. 일본어 정확도와 비용의 균형이 가장 좋음 |
-| `@cf/ibm-granite/granite-4.0-h-micro` | 영어 텍스트 처리, 초소형 태스크 | 출력 $0.112/1M 토큰. 극도로 저렴하지만 일본어 응답 정확도는 크게 떨어짐 |
-| `@cf/openai/gpt-oss-20b` | 논리 추론, 복잡한 사고 단계 | 사고용 토큰을 대량으로 소비하므로 총비용이 높아지기 쉬움 |
-| `@cf/baai/bge-small-en-v1.5` | 벡터 임베딩(RAG) | 검색 엔진 구축용. 극도로 저렴하고 빠름 |
-| `@cf/openai/whisper` | 음성 트랜스크립션 | 음성 초수에 따른 종량제 과금 |
+| 모델명                                         | 주요 용도                       | 특징 및 비용 감                                                         |
+| ---------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------- |
+| `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화, 요약, 번역           | 출력 $0.555/1M 토큰. 일본어 정확도와 비용의 균형이 가장 좋음            |
+| `@cf/ibm-granite/granite-4.0-h-micro`          | 영어 텍스트 처리, 초소형 태스크 | 출력 $0.112/1M 토큰. 극도로 저렴하지만 일본어 응답 정확도는 크게 떨어짐 |
+| `@cf/openai/gpt-oss-20b`                       | 논리 추론, 복잡한 사고 단계     | 사고용 토큰을 대량으로 소비하므로 총비용이 높아지기 쉬움                |
+| `@cf/baai/bge-small-en-v1.5`                   | 벡터 임베딩(RAG)                | 검색 엔진 구축용. 극도로 저렴하고 빠름                                  |
+| `@cf/openai/whisper`                           | 음성 트랜스크립션               | 음성 초수에 따른 종량제 과금                                            |
 
 ## 응답 포맷의 차이에 주의
 
@@ -23,10 +23,10 @@ Workers AI는 추론 서버 프로비저닝과 API 키 관리가 필요 없게 �
 `mistral-small-3.1-24b`와 같은 경량 모델은 결과 객체의 `.response` 속성에 문자열 자체를 직접 반환한다. 반면, 추론 특화 모델(gpt-oss 등)은 OpenAI 호환의 `.choices[0].message.content` 구조를 취하는 경우가 많다. 우선 `.response`를 반환하는 단순한 모델부터 시작하는 것이 가장 고민이 적다.
 
 ```js
-const answer = await env.AI.run('@cf/mistralai/mistral-small-3.1-24b-instruct', {
+const answer = await env.AI.run("@cf/mistralai/mistral-small-3.1-24b-instruct", {
   messages: [
-    { role: 'system', content: '日本語で40文字以内で簡潔に答えてください。' },
-    { role: 'user', content: 'Cloudflare Workers の利点を一言で' },
+    { role: "system", content: "日本語で40文字以内で簡潔に答えてください。" },
+    { role: "user", content: "Cloudflare Workers の利点を一言で" },
   ],
   max_tokens: 80,
 });

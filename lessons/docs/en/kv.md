@@ -19,7 +19,7 @@ Writes to KV are first sent to central storage, from where they propagate asynch
 The `env.KV` in the editor is a RPC proxy for the actual KV infrastructure, provided for a learning sandbox. The behavior of the provided methods' arguments and return values is identical to that of the production environment.
 
 ```js
-await env.KV.put('user:1', 'Alice');
-const user = await env.KV.get('user:1'); // 'Alice'
-const list = await env.KV.list({ prefix: 'user:' }); // { keys: [...] }
+await env.KV.put("user:1", "Alice");
+const user = await env.KV.get("user:1"); // 'Alice'
+const list = await env.KV.list({ prefix: "user:" }); // { keys: [...] }
 ```

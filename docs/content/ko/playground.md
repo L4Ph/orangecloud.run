@@ -10,15 +10,15 @@
 
 ```ts
 const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
-  compatibilityDate: '2026-02-24',
-  mainModule: 'index.js',
-  modules: { 'index.js': wrapUserCode(code) },
+  compatibilityDate: "2026-02-24",
+  mainModule: "index.js",
+  modules: { "index.js": wrapUserCode(code) },
   env: { KV: kvProxyStub, DB: env.DB },
   globalOutbound: null, // 외부 네트워크로의 모든 외부 통신 차단
   limits: { cpuMs: 100, subRequests: 0 },
 }));
 
-const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
+const response = await worker.getEntrypoint().fetch(new Request("https://sandbox.internal/"));
 ```
 
 - **`globalOutbound: null`을 통한 완전 격리**: 자식 Worker 내부에서는 인터넷상의 임의의 서버를 향한 `fetch()`나 Raw 소켓 설정이 일절 불가능하다. 악의적인 스크립트에 의한 부정 외부 통신이나 자격 증명 유출을 물리적으로 차단한다.
@@ -29,11 +29,11 @@ const response = await worker.getEntrypoint().fetch(new Request('https://sandbox
 
 자식 Worker의 `env`에 직접 전달할 수 있는 객체에는 제한이 있다. 구조화 클론(Structured Clone)이 가능한 데이터 타입 및 Service Binding으로 한정된다.
 
-| 리소스 | 자식 Worker로 전달하는 방법 |
-| --- | --- |
-| D1 데이터베이스 | 네이티브로 구조화 클론을 지원하므로 그대로 전달 |
-| Durable Objects | `namespace.get(id)`로 가져온 스텁 객체(Service Binding)로 전달 |
-| KV / R2 / AI | 이름 공간 자체는 직접 클론할 수 없으므로, 부모 측에서 Durable Object나 Service Binding의 RPC 프록시를 통해 중계 |
+| 리소스          | 자식 Worker로 전달하는 방법                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------------------------- |
+| D1 데이터베이스 | 네이티브로 구조화 클론을 지원하므로 그대로 전달                                                                 |
+| Durable Objects | `namespace.get(id)`로 가져온 스텁 객체(Service Binding)로 전달                                                  |
+| KV / R2 / AI    | 이름 공간 자체는 직접 클론할 수 없으므로, 부모 측에서 Durable Object나 Service Binding의 RPC 프록시를 통해 중계 |
 
 예를 들어 KV의 경우, 부모 환경에 배치한 Durable Object가 `get` / `put` / `delete` / `list` 핸들러를 담당하고, 그 RPC 스텁을 자식 환경으로 `env.KV`로 인젝션한다. 자식 Worker 내부의 코드에서는 실제 KV 이름 공간과 완전히 동일한 인터페이스로 투명하게 이용할 수 있다.
 

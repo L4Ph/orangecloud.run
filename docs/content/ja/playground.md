@@ -10,15 +10,15 @@
 
 ```ts
 const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
-  compatibilityDate: '2026-02-24',
-  mainModule: 'index.js',
-  modules: { 'index.js': wrapUserCode(code) },
+  compatibilityDate: "2026-02-24",
+  mainModule: "index.js",
+  modules: { "index.js": wrapUserCode(code) },
   env: { KV: kvProxyStub, DB: env.DB },
   globalOutbound: null, // 外部ネットワークへの全外向き通信を遮断
   limits: { cpuMs: 100, subRequests: 0 },
 }));
 
-const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
+const response = await worker.getEntrypoint().fetch(new Request("https://sandbox.internal/"));
 ```
 
 - **`globalOutbound: null` による完全隔離**: 子 Worker の内部からは、インターネット上の任意サーバーへ向けた `fetch()` や Raw ソケットの確立が一切できない。悪意あるスクリプトによる不正な外部通信やクレデンシャルの持ち出しを物理的に封じる。
@@ -29,11 +29,11 @@ const response = await worker.getEntrypoint().fetch(new Request('https://sandbox
 
 子 Worker の `env` に直接渡すことができるオブジェクトには制限がある。構造化クローン（Structured Clone）が可能なデータ型、および Service Binding に限られる。
 
-| リソース | 子 Worker への渡し方 |
-| --- | --- |
-| D1 データベース | ネイティブで構造化クローンに対応しているため、そのまま引き渡す |
-| Durable Objects | `namespace.get(id)` で取得したスタブオブジェクト（Service Binding）として渡す |
-| KV / R2 / AI | 名前空間そのものは直接クローンできないため、親側で Durable Object や Service Binding の RPC プロキシを介して中継する |
+| リソース        | 子 Worker への渡し方                                                                                                 |
+| --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| D1 データベース | ネイティブで構造化クローンに対応しているため、そのまま引き渡す                                                       |
+| Durable Objects | `namespace.get(id)` で取得したスタブオブジェクト（Service Binding）として渡す                                        |
+| KV / R2 / AI    | 名前空間そのものは直接クローンできないため、親側で Durable Object や Service Binding の RPC プロキシを介して中継する |
 
 たとえば KV の場合、親環境に配置した Durable Object が `get` / `put` / `delete` / `list` のハンドラを受け持ち、その RPC スタブを子環境へ `env.KV` として注入する。子 Worker 内部のコードからは、本物の KV 名前空間と全く同一のインターフェースとして透過的に利用できる。
 

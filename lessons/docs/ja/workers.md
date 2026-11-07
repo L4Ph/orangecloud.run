@@ -27,7 +27,7 @@ export default {
     // request: 受信した HTTP 要求
     // env: バインディング（KV、D1、シークレット等）
     // ctx: waitUntil 等のライフサイクル制御
-    return new Response('hello from workers');
+    return new Response("hello from workers");
   },
 };
 ```

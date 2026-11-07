@@ -11,9 +11,9 @@ Queues는 짧은 시간 내에 완료되는 단발성 백그라운드 태스크�
 ```js
 // 프로듀서 측: 즉시 메시지를 실어 HTTP 응답 반환
 await env.EMAIL_QUEUE.send({
-  to: 'user@example.com',
-  template: 'welcome_v1',
-  payload: { name: 'Alice' },
+  to: "user@example.com",
+  template: "welcome_v1",
+  payload: { name: "Alice" },
 });
 
 // 컨슈머 측: 백그라운드에서 일괄 처리
@@ -40,20 +40,20 @@ export default {
 수 분에서 수일에 걸쳐 여러 단계를 순차적으로 실행하고, 중간에 서버가 재시작되더라도 정확히 직전 단계부터 재개(Durable Execution)시키고 싶을 때는 Queues 대신 Workflows를 채택한다.
 
 ```ts
-import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from 'cloudflare:workers';
+import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from "cloudflare:workers";
 
 export class UserOnboardingWorkflow extends WorkflowEntrypoint {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
     // 단계 1: 외부 결제 계정 생성
-    const account = await step.do('create-billing-account', async () => {
+    const account = await step.do("create-billing-account", async () => {
       return await createStripeCustomer(event.payload.email);
     });
 
     // 단계 2: 3일간 대기 (CPU 시간이나 프로세스는 소비되지 않으며 비용 청구 없음)
-    await step.sleep('wait-trial-period', '3 days');
+    await step.sleep("wait-trial-period", "3 days");
 
     // 단계 3: 후속 알림 발송
-    await step.do('send-checkin-notification', async () => {
+    await step.do("send-checkin-notification", async () => {
       await sendFollowUpEmail(account.id);
     });
   }
@@ -64,9 +64,9 @@ export class UserOnboardingWorkflow extends WorkflowEntrypoint {
 
 ## 아키텍처 선정 판단 기준
 
-| 요구사항 | 채택해야 할 메커니즘 |
-| --- | --- |
-| 수 초 이내에 완료되는 단발성 비동기 태스크 | `ctx.waitUntil()` (동일 isolate 내에서 백그라운드 실행) |
-| 대량의 태스크를 평활화하여 배치로 비동기 처리하고 싶을 때 | **Queues** |
-| 대기 기간(`sleep`)이나 다단계 순서 의존성이 있는 장시간 처리 | **Workflows** |
-| 동일 리소스에 대한 병렬 쓰기를 한 곳에서 직렬화하고 싶을 때 | **Durable Objects** |
+| 요구사항                                                     | 채택해야 할 메커니즘                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------- |
+| 수 초 이내에 완료되는 단발성 비동기 태스크                   | `ctx.waitUntil()` (동일 isolate 내에서 백그라운드 실행) |
+| 대량의 태스크를 평활화하여 배치로 비동기 처리하고 싶을 때    | **Queues**                                              |
+| 대기 기간(`sleep`)이나 다단계 순서 의존성이 있는 장시간 처리 | **Workflows**                                           |
+| 동일 리소스에 대한 병렬 쓰기를 한 곳에서 직렬화하고 싶을 때  | **Durable Objects**                                     |

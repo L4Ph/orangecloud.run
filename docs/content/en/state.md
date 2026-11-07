@@ -6,13 +6,13 @@ The question is: "Which storage to choose?" A poor choice can lead to "ghost dat
 
 ## First-Round Screening by Consistency Model
 
-| Storage | Consistency Level | Optimal Use Cases | Dangerous Misuses |
-| --- | --- | --- | --- |
-| **Workers KV** | Eventual consistency (up to 60 seconds of propagation delay) | Configuration values, feature flags, URL redirect tables | Strict counters, balances, sessions immediately after purchase |
-| **D1** | Primary writes, replica reads | Structured data, relational searches, aggregations | Storing binaries exceeding several megabytes |
-| **Cloudflare R2** | Strong consistency (per-object) | Images, videos, logs, backups | Fine-grained, frequent updates of several kilobytes |
-| **Durable Objects** | Fully serialized on a single node (strong consistency) | Chat rooms, ticket inventory, distributed locking | Indiscriminate aggregation of all requests |
-| **Hyperdrive** | Connection pool for existing relational DBs | High-speed communication with PostgreSQL / MySQL | - |
+| Storage             | Consistency Level                                            | Optimal Use Cases                                        | Dangerous Misuses                                              |
+| ------------------- | ------------------------------------------------------------ | -------------------------------------------------------- | -------------------------------------------------------------- |
+| **Workers KV**      | Eventual consistency (up to 60 seconds of propagation delay) | Configuration values, feature flags, URL redirect tables | Strict counters, balances, sessions immediately after purchase |
+| **D1**              | Primary writes, replica reads                                | Structured data, relational searches, aggregations       | Storing binaries exceeding several megabytes                   |
+| **Cloudflare R2**   | Strong consistency (per-object)                              | Images, videos, logs, backups                            | Fine-grained, frequent updates of several kilobytes            |
+| **Durable Objects** | Fully serialized on a single node (strong consistency)       | Chat rooms, ticket inventory, distributed locking        | Indiscriminate aggregation of all requests                     |
+| **Hyperdrive**      | Connection pool for existing relational DBs                  | High-speed communication with PostgreSQL / MySQL         | -                                                              |
 
 Choose Durable Objects when you "want to update the only latest value in the world without contention," and D1 when relations or aggregations are required. Carelessly placing counters in KV will inevitably cause value reversion due to concurrent writes from different edges.
 

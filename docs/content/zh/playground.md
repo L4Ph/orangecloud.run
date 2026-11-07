@@ -10,15 +10,15 @@
 
 ```ts
 const worker = env.LOADER.get(`sandbox-${hash(code)}`, () => ({
-  compatibilityDate: '2026-02-24',
-  mainModule: 'index.js',
-  modules: { 'index.js': wrapUserCode(code) },
+  compatibilityDate: "2026-02-24",
+  mainModule: "index.js",
+  modules: { "index.js": wrapUserCode(code) },
   env: { KV: kvProxyStub, DB: env.DB },
   globalOutbound: null, // 阻断所有向外部网络的外向通信
   limits: { cpuMs: 100, subRequests: 0 },
 }));
 
-const response = await worker.getEntrypoint().fetch(new Request('https://sandbox.internal/'));
+const response = await worker.getEntrypoint().fetch(new Request("https://sandbox.internal/"));
 ```
 
 - **通过 `globalOutbound: null` 实现完全隔离**：子 Worker 内部完全无法对互联网上的任意服务器发起 `fetch()` 或建立 Raw 套接字。这在物理上封锁了恶意脚本进行的非法外部通信或凭据窃取。
@@ -29,11 +29,11 @@ const response = await worker.getEntrypoint().fetch(new Request('https://sandbox
 
 能够直接传递给子 Worker `env` 的对象有限制。仅限于支持结构化克隆（Structured Clone）的数据类型以及 Service Binding。
 
-| 资源 | 传递给子 Worker 的方式 |
-| --- | --- |
-| D1 数据库 | 由于原生支持结构化克隆，直接传递 |
-| Durable Objects | 作为通过 `namespace.get(id)` 获取的暂存对象（Service Binding）传递 |
-| KV / R2 / AI | 由于命名空间本身无法直接克隆，因此由父端通过 Durable Object 或 Service Binding 的 RPC 代理进行中继 |
+| 资源            | 传递给子 Worker 的方式                                                                             |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| D1 数据库       | 由于原生支持结构化克隆，直接传递                                                                   |
+| Durable Objects | 作为通过 `namespace.get(id)` 获取的暂存对象（Service Binding）传递                                 |
+| KV / R2 / AI    | 由于命名空间本身无法直接克隆，因此由父端通过 Durable Object 或 Service Binding 的 RPC 代理进行中继 |
 
 例如对于 KV，部署在父环境中的 Durable Object 负责 `get` / `put` / `delete` / `list` 的处理程序，并将该 RPC 暂存作为 `env.KV` 注入到子环境中。子 Worker 内部的代码可以将其作为与真实 KV 命名空间完全相同的接口透明地使用。
 

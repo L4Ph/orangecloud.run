@@ -6,12 +6,12 @@ Cloudflare Containers is the **last resort** for challenges that isolates simply
 
 ## Trade-offs Between Isolates and Containers
 
-| Comparison Item | V8 isolate (Dynamic Workers) | Cloudflare Containers |
-| --- | --- | --- |
-| Startup Time | Few milliseconds (immediate response) | Order of seconds (waiting for container to start) |
-| Memory Limit | 128MB+ (lightweight design) | Gigabytes available |
-| Executable Files | JS, TS, Wasm, Pyodide | Any Linux executables, shared libraries |
-| Billing Unit | Executed CPU time | Container startup time (vCPU minutes/GiB hours) |
+| Comparison Item  | V8 isolate (Dynamic Workers)          | Cloudflare Containers                             |
+| ---------------- | ------------------------------------- | ------------------------------------------------- |
+| Startup Time     | Few milliseconds (immediate response) | Order of seconds (waiting for container to start) |
+| Memory Limit     | 128MB+ (lightweight design)           | Gigabytes available                               |
+| Executable Files | JS, TS, Wasm, Pyodide                 | Any Linux executables, shared libraries           |
+| Billing Unit     | Executed CPU time                     | Container startup time (vCPU minutes/GiB hours)   |
 
 If you are only intermediating Web API requests, isolates are overwhelmingly faster and cheaper. The golden rule of edge design is to **first think thoroughly about whether Workers alone can achieve the goal, and introduce containers only if that proves impossible**.
 
@@ -20,14 +20,14 @@ If you are only intermediating Web API requests, isolates are overwhelmingly fas
 To operate containers from code, use Cloudflare's Sandbox SDK (`@cloudflare/sandbox`). You can call container instances on-demand from within a Worker to execute shell commands or expose ports.
 
 ```ts
-import { getSandbox } from '@cloudflare/sandbox';
+import { getSandbox } from "@cloudflare/sandbox";
 
 // Allocate a separate sandbox for each user ID or session
-const sandbox = await getSandbox(env.SANDBOX, 'user-session-123');
+const sandbox = await getSandbox(env.SANDBOX, "user-session-123");
 
 // Execute a command inside the container and receive standard output
-const result = await sandbox.run('node --version');
-console.log('Container Node.js:', result.stdout);
+const result = await sandbox.run("node --version");
+console.log("Container Node.js:", result.stdout);
 ```
 
 Containers automatically enter a sleep state when requests stop, and only the time they are actively in use is billed.

@@ -7,12 +7,12 @@ Hono 是一个**仅以浏览器和边缘运行时标配的 `Request` 和 `Respon
 ## 最小化配置
 
 ```ts
-import { Hono } from 'hono';
+import { Hono } from "hono";
 
 const app = new Hono();
 
 // 路由定义
-app.get('/', (c) => c.text('hello from hono'));
+app.get("/", (c) => c.text("hello from hono"));
 
 // 可直接作为 Cloudflare Workers 的入口点公开
 export default app;
@@ -21,12 +21,12 @@ export default app;
 ## 路径路由与参数提取
 
 ```ts
-app.get('/users/:id', (c) => c.json({ userId: c.req.param('id') }));
-app.get('/static/*', (c) => c.text(c.req.path));
-app.post('/items', (c) => c.text('created', 201));
+app.get("/users/:id", (c) => c.json({ userId: c.req.param("id") }));
+app.get("/static/*", (c) => c.text(c.req.path));
+app.post("/items", (c) => c.text("created", 201));
 
 // 子路由器的模块组合
-app.route('/api/v1', apiRoutes);
+app.route("/api/v1", apiRoutes);
 ```
 
 - 支持 `:param` 形式的路径参数提取以及 `*` 的通配符捕获。
@@ -38,12 +38,12 @@ app.route('/api/v1', apiRoutes);
 
 ```ts
 // 提取请求信息
-const authHeader = c.req.header('authorization');
-const queryPage = c.req.query('page');
+const authHeader = c.req.header("authorization");
+const queryPage = c.req.query("page");
 const bodyJson = await c.req.json();
 
 // 发送响应
-return c.json({ status: 'ok', data: bodyJson }, 201);
+return c.json({ status: "ok", data: bodyJson }, 201);
 ```
 
 由于内部仅是对原生的 `Request` / `Response` 进行薄层包装，因此也可以直接从 `c.req.raw` 中提取原始的 Web 标准对象。
@@ -52,17 +52,17 @@ return c.json({ status: 'ok', data: bodyJson }, 201);
 
 ```ts
 // 全局执行时间计时中间件
-app.use('*', async (c, next) => {
+app.use("*", async (c, next) => {
   const start = performance.now();
   await next();
   const duration = performance.now() - start;
-  c.header('server-timing', `total;dur=${duration.toFixed(2)}`);
+  c.header("server-timing", `total;dur=${duration.toFixed(2)}`);
 });
 
 // 认证检查与提前退出
-app.use('/admin/*', async (c, next) => {
-  if (!c.req.header('authorization')) {
-    return c.text('unauthorized', 401);
+app.use("/admin/*", async (c, next) => {
+  if (!c.req.header("authorization")) {
+    return c.text("unauthorized", 401);
   }
   await next();
 });
@@ -76,12 +76,12 @@ Hono 最大的优势之一在于，能够从服务器端的路由定义自动推
 
 ```ts
 // 服务器端（公开路由的类型定义）
-const api = new Hono().get('/posts/:id', (c) => c.json({ id: c.req.param('id'), title: 'Demo' }));
+const api = new Hono().get("/posts/:id", (c) => c.json({ id: c.req.param("id"), title: "Demo" }));
 export type AppType = typeof api;
 
 // 客户端（无需编写任何 URL 字符串，通过全自动补全调用）
-import { hc } from 'hono/client';
-const client = hc<AppType>('https://example.com');
-const response = await client.posts[':id'].$get({ param: { id: '42' } });
+import { hc } from "hono/client";
+const client = hc<AppType>("https://example.com");
+const response = await client.posts[":id"].$get({ param: { id: "42" } });
 const data = await response.json(); // 推导为 { id: string, title: string }
 ```

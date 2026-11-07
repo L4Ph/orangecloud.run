@@ -22,7 +22,7 @@ const timing = async (c, next) => {
     await next(); // 次のミドルウェアまたは最終ハンドラへ処理を移譲
   } finally {
     const elapsed = performance.now() - start;
-    c.header('server-timing', `work;dur=${elapsed}`);
+    c.header("server-timing", `work;dur=${elapsed}`);
   }
 };
 ```
@@ -45,7 +45,7 @@ return c.streamText(async (stream) => {
 
 // Server-Sent Events（SSE）の送出
 return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: JSON.stringify({ event: 'ping' }) });
+  await stream.writeSSE({ data: JSON.stringify({ event: "ping" }) });
 });
 ```
 

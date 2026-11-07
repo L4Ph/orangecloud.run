@@ -19,7 +19,7 @@
 编辑器中的 `env.KV` 是为了学习用沙箱而通过 RPC 中继实际 KV 基础设施的。提供的方法参数和返回值行为与生产环境完全一致。
 
 ```js
-await env.KV.put('user:1', 'Alice');
-const user = await env.KV.get('user:1'); // 'Alice'
-const list = await env.KV.list({ prefix: 'user:' }); // { keys: [...] }
+await env.KV.put("user:1", "Alice");
+const user = await env.KV.get("user:1"); // 'Alice'
+const list = await env.KV.list({ prefix: "user:" }); // { keys: [...] }
 ```

@@ -20,15 +20,15 @@ AI Gateway は、モデル呼び出しの**直前に配置するリバースプ�
 const response = await fetch(
   `https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.AI_GATEWAY_NAME}/anthropic/v1/messages`,
   {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'content-type': 'application/json',
-      'x-api-key': env.ANTHROPIC_API_KEY,
+      "content-type": "application/json",
+      "x-api-key": env.ANTHROPIC_API_KEY,
     },
     body: JSON.stringify({
-      model: 'claude-3-5-haiku-20241022',
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 256,
-      messages: [{ role: 'user', content: 'Workers の特徴を要約してください。' }],
+      messages: [{ role: "user", content: "Workers の特徴を要約してください。" }],
     }),
   },
 );

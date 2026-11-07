@@ -11,9 +11,9 @@ Queues は、短時間で完了する単発のバックグラウンドタスク�
 ```js
 // プロデューサー側: 即座にメッセージを積んで HTTP レスポンスを返す
 await env.EMAIL_QUEUE.send({
-  to: 'user@example.com',
-  template: 'welcome_v1',
-  payload: { name: 'Alice' },
+  to: "user@example.com",
+  template: "welcome_v1",
+  payload: { name: "Alice" },
 });
 
 // コンシューマー側: バックグラウンドでまとめて処理
@@ -40,20 +40,20 @@ export default {
 数分から数日間にわたり、複数のステップを順番に実行し、途中でサーバーが再起動しても正確に直前のステップから再開（Durable Execution）させたい場合、Queues ではなく Workflows を採用する。
 
 ```ts
-import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from 'cloudflare:workers';
+import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from "cloudflare:workers";
 
 export class UserOnboardingWorkflow extends WorkflowEntrypoint {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
     // ステップ 1: 外部決済アカウントの作成
-    const account = await step.do('create-billing-account', async () => {
+    const account = await step.do("create-billing-account", async () => {
       return await createStripeCustomer(event.payload.email);
     });
 
     // ステップ 2: 3 日間の待機（CPU 時間やプロセスは消費されず課金ゼロ）
-    await step.sleep('wait-trial-period', '3 days');
+    await step.sleep("wait-trial-period", "3 days");
 
     // ステップ 3: フォローアップ通知の送出
-    await step.do('send-checkin-notification', async () => {
+    await step.do("send-checkin-notification", async () => {
       await sendFollowUpEmail(account.id);
     });
   }
@@ -64,9 +64,9 @@ export class UserOnboardingWorkflow extends WorkflowEntrypoint {
 
 ## アーキテクチャ選定の判断基準
 
-| 要件 | 採用すべき機構 |
-| --- | --- |
-| 数秒以内に完了する単発の非同期タスク | `ctx.waitUntil()`（同一 isolate 内でバックグラウンド実行） |
-| 大量のタスクを平滑化し、バッチで非同期処理したい | **Queues** |
-| 待機期間（`sleep`）や多段階の順序依存がある長時間処理 | **Workflows** |
-| 同一リソースに対する並行書き込みを 1 箇所で直列化したい | **Durable Objects** |
+| 要件                                                    | 採用すべき機構                                             |
+| ------------------------------------------------------- | ---------------------------------------------------------- |
+| 数秒以内に完了する単発の非同期タスク                    | `ctx.waitUntil()`（同一 isolate 内でバックグラウンド実行） |
+| 大量のタスクを平滑化し、バッチで非同期処理したい        | **Queues**                                                 |
+| 待機期間（`sleep`）や多段階の順序依存がある長時間処理   | **Workflows**                                              |
+| 同一リソースに対する並行書き込みを 1 箇所で直列化したい | **Durable Objects**                                        |

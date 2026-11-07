@@ -15,14 +15,14 @@ Erlang의 프로세스나 Akka의 Actor로 대표되는 Actor 모델은 분산 �
 
 ## Durable Objects와 Actor의 대응 관계
 
-| Actor 모델의 개념 | Cloudflare Durable Objects의 구현 |
-| --- | --- |
-| 액터의 식별 이름 | `env.ROOM.idFromName('room-1')`로 생성되는 고유 ID |
-| 사유화된 상태 | `this.ctx.storage`(내장 SQLite) 및 `this` 인스턴스 변수 |
-| 메시지 | 클래스에 정의된 타입 지정 RPC 메서드 또는 `fetch()` |
-| 받은 편지함과 직렬화 | 인프라 계층이 완전히 보장. 메서드 호출은 하나씩 직렬로 실행 |
-| 액터의 소멸과 부활 | 메모리 부족 시 대기(Hibernation)와 다음 요청 도착 시 즉시 복원 |
-| 물리적 배치 위치 | 원칙적으로 해당 엔티티에 처음 요청을 보낸 에지(Colo) 근처 |
+| Actor 모델의 개념    | Cloudflare Durable Objects의 구현                              |
+| -------------------- | -------------------------------------------------------------- |
+| 액터의 식별 이름     | `env.ROOM.idFromName('room-1')`로 생성되는 고유 ID             |
+| 사유화된 상태        | `this.ctx.storage`(내장 SQLite) 및 `this` 인스턴스 변수        |
+| 메시지               | 클래스에 정의된 타입 지정 RPC 메서드 또는 `fetch()`            |
+| 받은 편지함과 직렬화 | 인프라 계층이 완전히 보장. 메서드 호출은 하나씩 직렬로 실행    |
+| 액터의 소멸과 부활   | 메모리 부족 시 대기(Hibernation)와 다음 요청 도착 시 즉시 복원 |
+| 물리적 배치 위치     | 원칙적으로 해당 엔티티에 처음 요청을 보낸 에지(Colo) 근처      |
 
 ## 왜 함수가 아니라 클래스로 작성하는가
 
@@ -33,10 +33,10 @@ Erlang의 프로세스나 Akka의 Actor로 대표되는 Actor 모델은 분산 �
 ```ts
 export class ChatRoom extends DurableObject {
   async join(user: string) {
-    const members = (await this.ctx.storage.get<string[]>('members')) ?? [];
+    const members = (await this.ctx.storage.get<string[]>("members")) ?? [];
     if (!members.includes(user)) {
       members.push(user);
-      await this.ctx.storage.put('members', members);
+      await this.ctx.storage.put("members", members);
     }
     return members;
   }

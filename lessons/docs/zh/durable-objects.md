@@ -39,7 +39,7 @@ export class ChatRoom extends DurableObject {
 
   addMessage(text: string) {
     // 先持久化，再丢弃缓存
-    this.ctx.storage.sql.exec('INSERT INTO messages (text) VALUES (?)', text);
+    this.ctx.storage.sql.exec("INSERT INTO messages (text) VALUES (?)", text);
     this.recent = null;
   }
 }

@@ -4,13 +4,13 @@ JavaScript를 브라우저 밖에서 구동하려는 순간, 실행 환경은 �
 
 ## 엔진(실행을 담당하는 심장부)
 
-| 엔진           | 주요 활용처                                   | 특징                                 |
-| ------------------ | -------------------------------------------- | ------------------------------------ |
-| **V8**             | Chrome / Node.js / Deno / Cloudflare Workers | JIT 컴파일 탑재. 고속이지만 바이너리는 크다 |
-| **SpiderMonkey**   | Firefox(Gecko)                             | 초기부터 있었던 구현체. JIT(Ion) 탑재   |
-| **JavaScriptCore** | Safari(WebKit) / Bun                        | Apple 제작. JIT 탑재로 기동 및 메모리 효율이 뛰어남 |
-| **QuickJS**        | 임베디드·경량 환경                           | 수백 KB급. JIT 없이 초소형·즉시 기동 |
-| **Hermes**         | React Native                                 | AOT 컴파일 전제. 기동 시간과 메모리를 우선시 |
+| 엔진               | 주요 활용처                                  | 특징                                                |
+| ------------------ | -------------------------------------------- | --------------------------------------------------- |
+| **V8**             | Chrome / Node.js / Deno / Cloudflare Workers | JIT 컴파일 탑재. 고속이지만 바이너리는 크다         |
+| **SpiderMonkey**   | Firefox(Gecko)                               | 초기부터 있었던 구현체. JIT(Ion) 탑재               |
+| **JavaScriptCore** | Safari(WebKit) / Bun                         | Apple 제작. JIT 탑재로 기동 및 메모리 효율이 뛰어남 |
+| **QuickJS**        | 임베디드·경량 환경                           | 수백 KB급. JIT 없이 초소형·즉시 기동                |
+| **Hermes**         | React Native                                 | AOT 컴파일 전제. 기동 시간과 메모리를 우선시        |
 
 엔진의 책임은 극히 좁다. 소스 코드를 읽고, 추상 구문 트리를 조립하며, 바이트코드 또는 기계어로 실행하고, 불필요해진 메모리를 가비지 컬렉션(GC)으로 회수한다. 그뿐이다. 파일을 여는 기능도, 네트워크 소켓을 대기하는 기능도 엔진 단독으로는 일절 갖추고 있지 않다.
 
@@ -18,12 +18,12 @@ JavaScript를 브라우저 밖에서 구동하려는 순간, 실행 환경은 �
 
 엔진에 '외부 세계'와 대화할 수단을 부여하는 것이 런타임이다.
 
-| 런타임             | 엔진       | 외부 세계로의 인터페이스                                               |
-| ---------------------- | -------------- | -------------------------------------------------------------------------- |
-| **Node.js**            | V8             | libuv를 통한 OS 시스템 콜. `fs`, `net`, `process`                     |
-| **Bun**                | JavaScriptCore | 자체 네이티브 구현(Zig/Rust). `Bun.serve`, `Bun.file`                  |
+| 런타임                 | 엔진           | 외부 세계로의 인터페이스                                                    |
+| ---------------------- | -------------- | --------------------------------------------------------------------------- |
+| **Node.js**            | V8             | libuv를 통한 OS 시스템 콜. `fs`, `net`, `process`                           |
+| **Bun**                | JavaScriptCore | 자체 네이티브 구현(Zig/Rust). `Bun.serve`, `Bun.file`                       |
 | **Deno**               | V8             | Rust 제작. 세밀한 권한 모델(`--allow-net` 등). **2025년 Cloudflare가 인수** |
-| **Cloudflare Workers** | V8 isolate     | 엣지 상의 격리 환경. Web 표준 API(`fetch` 등) + Cloudflare 바인딩  |
+| **Cloudflare Workers** | V8 isolate     | 엣지 상의 격리 환경. Web 표준 API(`fetch` 등) + Cloudflare 바인딩           |
 
 같은 V8 엔진을 탑재하고 있으니 Node.js와 Workers는 똑같이 동작할 것이다——라고 생각하고 코드를 가져오면, 처음 몇 줄에서 발을 헛디디게 된다. Workers에는 `process`도 `require`도, 로컬 파일 시스템조차 존재하지 않는다.
 

@@ -19,7 +19,7 @@ KV への書き込みは、まず中央のストレージへ送られ、そこ�
 エディタ上の `env.KV` は、学習用サンドボックスのために実際の KV インフラを RPC で中継したものである。提供されるメソッドの引数と戻り値の振る舞いは本番環境と完全に一致している。
 
 ```js
-await env.KV.put('user:1', 'Alice');
-const user = await env.KV.get('user:1'); // 'Alice'
-const list = await env.KV.list({ prefix: 'user:' }); // { keys: [...] }
+await env.KV.put("user:1", "Alice");
+const user = await env.KV.get("user:1"); // 'Alice'
+const list = await env.KV.list({ prefix: "user:" }); // { keys: [...] }
 ```

@@ -39,7 +39,7 @@ export class ChatRoom extends DurableObject {
 
   addMessage(text: string) {
     // 먼저 영속화하고 캐시를 버린다
-    this.ctx.storage.sql.exec('INSERT INTO messages (text) VALUES (?)', text);
+    this.ctx.storage.sql.exec("INSERT INTO messages (text) VALUES (?)", text);
     this.recent = null;
   }
 }

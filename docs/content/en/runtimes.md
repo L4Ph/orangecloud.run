@@ -32,11 +32,11 @@ In contrast, launching an isolate is completed simply by "initializing the V8 he
 
 ## Architectural Selection Boundary
 
-| Process Nature | Optimal Choice | Rationale |
-| --- | --- | --- |
-| Web APIs, lightweight business logic, data relay | **V8 isolate (Workers)** | Startup is in milliseconds; zero idle cost |
-| Long-running batches, FFmpeg, Playwright | **Cloudflare Containers** | A full Linux kernel and binary execution environment are essential |
-| Waiting for external connections (DB queries, external REST APIs) | **V8 isolate (Workers)** | Free network wait time due to CPU time billing |
-| Serialization to a single resource and exclusive control | **Durable Objects** | Consolidate requests into a single instance globally |
+| Process Nature                                                    | Optimal Choice            | Rationale                                                          |
+| ----------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| Web APIs, lightweight business logic, data relay                  | **V8 isolate (Workers)**  | Startup is in milliseconds; zero idle cost                         |
+| Long-running batches, FFmpeg, Playwright                          | **Cloudflare Containers** | A full Linux kernel and binary execution environment are essential |
+| Waiting for external connections (DB queries, external REST APIs) | **V8 isolate (Workers)**  | Free network wait time due to CPU time billing                     |
+| Serialization to a single resource and exclusive control          | **Durable Objects**       | Consolidate requests into a single instance globally               |
 
 When bringing in libraries for Node.js, the `nodejs_compat` compatibility flag can be used, but this only provides a subset of abstraction layers close to Web standards, such as `Buffer`, `crypto`, and `events`. Designs that assume local disk operations via `fs` are fundamentally incompatible with the philosophy of isolate.

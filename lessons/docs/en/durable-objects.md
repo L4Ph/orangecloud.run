@@ -39,7 +39,7 @@ export class ChatRoom extends DurableObject {
 
   addMessage(text: string) {
     // Persist first, then drop the cache
-    this.ctx.storage.sql.exec('INSERT INTO messages (text) VALUES (?)', text);
+    this.ctx.storage.sql.exec("INSERT INTO messages (text) VALUES (?)", text);
     this.recent = null;
   }
 }

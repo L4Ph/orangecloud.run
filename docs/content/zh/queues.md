@@ -11,9 +11,9 @@ Queues 是一种用于安全地解耦短时间内完成的单次后台任务的�
 ```js
 // 生产者端：立即放入消息并返回 HTTP 响应
 await env.EMAIL_QUEUE.send({
-  to: 'user@example.com',
-  template: 'welcome_v1',
-  payload: { name: 'Alice' },
+  to: "user@example.com",
+  template: "welcome_v1",
+  payload: { name: "Alice" },
 });
 
 // 消费者端：在后台统一处理
@@ -40,20 +40,20 @@ export default {
 当需要在数分钟到数日内依次执行多个步骤，且即使服务器在过程中重启，也能准确地从前一步继续执行（Durable Execution）时，应采用 Workflows 而非 Queues。
 
 ```ts
-import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from 'cloudflare:workers';
+import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from "cloudflare:workers";
 
 export class UserOnboardingWorkflow extends WorkflowEntrypoint {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
     // 步骤 1：创建外部支付账户
-    const account = await step.do('create-billing-account', async () => {
+    const account = await step.do("create-billing-account", async () => {
       return await createStripeCustomer(event.payload.email);
     });
 
     // 步骤 2：等待 3 天（不消耗 CPU 时间或进程，无需付费）
-    await step.sleep('wait-trial-period', '3 days');
+    await step.sleep("wait-trial-period", "3 days");
 
     // 步骤 3：发送跟进通知
-    await step.do('send-checkin-notification', async () => {
+    await step.do("send-checkin-notification", async () => {
       await sendFollowUpEmail(account.id);
     });
   }
@@ -64,9 +64,9 @@ export class UserOnboardingWorkflow extends WorkflowEntrypoint {
 
 ## 架构选择的判断标准
 
-| 需求 | 应采用的机制 |
-| --- | --- |
-| 数秒内完成的单次异步任务 | `ctx.waitUntil()`（在同一 isolate 内后台执行） |
-| 需要平滑大量任务并以批次形式进行异步处理 | **Queues** |
-| 具有等待期间（`sleep`）或多阶段顺序依赖的长时间处理 | **Workflows** |
-| 需要将针对同一资源的并发写入在同一处串行化 | **Durable Objects** |
+| 需求                                                | 应采用的机制                                   |
+| --------------------------------------------------- | ---------------------------------------------- |
+| 数秒内完成的单次异步任务                            | `ctx.waitUntil()`（在同一 isolate 内后台执行） |
+| 需要平滑大量任务并以批次形式进行异步处理            | **Queues**                                     |
+| 具有等待期间（`sleep`）或多阶段顺序依赖的长时间处理 | **Workflows**                                  |
+| 需要将针对同一资源的并发写入在同一处串行化          | **Durable Objects**                            |

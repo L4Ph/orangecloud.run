@@ -11,9 +11,9 @@ Queues are a mechanism for safely decoupling single-shot background tasks that c
 ```js
 // Producer side: Immediately queue messages and return an HTTP response
 await env.EMAIL_QUEUE.send({
-  to: 'user@example.com',
-  template: 'welcome_v1',
-  payload: { name: 'Alice' },
+  to: "user@example.com",
+  template: "welcome_v1",
+  payload: { name: "Alice" },
 });
 
 // Consumer side: Process messages in bulk in the background
@@ -40,20 +40,20 @@ export default {
 When you need to execute multiple steps sequentially over several minutes to several days, and ensure the system resumes exactly from the previous step (Durable Execution) even if the server restarts midway, you adopt Workflows instead of Queues.
 
 ```ts
-import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from 'cloudflare:workers';
+import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from "cloudflare:workers";
 
 export class UserOnboardingWorkflow extends WorkflowEntrypoint {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
     // Step 1: Create external billing account
-    const account = await step.do('create-billing-account', async () => {
+    const account = await step.do("create-billing-account", async () => {
       return await createStripeCustomer(event.payload.email);
     });
 
     // Step 2: Wait for 3 days (no CPU time or process consumption, zero cost)
-    await step.sleep('wait-trial-period', '3 days');
+    await step.sleep("wait-trial-period", "3 days");
 
     // Step 3: Send follow-up notification
-    await step.do('send-checkin-notification', async () => {
+    await step.do("send-checkin-notification", async () => {
       await sendFollowUpEmail(account.id);
     });
   }
@@ -64,9 +64,9 @@ The execution results of each step are saved as checkpoints in the infrastructur
 
 ## Architecture Selection Criteria
 
-| Requirement | Recommended Mechanism |
-| --- | --- |
-| Single-shot asynchronous tasks that complete within a few seconds | `ctx.waitUntil()` (background execution within the same isolate) |
-| Large volumes of tasks to be smoothed and processed asynchronously in batches | **Queues** |
-| Long-running processes with waiting periods (`sleep`) or multi-step sequence dependencies | **Workflows** |
-| Concurrent writes to the same resource to be serialized in a single location | **Durable Objects** |
+| Requirement                                                                               | Recommended Mechanism                                            |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Single-shot asynchronous tasks that complete within a few seconds                         | `ctx.waitUntil()` (background execution within the same isolate) |
+| Large volumes of tasks to be smoothed and processed asynchronously in batches             | **Queues**                                                       |
+| Long-running processes with waiting periods (`sleep`) or multi-step sequence dependencies | **Workflows**                                                    |
+| Concurrent writes to the same resource to be serialized in a single location              | **Durable Objects**                                              |
