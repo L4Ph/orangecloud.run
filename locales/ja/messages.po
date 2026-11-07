@@ -11,11 +11,11 @@ msgstr ""
 msgid "← 読んで学ぶ"
 msgstr "← 読んで学ぶ"
 
-#: docs/index.ts:38
+#: docs/index.ts:43
 msgid "AI Gateway"
 msgstr "AI Gateway"
 
-#: docs/index.ts:43
+#: docs/index.ts:48
 msgid "Containers"
 msgstr "Containers"
 
@@ -35,7 +35,7 @@ msgstr "Docker イメージの中で Python を動かす。isolate では無理�
 msgid "Durable Objects"
 msgstr "Durable Objects"
 
-#: docs/index.ts:54
+#: docs/index.ts:59
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers、バインディングの中継、実行の制限"
 
@@ -51,11 +51,11 @@ msgstr "Hono"
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono のルーターとミドルウェア"
 
-#: docs/index.ts:24
+#: docs/index.ts:29
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate が何を省略しているか、コンテナとの分岐"
 
-#: docs/index.ts:44
+#: docs/index.ts:49
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate で足りないときの最後の手段"
 
@@ -75,13 +75,21 @@ msgstr "KV"
 msgid "Python"
 msgstr "Python"
 
-#: docs/index.ts:33
+#: docs/index.ts:38
 msgid "Queues / Workflows"
 msgstr "Queues / Workflows"
 
 #: lessons/index.ts:64
 msgid "R2"
 msgstr "R2"
+
+#: docs/index.ts:24
+msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
+msgstr "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
+
+#: docs/index.ts:23
+msgid "Rust（workers-rs）"
+msgstr "Rust（workers-rs）"
 
 #: lessons/index.ts:65
 msgid "S3 互換のオブジェクトストレージ。転送無料"
@@ -103,7 +111,7 @@ msgstr "Workers AI"
 msgid "Workers の実行モデル"
 msgstr "Workers の実行モデル"
 
-#: docs/index.ts:53
+#: docs/index.ts:58
 msgid "このサイトの仕組み"
 msgstr "このサイトの仕組み"
 
@@ -131,7 +139,7 @@ msgstr "このサイトの仕組み"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 
-#: docs/index.ts:48
+#: docs/index.ts:53
 msgid "デプロイまで"
 msgstr "デプロイまで"
 
@@ -139,7 +147,7 @@ msgstr "デプロイまで"
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 
-#: docs/index.ts:23
+#: docs/index.ts:28
 msgid "ランタイムの深掘り"
 msgstr "ランタイムの深掘り"
 
@@ -151,15 +159,15 @@ msgstr "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 
-#: docs/index.ts:39
+#: docs/index.ts:44
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 
-#: docs/index.ts:49
+#: docs/index.ts:54
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "ログイン、秘密値、デプロイ、公開後の確認"
 
-#: docs/index.ts:29
+#: docs/index.ts:34
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 
@@ -180,7 +188,7 @@ msgstr "手を動かす前後に読む、少し深い話。設計の判断基準
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "構文もランタイムも違う言語が、同じ Worker として動く"
 
-#: docs/index.ts:28
+#: docs/index.ts:33
 msgid "状態の置き場所を選ぶ"
 msgstr "状態の置き場所を選ぶ"
 
@@ -201,6 +209,6 @@ msgstr "資料のみ"
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "速い読み取りと結果整合。キャッシュや設定の置き場"
 
-#: docs/index.ts:34
+#: docs/index.ts:39
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "非同期処理と、再開できる長時間ジョブ"

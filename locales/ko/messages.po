@@ -11,11 +11,11 @@ msgstr ""
 msgid "← 読んで学ぶ"
 msgstr "← 읽기"
 
-#: docs/index.ts:38
+#: docs/index.ts:43
 msgid "AI Gateway"
 msgstr ""
 
-#: docs/index.ts:43
+#: docs/index.ts:48
 msgid "Containers"
 msgstr ""
 
@@ -35,7 +35,7 @@ msgstr "Docker 이미지 안에서 Python 실행. isolate로 불가능한 작업
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:54
+#: docs/index.ts:59
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
 
@@ -51,11 +51,11 @@ msgstr ""
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono의 라우터와 미들웨어"
 
-#: docs/index.ts:24
+#: docs/index.ts:29
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate가 무엇을 생략하는지, 컨테이너로 넘어갈 지점"
 
-#: docs/index.ts:44
+#: docs/index.ts:49
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate로 부족할 때의 마지막 수단"
 
@@ -75,13 +75,21 @@ msgstr ""
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:33
+#: docs/index.ts:38
 msgid "Queues / Workflows"
 msgstr ""
 
 #: lessons/index.ts:64
 msgid "R2"
 msgstr ""
+
+#: docs/index.ts:24
+msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
+msgstr "Rust를 Wasm으로 컴파일해 실행하기, 빌드가 필요한 이유"
+
+#: docs/index.ts:23
+msgid "Rust（workers-rs）"
+msgstr "Rust(workers-rs)"
 
 #: lessons/index.ts:65
 msgid "S3 互換のオブジェクトストレージ。転送無料"
@@ -103,7 +111,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "Workers의 실행 모델"
 
-#: docs/index.ts:53
+#: docs/index.ts:58
 msgid "このサイトの仕組み"
 msgstr "이 사이트의 구조"
 
@@ -131,7 +139,7 @@ msgstr "이 사이트의 구조"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "자료만 제공 (공유 샌드박스에서는 큐를 실행할 수 없음)"
 
-#: docs/index.ts:48
+#: docs/index.ts:53
 msgid "デプロイまで"
 msgstr "배포까지"
 
@@ -139,7 +147,7 @@ msgstr "배포까지"
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "브라우저 에디터에서 실행하며 진행하는 장입니다. 네트워크가 막혀 있어 무엇을 써도 안전합니다."
 
-#: docs/index.ts:23
+#: docs/index.ts:28
 msgid "ランタイムの深掘り"
 msgstr "런타임 깊이 보기"
 
@@ -151,15 +159,15 @@ msgstr "라우터의 원리, 미들웨어 합성, 타입과 RPC"
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "라우팅, 미들웨어, 검증. 작고 빠른 웹 프레임워크"
 
-#: docs/index.ts:39
+#: docs/index.ts:44
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "모델 앞에서 로그·캐시·제한·폴백"
 
-#: docs/index.ts:49
+#: docs/index.ts:54
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "로그인, 시크릿, 배포, 공개 후 확인"
 
-#: docs/index.ts:29
+#: docs/index.ts:34
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "일관성·크기·과금으로 KV / D1 / R2 / Durable Objects 선택하기"
 
@@ -180,7 +188,7 @@ msgstr "직접 해보기 전후에 읽는 조금 더 깊은 이야기. 설계 �
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "문법도 런타임도 다르지만 같은 Worker로 동작"
 
-#: docs/index.ts:28
+#: docs/index.ts:33
 msgid "状態の置き場所を選ぶ"
 msgstr "상태를 둘 곳 고르기"
 
@@ -201,6 +209,6 @@ msgstr "자료만"
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "빠른 읽기와 최종 일관성. 캐시와 설정의 자리"
 
-#: docs/index.ts:34
+#: docs/index.ts:39
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "비동기 처리와 재개 가능한 장기 작업"

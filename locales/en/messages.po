@@ -11,11 +11,11 @@ msgstr ""
 msgid "← 読んで学ぶ"
 msgstr "← Read"
 
-#: docs/index.ts:38
+#: docs/index.ts:43
 msgid "AI Gateway"
 msgstr ""
 
-#: docs/index.ts:43
+#: docs/index.ts:48
 msgid "Containers"
 msgstr ""
 
@@ -35,7 +35,7 @@ msgstr "Run Python inside a Docker image — the escape hatch for work an isolat
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:54
+#: docs/index.ts:59
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, relayed bindings, and run limits"
 
@@ -51,11 +51,11 @@ msgstr ""
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono's router and middleware"
 
-#: docs/index.ts:24
+#: docs/index.ts:29
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "What an isolate leaves out, and when to reach for a container"
 
-#: docs/index.ts:44
+#: docs/index.ts:49
 msgid "isolate で足りないときの最後の手段"
 msgstr "The last resort when isolates are not enough"
 
@@ -75,13 +75,21 @@ msgstr ""
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:33
+#: docs/index.ts:38
 msgid "Queues / Workflows"
 msgstr ""
 
 #: lessons/index.ts:64
 msgid "R2"
 msgstr ""
+
+#: docs/index.ts:24
+msgid "Rust を Wasm にコンパイルして動かす。ビルドが要る理由"
+msgstr "Compile Rust to Wasm — and why a build step is unavoidable"
+
+#: docs/index.ts:23
+msgid "Rust（workers-rs）"
+msgstr "Rust (workers-rs)"
 
 #: lessons/index.ts:65
 msgid "S3 互換のオブジェクトストレージ。転送無料"
@@ -103,7 +111,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "The Workers execution model"
 
-#: docs/index.ts:53
+#: docs/index.ts:58
 msgid "このサイトの仕組み"
 msgstr "How this site works"
 
@@ -131,7 +139,7 @@ msgstr "How this site works"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "Reference only (queues are not available in the shared sandbox)"
 
-#: docs/index.ts:48
+#: docs/index.ts:53
 msgid "デプロイまで"
 msgstr "Deploying"
 
@@ -139,7 +147,7 @@ msgstr "Deploying"
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "Chapters you work through in the browser editor. The network is blocked, so nothing can break."
 
-#: docs/index.ts:23
+#: docs/index.ts:28
 msgid "ランタイムの深掘り"
 msgstr "Inside the runtime"
 
@@ -151,15 +159,15 @@ msgstr "How the router works, middleware composition, and types plus RPC"
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "Routing, middleware, validation — a small, fast web framework"
 
-#: docs/index.ts:39
+#: docs/index.ts:44
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "Logging, caching, limits, and fallbacks in front of the model"
 
-#: docs/index.ts:49
+#: docs/index.ts:54
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "Login, secrets, deploy, and what to check after"
 
-#: docs/index.ts:29
+#: docs/index.ts:34
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "Choosing KV / D1 / R2 / Durable Objects by consistency, size, and cost"
 
@@ -180,7 +188,7 @@ msgstr "Deeper reading around the hands-on chapters. The judgement calls live he
 msgid "構文もランタイムも違う言語が、同じ Worker として動く"
 msgstr "A different language and runtime, still the same Worker"
 
-#: docs/index.ts:28
+#: docs/index.ts:33
 msgid "状態の置き場所を選ぶ"
 msgstr "Choosing where state lives"
 
@@ -201,6 +209,6 @@ msgstr "Reference only"
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "Fast reads with eventual consistency. A home for cache and config"
 
-#: docs/index.ts:34
+#: docs/index.ts:39
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "Async work and long-running jobs that resume"

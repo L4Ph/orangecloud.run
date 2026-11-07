@@ -19,6 +19,11 @@ export const docs: Doc[] = [
     summary: msg`ルーターの仕組み、ミドルウェアの合成、型と RPC`,
   },
   {
+    slug: 'rust',
+    title: msg`Rust（workers-rs）`,
+    summary: msg`Rust を Wasm にコンパイルして動かす。ビルドが要る理由`,
+  },
+  {
     slug: 'runtimes',
     title: msg`ランタイムの深掘り`,
     summary: msg`isolate が何を省略しているか、コンテナとの分岐`,
