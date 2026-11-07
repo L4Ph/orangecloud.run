@@ -8,6 +8,7 @@ msgstr ""
 "Language: zh\n"
 
 #: lib/content-shell.tsx:42
+#: lib/site-header.tsx:56
 #: pages/books.tsx:35
 msgid "（新しいタブで開く）"
 msgstr "（在新标签页中打开）"
@@ -23,10 +24,6 @@ msgstr "← 学习"
 #: docs/index.ts:59
 msgid "AI Gateway"
 msgstr ""
-
-#: lib/site-header.tsx:25
-msgid "Cloudflare Workers を動かして学ぶ"
-msgstr "边运行边学 Cloudflare Workers"
 
 #: pages/books.tsx:68
 msgid "Cloudflare Workers 実践ガイド"
@@ -81,6 +78,10 @@ msgstr "Esc → Tab 离开编辑器"
 #: lib/playground.tsx:256
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
+
+#: lib/site-header.tsx:56
+msgid "GitHub のリポジトリ"
+msgstr "GitHub 仓库"
 
 #: lessons/index.ts:140
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -317,7 +318,7 @@ msgstr "书籍介绍"
 msgid "書籍の紹介 →"
 msgstr "书籍介绍 →"
 
-#: lib/site-header.tsx:17
+#: lib/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "跳到正文"
 
@@ -338,7 +339,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "选择状态的存放位置"
 
 #: lessons/index.ts:20
-#: lib/site-header.tsx:32
+#: lib/site-header.tsx:33
 msgid "言語"
 msgstr "语言"
 

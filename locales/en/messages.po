@@ -8,6 +8,7 @@ msgstr ""
 "Language: en\n"
 
 #: lib/content-shell.tsx:42
+#: lib/site-header.tsx:56
 #: pages/books.tsx:35
 msgid "（新しいタブで開く）"
 msgstr "(opens in a new tab)"
@@ -23,10 +24,6 @@ msgstr "← Learn"
 #: docs/index.ts:59
 msgid "AI Gateway"
 msgstr ""
-
-#: lib/site-header.tsx:25
-msgid "Cloudflare Workers を動かして学ぶ"
-msgstr "Learn Cloudflare Workers by running them"
 
 #: pages/books.tsx:68
 msgid "Cloudflare Workers 実践ガイド"
@@ -81,6 +78,10 @@ msgstr "Esc → Tab to leave the editor"
 #: lib/playground.tsx:256
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
+
+#: lib/site-header.tsx:56
+msgid "GitHub のリポジトリ"
+msgstr "GitHub repository"
 
 #: lessons/index.ts:140
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -317,7 +318,7 @@ msgstr "Books"
 msgid "書籍の紹介 →"
 msgstr "Books →"
 
-#: lib/site-header.tsx:17
+#: lib/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "Skip to content"
 
@@ -338,7 +339,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "Choosing where state lives"
 
 #: lessons/index.ts:20
-#: lib/site-header.tsx:32
+#: lib/site-header.tsx:33
 msgid "言語"
 msgstr "Languages"
 

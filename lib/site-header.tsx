@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@cloudflare/kumo/components/link";
 import { Select } from "@cloudflare/kumo/components/select";
+import { GithubLogoIcon } from "@phosphor-icons/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { localeLabel, locales, type Locale } from "./locales";
 
@@ -22,7 +23,7 @@ export function SiteHeader({ locale, children }: { locale: Locale; children?: Re
           href="/"
           className="min-h-10 !items-center text-sm font-semibold !text-kumo-strong !no-underline"
         >
-          <Trans>Cloudflare Workers を動かして学ぶ</Trans>
+          OrangeCloud.run
         </Link>
       </div>
 
@@ -43,6 +44,18 @@ export function SiteHeader({ locale, children }: { locale: Locale; children?: Re
           }}
           items={languageItems}
         />
+        <Link
+          variant="plain"
+          href="https://github.com/L4Ph/orangecloud.run"
+          target="_blank"
+          rel="noreferrer"
+          className="size-10 shrink-0 justify-center rounded-md !text-kumo-subtle !no-underline transition-colors hover:bg-kumo-tint/60 hover:!text-kumo-strong"
+        >
+          <GithubLogoIcon aria-hidden size={20} />
+          <span className="sr-only">
+            <Trans>GitHub のリポジトリ</Trans> <Trans>（新しいタブで開く）</Trans>
+          </span>
+        </Link>
       </div>
     </header>
   );

@@ -1,4 +1,4 @@
-# Learn Cloudflare Workers by running them
+# OrangeCloud.run
 
 Beginner tutorial and playground for Cloudflare Workers and its ecosystem.
 

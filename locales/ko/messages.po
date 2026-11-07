@@ -8,6 +8,7 @@ msgstr ""
 "Language: ko\n"
 
 #: lib/content-shell.tsx:42
+#: lib/site-header.tsx:56
 #: pages/books.tsx:35
 msgid "（新しいタブで開く）"
 msgstr "(새 탭에서 열기)"
@@ -23,10 +24,6 @@ msgstr "← 학습"
 #: docs/index.ts:59
 msgid "AI Gateway"
 msgstr ""
-
-#: lib/site-header.tsx:25
-msgid "Cloudflare Workers を動かして学ぶ"
-msgstr "Cloudflare Workers를 실행하며 배우기"
 
 #: pages/books.tsx:68
 msgid "Cloudflare Workers 実践ガイド"
@@ -81,6 +78,10 @@ msgstr "Esc → Tab으로 에디터 밖으로"
 #: lib/playground.tsx:256
 msgid "exit {0} · {1}ms"
 msgstr "exit {0} · {1}ms"
+
+#: lib/site-header.tsx:56
+msgid "GitHub のリポジトリ"
+msgstr "GitHub 저장소"
 
 #: lessons/index.ts:140
 msgid "GPU を持たずに推論。まずは安いモデルから"
@@ -317,7 +318,7 @@ msgstr "도서 소개"
 msgid "書籍の紹介 →"
 msgstr "도서 소개 →"
 
-#: lib/site-header.tsx:17
+#: lib/site-header.tsx:18
 msgid "本文へ移動"
 msgstr "본문으로 건너뛰기"
 
@@ -338,7 +339,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "상태를 둘 곳 고르기"
 
 #: lessons/index.ts:20
-#: lib/site-header.tsx:32
+#: lib/site-header.tsx:33
 msgid "言語"
 msgstr "언어"
 
