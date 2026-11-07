@@ -4,7 +4,6 @@ import { requestLocale } from '../../lib/request-locale';
 import { catalogs } from '../../lib/catalogs';
 import { docs } from '../../docs';
 import { docBody } from '../../docs/bodies';
-import { renderDoc } from '../../lib/markdown';
 
 export const loader = defineHandler((c) => {
   const doc = docs.find((item) => item.slug === c.req.param('slug'));
@@ -12,9 +11,10 @@ export const loader = defineHandler((c) => {
 
   const locale = requestLocale(c);
 
-  const docHtml = renderDoc(`doc:${locale}:${doc.slug}`, docBody(locale, doc.slug));
+  // The page heading already shows the title.
+  const source = docBody(locale, doc.slug).replace(/^# .+\n+/, '');
 
-  return { locale, slug: doc.slug, docHtml };
+  return { locale, slug: doc.slug, source };
 });
 
 export type Props = InferProps<typeof loader>;

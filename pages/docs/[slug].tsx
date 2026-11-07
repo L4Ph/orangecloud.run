@@ -4,10 +4,10 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { docs } from '../../docs';
 import { SiteHeader } from '../../lib/site-header';
 import { I18nPage } from '../../lib/i18n-page';
-import { proseTokens } from '../../lib/prose';
+import { MarkdownArticle } from '../../lib/markdown-article';
 import type { Props } from './[slug].server';
 
-function DocArticle({ locale, slug, docHtml }: Props) {
+function DocArticle({ locale, slug, source }: Props) {
   const { i18n } = useLingui();
   const index = docs.findIndex((item) => item.slug === slug);
   const doc = docs[index];
@@ -25,7 +25,7 @@ function DocArticle({ locale, slug, docHtml }: Props) {
         <h1 className="mt-6 text-xl font-semibold text-kumo-strong">{i18n._(doc.title)}</h1>
         <p className="mt-2 text-sm text-kumo-subtle">{i18n._(doc.summary)}</p>
 
-        <article className={`${proseTokens} mt-6`} dangerouslySetInnerHTML={{ __html: docHtml }} />
+        <MarkdownArticle source={source} className="mt-6" />
 
         <nav className="mt-10 flex items-center justify-between gap-3 border-t border-kumo-line pt-4">
           {previous ? (

@@ -11,7 +11,7 @@ import { lessons } from '../lessons';
 import { Turnstile } from './turnstile';
 import type { Locale } from './locales';
 import { SiteHeader } from './site-header';
-import { proseTokens } from './prose';
+import { MarkdownArticle } from './markdown-article';
 
 type RunResult = {
   status: number;
@@ -113,11 +113,11 @@ function CodeEditor({
 function Playground({
   locale,
   lessonId,
-  docHtml,
+  source,
 }: {
   locale: Locale;
   lessonId: string;
-  docHtml: string;
+  source: string;
 }) {
   const { t, i18n } = useLingui();
   const router = useRouter();
@@ -146,16 +146,6 @@ function Playground({
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
-
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const apply = () => {
-      document.documentElement.dataset.mode = media.matches ? 'dark' : 'light';
-    };
-    apply();
-    media.addEventListener('change', apply);
-    return () => media.removeEventListener('change', apply);
-  }, []);
 
   const execute = useCallback(
     async (value: string, turnstileToken: string | null) => {
@@ -349,7 +339,7 @@ function Playground({
           className="min-h-0 overflow-x-hidden overflow-y-auto border-l border-kumo-line bg-kumo-base px-8 py-6 max-lg:border-t max-lg:border-l-0"
           aria-label={t`資料`}
         >
-          <article className={proseTokens} dangerouslySetInnerHTML={{ __html: docHtml }} />
+          <MarkdownArticle source={source} />
           <footer className="mt-10 max-w-[680px] border-t border-kumo-line pt-4">
             <nav className="mb-6 flex items-center justify-between gap-3" aria-label={t`章の移動`}>
               <Button
@@ -417,10 +407,10 @@ function Playground({
   );
 }
 
-export default function LessonView(props: { locale: Locale; lessonId: string; docHtml: string }) {
+export default function LessonView(props: { locale: Locale; lessonId: string; source: string }) {
   return (
     <I18nPage locale={props.locale}>
-      <Playground locale={props.locale} lessonId={props.lessonId} docHtml={props.docHtml} />
+      <Playground locale={props.locale} lessonId={props.lessonId} source={props.source} />
     </I18nPage>
   );
 }
