@@ -44,7 +44,8 @@ const response = await worker.getEntrypoint().fetch(new Request('https://sandbox
 
 ## 費用の勘所
 
-- Dynamic Workers は「1 日あたりに作ったユニークな Worker 数」で課金される。同じコードは同じ id で `get()` して再利用する
+- Dynamic Workers は「1 日あたりに作ったユニークな Worker 数」で課金される。同じコードは同じ id で `get()` して再利用する。無料枠は月 1,000 個、超えると 1 個あたり 1 日 $0.002
+- id はコードから作る。改行コードや末尾の改行だけの違いは同じ id に寄せるので、教材のコードをそのまま実行する人は全員で 1 個を共有する
 - CPU は 100ms で打ち切る。待ち時間は課金されないので、外部 API 待ちは安い
 - Workers AI は安いモデルに固定し、回数の上限を決めておく
 

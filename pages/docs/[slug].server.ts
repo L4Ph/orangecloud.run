@@ -1,7 +1,7 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { I18n } from '@lingui/core';
 import { marked } from 'marked';
-import { resolveLocale, type Locale } from '../../lib/locales';
+import { requestLocale } from '../../lib/request-locale';
 import { catalogs } from '../../lib/catalogs';
 import { docs } from '../../docs';
 import { docBody } from '../../docs/bodies';
@@ -10,9 +10,7 @@ export const loader = defineHandler((c) => {
   const doc = docs.find((item) => item.slug === c.req.param('slug'));
   if (!doc) return c.notFound();
 
-  const locale: Locale = resolveLocale(
-    (c.get('language') as string | undefined) ?? c.req.header('accept-language'),
-  );
+  const locale = requestLocale(c);
 
   const docHtml = marked
     .parse(docBody(locale, doc.slug), { async: false })

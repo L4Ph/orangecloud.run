@@ -1,78 +1,128 @@
-# Hono's router and middleware
+# Hono
 
-For after the basics: how the router is chosen, how middleware composes, and how types reach the client.
+Hono is a small web framework built on nothing but the standard `Request` / `Response`. The same code runs on Node.js, Bun, Deno, and Cloudflare Workers, and with few dependencies it starts fast. Treat it as a toolkit for routing and middleware and the rest follows.
 
-## Routers are swappable
-
-`SmartRouter` picks an implementation for you. By default it combines `RegExpRouter`, which compiles routes into a single regular expression, with `TrieRouter` so large route tables stay stable. You can also pass one explicitly: `new Hono({ router: new TrieRouter() })`.
-
-Matching is not registration order: static segments beat parameters beat wildcards. `/users/me` will not be swallowed by `/users/:id`.
-
-## Middleware is function composition
-
-`await next()` simply calls the rest of the chain. Hono composes registered middleware into one function with `compose()` before running it.
+## The smallest app
 
 ```ts
-const timing = async (c, next) => {
+import { Hono } from 'hono';
+
+const app = new Hono();
+
+app.get('/', (c) => c.text('hello'));
+
+export default app; // Works on Workers and Bun
+```
+
+On Node.js, start it with `serve({ fetch: app.fetch })` from `@hono/node-server`.
+
+## Routing
+
+```ts
+app.get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
+app.get('/files/*', (c) => c.text(c.req.path));
+app.post('/users', (c) => c.text('created', 201));
+app.route('/admin', adminRoutes); // mount another router
+```
+
+- `:id` is a parameter, `*` is a wildcard
+- `app.route()` lets you keep routers in separate files (`routes/users.ts`)
+- Matching is not registration order: static beats parameter beats wildcard
+
+## Requests
+
+```ts
+c.req.param('id');
+c.req.query('page');
+c.req.header('authorization');
+await c.req.json();
+await c.req.formData();
+```
+
+`c.req.raw` is the underlying `Request`.
+
+## Responses
+
+```ts
+c.text('ok');
+c.json({ ok: true }, 201);
+c.html('<h1>hi</h1>');
+c.redirect('/login');
+c.body(stream);
+```
+
+Status is the second argument; set headers with `c.header('x-foo', 'bar')`. `c.newResponse()` is there when you need full control.
+
+## Middleware
+
+```ts
+app.use('*', async (c, next) => {
   const start = performance.now();
   await next();
   c.header('server-timing', `app;dur=${performance.now() - start}`);
-};
+});
+
+app.use('/admin/*', async (c, next) => {
+  if (!c.req.header('authorization')) return c.text('forbidden', 403);
+  await next();
+});
 ```
 
-- Post-processing goes after `next()`; wrap in `try/finally` if it must always run
-- Returning early skips the rest of the chain (the usual auth pattern)
-- `c.set` / `c.get` are request-scoped; type them with `new Hono<{ Variables: { user: User } }>()`
-- Middleware can also be per-route: `app.get('/x', mw1, mw2, handler)`
+- Before `await next()` is pre-processing, after is post-processing
+- Share values downstream with `c.set('user', user)` / `c.get('user')`
+- Built-ins cover the common cases: `logger()`, `cors()`, `basicAuth()`, and more
 
-## How types reach the endpoint
-
-Hono hands the route type itself to the client. `hc<typeof app>()` builds URLs and input/output types from `AppType`, so you never restate a path or a body shape.
+## Validating input
 
 ```ts
-const api = new Hono().post('/posts', zValidator('json', schema), (c) => c.json({ id: 1 }, 201));
+import { zValidator } from '@hono/zod-validator';
+import { z } from 'zod';
 
+app.post('/users', zValidator('json', z.object({ name: z.string().min(1) })), (c) => {
+  const { name } = c.req.valid('json');
+  return c.json({ name }, 201);
+});
+```
+
+The validated value arrives with its type.
+
+## Errors
+
+```ts
+app.onError((err, c) => {
+  console.error(err);
+  return c.json({ error: 'internal' }, 500);
+});
+
+app.notFound((c) => c.json({ error: 'not found' }, 404));
+```
+
+Throw an `HTTPException` and `onError` can pick it up.
+
+## Typed RPC
+
+```ts
+// server
+const api = new Hono().get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
 export type AppType = typeof api;
+
+// client
+import { hc } from 'hono/client';
+const client = hc<AppType>('/');
+const res = await client.users[':id'].$get({ param: { id: '1' } });
 ```
 
-```ts
-const client = hc<AppType>('https://api.example.com');
-await client.posts.$post({ json: { title: 'hello' } });
+No hand-written paths on the client.
+
+## Running it locally
+
+```sh
+npm create hono@latest
+npm run dev
 ```
 
-Mounting with `app.route('/v1', api)` keeps the types too. `InferRequestType` / `InferResponseType` pull out individual pieces.
+For the router internals and how RPC is typed, see [Hono's router and middleware](/docs/hono).
 
-## Streaming
+## Why it does not run in this editor
 
-```ts
-return c.streamText(async (stream) => {
-  for (const token of tokens) await stream.write(token);
-});
-
-return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: 'hello' });
-});
-```
-
-Use this for long LLM responses or log tails. `stream.onAbort()` catches disconnects.
-
-## Testing
-
-`app.request()` sends a request without starting a server, so the same test works on Workers and Node.
-
-```ts
-const res = await app.request('/users/1');
-expect(res.status).toBe(200);
-```
-
-## Performance notes
-
-- Do not add global middleware for everything; scope it per route
-- Read `c.req.json()` once. The body stream is empty the second time
-- Stream large responses with `c.body(stream)` instead of buffering
-- Past a few hundred routes, watch `RegExpRouter` registration limits and split routers
-
-## References
-
-- `hono.dev` docs (Router, Middleware, RPC, Testing)
-- `@hono/zod-validator` for validation plus inference
+This site's editor cannot run it: resolving `import 'hono'` requires bundling first. Locally, `npm create hono@latest` gets you started.

@@ -33,4 +33,4 @@ Cloudflare の Sandbox SDK（`@cloudflare/sandbox`）を使うと、Worker か�
 
 **起動に秒がかかり、使っていなくてもイメージのビルドと配置にコストがかかる**ので、教育用サンドボックスに向くのは isolate（Dynamic Workers）の方です。このサイトもその構成です。
 
-この単元は資料のみです（コンテナのビルドと起動に Docker と Workers 有料プランが必要）。
+コンテナのビルドには Docker と Workers の有料プランが必要なので、ここではコード例だけを示します。

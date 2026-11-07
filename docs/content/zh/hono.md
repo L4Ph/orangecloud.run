@@ -1,78 +1,128 @@
-# Hono 的路由器与中间件
+# Hono
 
-基础之后再看：路由器如何选择、中间件如何组合、类型如何一路传到客户端。
+Hono 是一个只依赖标准 `Request` / `Response` 的小型 Web 框架。同一份代码能在 Node.js、Bun、Deno 和 Cloudflare Workers 上运行，依赖少所以启动也快。先把它当作“路由和中间件的工具箱”来记就好。
 
-## 路由器可以替换
-
-`SmartRouter` 会自动选择实现。默认把把路由编译成一条正则的 `RegExpRouter` 与 `TrieRouter` 组合起来，路由表很大也不易退化。也可以显式指定：`new Hono({ router: new TrieRouter() })`。
-
-匹配不是按注册顺序，而是静态段 > 参数 > 通配。`/users/me` 不会被 `/users/:id` 吞掉。
-
-## 中间件就是函数组合
-
-`await next()` 只是“调用剩下的链条”。Hono 会用 `compose()` 把注册的中间件折成一个函数再执行。
+## 最小的应用
 
 ```ts
-const timing = async (c, next) => {
+import { Hono } from 'hono';
+
+const app = new Hono();
+
+app.get('/', (c) => c.text('hello'));
+
+export default app; // Workers / Bun 直接可用
+```
+
+Node.js 上用 `@hono/node-server` 的 `serve({ fetch: app.fetch })` 启动。
+
+## 路由
+
+```ts
+app.get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
+app.get('/files/*', (c) => c.text(c.req.path));
+app.post('/users', (c) => c.text('created', 201));
+app.route('/admin', adminRoutes); // 挂载另一个路由器
+```
+
+- `:id` 是参数，`*` 是通配
+- `app.route()` 可以把路由器拆到别的文件（如 `routes/users.ts`）
+- 匹配不是按注册顺序，而是静态 > 参数 > 通配
+
+## 请求
+
+```ts
+c.req.param('id');
+c.req.query('page');
+c.req.header('authorization');
+await c.req.json();
+await c.req.formData();
+```
+
+`c.req.raw` 拿到原始 `Request`。
+
+## 响应
+
+```ts
+c.text('ok');
+c.json({ ok: true }, 201);
+c.html('<h1>hi</h1>');
+c.redirect('/login');
+c.body(stream);
+```
+
+状态码是第二个参数，响应头用 `c.header('x-foo', 'bar')`。需要完全控制时用 `c.newResponse()`。
+
+## 中间件
+
+```ts
+app.use('*', async (c, next) => {
   const start = performance.now();
   await next();
   c.header('server-timing', `app;dur=${performance.now() - start}`);
-};
+});
+
+app.use('/admin/*', async (c, next) => {
+  if (!c.req.header('authorization')) return c.text('forbidden', 403);
+  await next();
+});
 ```
 
-- 后处理写在 `next()` 之后；必须执行就用 `try/finally`
-- 提前 return 会跳过后续（认证的常见写法）
-- `c.set` / `c.get` 是请求作用域；用 `new Hono<{ Variables: { user: User } }>()` 加类型
-- 中间件也能按路由挂：`app.get('/x', mw1, mw2, handler)`
+- `await next()` 之前是前置处理，之后是后置处理
+- 用 `c.set('user', user)` / `c.get('user')` 往下游传值
+- 内置了 `logger()`、`cors()`、`basicAuth()` 等常用中间件
 
-## 类型如何到达端点
-
-Hono 把路由定义的类型直接交给客户端。`hc<typeof app>()` 从 `AppType` 推导 URL 与输入输出类型，不需要再写一遍路径或 body 形状。
+## 输入校验
 
 ```ts
-const api = new Hono().post('/posts', zValidator('json', schema), (c) => c.json({ id: 1 }, 201));
+import { zValidator } from '@hono/zod-validator';
+import { z } from 'zod';
 
+app.post('/users', zValidator('json', z.object({ name: z.string().min(1) })), (c) => {
+  const { name } = c.req.valid('json');
+  return c.json({ name }, 201);
+});
+```
+
+校验后的值会带着类型进入处理函数。
+
+## 错误处理
+
+```ts
+app.onError((err, c) => {
+  console.error(err);
+  return c.json({ error: 'internal' }, 500);
+});
+
+app.notFound((c) => c.json({ error: 'not found' }, 404));
+```
+
+抛出 `HTTPException` 也能被 `onError` 捕获。
+
+## 类型化 RPC
+
+```ts
+// 服务端
+const api = new Hono().get('/users/:id', (c) => c.json({ id: c.req.param('id') }));
 export type AppType = typeof api;
+
+// 客户端
+import { hc } from 'hono/client';
+const client = hc<AppType>('/');
+const res = await client.users[':id'].$get({ param: { id: '1' } });
 ```
 
-```ts
-const client = hc<AppType>('https://api.example.com');
-await client.posts.$post({ json: { title: 'hello' } });
+客户端不用手写路径字符串。
+
+## 本地运行
+
+```sh
+npm create hono@latest
+npm run dev
 ```
 
-用 `app.route('/v1', api)` 挂载也能保留类型。`InferRequestType` / `InferResponseType` 可以单独取出。
+想了解路由器的内部和 RPC 的类型机制，看 [Hono 的路由器与中间件](/docs/hono)。
 
-## 流式响应
+## 为什么这个编辑器里不运行
 
-```ts
-return c.streamText(async (stream) => {
-  for (const token of tokens) await stream.write(token);
-});
-
-return c.streamSSE(async (stream) => {
-  await stream.writeSSE({ data: 'hello' });
-});
-```
-
-适合 LLM 的长回答或日志流。`stream.onAbort()` 能捕获断开。
-
-## 测试
-
-`app.request()` 不需要启动服务器就能发请求，Workers 和 Node 上写法一致。
-
-```ts
-const res = await app.request('/users/1');
-expect(res.status).toBe(200);
-```
-
-## 性能要点
-
-- 不要把所有中间件都挂在全局，按路由范围挂
-- `c.req.json()` 只读一次，第二次读到的是空流
-- 大响应用 `c.body(stream)` 流式返回，不要先缓冲
-- 路由超过几百条时注意 `RegExpRouter` 的注册上限，考虑拆分
-
-## 参考
-
-- `hono.dev` 文档（Router、Middleware、RPC、Testing）
-- `@hono/zod-validator` 同时获得校验和类型推断
+本站的编辑器无法运行它：要解析 `import 'hono'` 必须先打包。本地用 `npm create hono@latest` 即可开始。

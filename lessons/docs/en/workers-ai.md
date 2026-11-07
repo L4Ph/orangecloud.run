@@ -7,6 +7,7 @@ Models running on Cloudflare's GPUs. **You own neither the inference engine nor 
 | Model                                          | Use                        | Rough cost              |
 | ---------------------------------------------- | -------------------------- | ----------------------- |
 | `@cf/mistralai/mistral-small-3.1-24b-instruct` | General chat and summaries | Cheap. Start here       |
+| `@cf/ibm-granite/granite-4.0-h-micro`          | Cheapest, English-first    | Weak in Japanese        |
 | `@cf/openai/gpt-oss-20b`                       | When you need reasoning    | Spends reasoning tokens |
 | `@cf/baai/bge-small-en-v1.5`                   | Embeddings (search, RAG)   | Very cheap              |
 | `@cf/openai/whisper`                           | Speech to text             | Billed per second       |
@@ -16,6 +17,8 @@ Pricing is per input and output token. With a cheap model a call is well under a
 Models churn. Check the [Workers AI model catalog](https://developers.cloudflare.com/workers-ai/models/) for the current ID and any planned deprecation before you ship — the IDs above will eventually disappear too.
 
 Output tokens usually dominate the bill, so compare output pricing: `mistral-small-3.1-24b` is $0.555 per M output tokens, about four times cheaper than llama-3.3-70b at $2.253, and it returns a string in `response`.
+
+`granite-4.0-h-micro` is even cheaper at $0.112 per M output tokens (a fifth of mistral), but its answers to Japanese questions missed the point. Use mistral for Japanese, granite for English-only.
 
 Models differ in shape. `@cf/mistralai/mistral-small-3.1-24b-instruct` returns a string in `response`, while reasoning models such as gpt-oss-20b answer in `choices[0].message.content` and spend many tokens thinking. Start with a `response` model.
 

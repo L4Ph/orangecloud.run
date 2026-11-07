@@ -44,7 +44,8 @@ The entry point verifies Turnstile and, on success, sets a signed cookie. Later 
 
 ## Where the cost comes from
 
-- Dynamic Workers bill per unique Worker created per day, so the same code reuses the same `get()` id
+- Dynamic Workers bill per unique Worker created per day, so the same code reuses the same `get()` id. The allowance is 1,000 per month, then $0.002 per Worker per day
+- The id is derived from the code, with line endings and trailing newlines normalised, so everyone running an unedited snippet shares one Worker
 - CPU is capped at 100ms; waiting is free, so external API calls are cheap
 - Pin a cheap Workers AI model and cap the number of runs
 

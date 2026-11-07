@@ -7,6 +7,7 @@ Cloudflare の GPU 上でモデルを動かす仕組み。**推論エンジン�
 | モデル                                         | 用途                  | 目安               |
 | ---------------------------------------------- | --------------------- | ------------------ |
 | `@cf/mistralai/mistral-small-3.1-24b-instruct` | 汎用の会話・要約      | 安い。まずこれ     |
+| `@cf/ibm-granite/granite-4.0-h-micro`          | 最安・英語向け        | 日本語は弱い       |
 | `@cf/openai/gpt-oss-20b`                       | 推論が必要なとき      | 推論トークンを使う |
 | `@cf/baai/bge-small-en-v1.5`                   | 埋め込み（検索・RAG） | 非常に安い         |
 | `@cf/openai/whisper`                           | 音声→文字             | 秒課金             |
@@ -16,6 +17,8 @@ Cloudflare の GPU 上でモデルを動かす仕組み。**推論エンジン�
 モデルは頻繁に入れ替わります。使う前に [Workers AI のモデルカタログ](https://developers.cloudflare.com/workers-ai/models/) で ID と廃止予定を確認してください。ここに載せた ID も将来は消えます。
 
 料金は出力トークンで決まることが多いので、出力単価で比べます。`mistral-small-3.1-24b` は出力 $0.555/M トークンで、llama-3.3-70b の $2.253/M より約4倍安く、`response` に文字列を返します。
+
+`granite-4.0-h-micro` は出力 $0.112/M でさらに安い（mistral の 1/5）ものの、日本語の質問には的外れな答えが返りました。日本語で使うなら mistral、英語中心なら granite が最安です。
 
 モデルによって返し方が違います。`@cf/mistralai/mistral-small-3.1-24b-instruct` は `response` に文字列を返しますが、gpt-oss-20b のような推論モデルは `choices[0].message.content` に返し、考えるためのトークンを多く使います。最初は `response` を返すモデルが扱いやすいです。
 

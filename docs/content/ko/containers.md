@@ -33,4 +33,4 @@ Cloudflare의 Sandbox SDK(`@cloudflare/sandbox`)를 쓰면 Worker에서 `getSand
 
 **기동에 초가 걸리고, 쓰지 않아도 이미지 빌드와 배치에 비용이 들기** 때문에 교육용 샌드박스에는 isolate(Dynamic Workers)가 맞습니다. 이 사이트도 그 구성입니다.
 
-이 장은 자료만 제공합니다(컨테이너 빌드와 실행에는 Docker와 유료 Workers 플랜이 필요).
+컨테이너 빌드에는 Docker와 유료 Workers 플랜이 필요하므로 여기서는 코드 예시만 보여 줍니다.

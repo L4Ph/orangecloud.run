@@ -48,4 +48,4 @@ export class Onboarding extends WorkflowEntrypoint {
 | 몇 초 안에 끝나는 단발 작업     | `ctx.waitUntil()` |
 | 동시 실행을 하나로 제한         | Durable Objects   |
 
-이 장은 자료만 제공합니다(공유 샌드박스에서는 큐를 안전하게 돌릴 수 없음). 배포 후 자신의 계정에서 시험해 보세요.
+공유 샌드박스에서는 큐를 실행할 수 없어 여기서는 코드 예시만 보여 줍니다. 직접 계정에서 시험해 보세요.

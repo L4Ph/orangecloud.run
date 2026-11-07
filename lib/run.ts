@@ -49,8 +49,11 @@ export default {
 };
 `;
 
-// Same code + same id is reused, so repeat runs skip isolate creation and are
-// billed once per day rather than once per request.
+// Dynamic Workers bill per unique (id, code) per day, so the id is derived from
+// the code: every learner running an unedited snippet shares one worker, and a
+// re-run costs nothing. Normalise only what cannot change behaviour.
+const normalize = (code: string) => code.replace(/\r\n/g, '\n').replace(/\n+$/, '');
+
 const hash = (text: string) => {
   let h = 5381;
   for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
@@ -76,7 +79,7 @@ export async function runInSandbox(env: SandboxEnv, code: string): Promise<RunRe
 
   try {
     const wrapped = wrap();
-    const id = `run-${WRAPPER_VERSION}-${hash(code)}`;
+    const id = `run-${WRAPPER_VERSION}-${hash(normalize(code))}`;
     const worker = env.LOADER.get(id, () => ({
       compatibilityDate: '2026-02-24',
       mainModule: 'index.js',

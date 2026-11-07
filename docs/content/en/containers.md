@@ -33,4 +33,4 @@ With Cloudflare's Sandbox SDK (`@cloudflare/sandbox`), `getSandbox()` gives a Wo
 
 **Seconds to start, plus image build and placement costs even when idle**, so isolates (Dynamic Workers) are the better fit for an educational sandbox. This site is built that way.
 
-This chapter is reference only (building and running containers needs Docker and a paid Workers plan).
+Building and running containers needs Docker and a paid Workers plan, so this article shows the code only.

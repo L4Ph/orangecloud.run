@@ -48,4 +48,4 @@ export class Onboarding extends WorkflowEntrypoint {
 | A one-off that takes seconds               | `ctx.waitUntil()` |
 | Exactly one execution at a time            | Durable Objects   |
 
-This chapter is reference only (queues cannot run safely in the shared sandbox). Try it in your own account after deploying.
+Queues cannot run in the shared sandbox, so this article shows the code only. Try it in your own account.

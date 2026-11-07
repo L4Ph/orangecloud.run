@@ -48,4 +48,4 @@ export class Onboarding extends WorkflowEntrypoint {
 | 数秒で終わる単発          | `ctx.waitUntil()` |
 | 同時実行を 1 つに絞りたい | Durable Objects   |
 
-この単元は資料のみです（共有サンドボックスではキューを安全に流せないため）。デプロイ後に自分のアカウントで試してください。
+共有サンドボックスではキューを流せないため、ここではコード例だけを示します。手元のアカウントで試してください。

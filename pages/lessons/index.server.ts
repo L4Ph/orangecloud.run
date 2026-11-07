@@ -1,13 +1,11 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { resolveLocale } from '../../lib/locales';
+import { requestLocale } from '../../lib/request-locale';
 import { catalogs } from '../../lib/catalogs';
 
 export const loader = defineHandler((c) => ({
-  locale: resolveLocale(
-    (c.get('language') as string | undefined) ?? c.req.header('accept-language'),
-  ),
+  locale: requestLocale(c),
 }));
 
 export type Props = InferProps<typeof loader>;

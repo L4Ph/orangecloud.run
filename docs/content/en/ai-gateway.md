@@ -34,4 +34,4 @@ const res = await fetch(
 - Truncate input server-side; do not forward long text as-is
 - Decide the fallback target before you need it
 
-This chapter is reference only (it needs a Gateway configured on your account plus an API key).
+It needs a Gateway configured on your account plus an API key, so this article shows the code only.

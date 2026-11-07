@@ -44,7 +44,8 @@ const response = await worker.getEntrypoint().fetch(new Request('https://sandbox
 
 ## 费用来自哪里
 
-- Dynamic Workers 按每天创建的唯 Worker 数计费，因此相同代码复用同一个 `get()` id
+- Dynamic Workers 按每天创建的唯 Worker 数计费，因此相同代码复用同一个 `get()` id。每月含 1,000 个，超出后每个每天 $0.002
+- id 由代码生成，并把换行符和末尾换行归一化，所以直接运行教材代码的人共用同一个 Worker
 - CPU 上限 100ms；等待不收费，所以外部 API 调用很便宜
 - Workers AI 固定使用便宜的模型，并限制执行次数
 

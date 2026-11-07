@@ -7,6 +7,7 @@
 | 模型                                           | 用途              | 大致费用         |
 | ---------------------------------------------- | ----------------- | ---------------- |
 | `@cf/mistralai/mistral-small-3.1-24b-instruct` | 通用对话与摘要    | 便宜。先用它     |
+| `@cf/ibm-granite/granite-4.0-h-micro`          | 最便宜、偏英语    | 日语较弱         |
 | `@cf/openai/gpt-oss-20b`                       | 需要推理时        | 会消耗推理 token |
 | `@cf/baai/bge-small-en-v1.5`                   | 向量（检索、RAG） | 非常便宜         |
 | `@cf/openai/whisper`                           | 语音转文字        | 按秒计费         |
@@ -16,6 +17,8 @@
 模型会频繁更替。使用前请到 [Workers AI 模型目录](https://developers.cloudflare.com/workers-ai/models/) 确认 ID 和是否计划废弃——上面列出的 ID 将来也会消失。
 
 费用通常由输出 token 决定，所以比较输出单价：`mistral-small-3.1-24b` 是每百万输出 token $0.555，比 llama-3.3-70b 的 $2.253 便宜约四倍，并且把字符串放在 `response`。
+
+`granite-4.0-h-micro` 更便宜，输出每百万 token $0.112（mistral 的五分之一），但对日语问题答非所问。日语用 mistral，纯英语用 granite 最省。
 
 不同模型的返回结构不同。`@cf/mistralai/mistral-small-3.1-24b-instruct` 把字符串放在 `response`，而 gpt-oss-20b 这类推理模型放在 `choices[0].message.content`，并且会花很多 token 思考。先用返回 `response` 的模型更省心。
 

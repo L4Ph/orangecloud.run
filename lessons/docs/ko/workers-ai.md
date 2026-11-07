@@ -7,6 +7,7 @@ Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 
 | 모델                                           | 용도              | 대략            |
 | ---------------------------------------------- | ----------------- | --------------- |
 | `@cf/mistralai/mistral-small-3.1-24b-instruct` | 범용 대화·요약    | 저렴. 먼저 이것 |
+| `@cf/ibm-granite/granite-4.0-h-micro`          | 최저가, 영어 중심 | 일본어는 약함   |
 | `@cf/openai/gpt-oss-20b`                       | 추론이 필요할 때  | 추론 토큰 사용  |
 | `@cf/baai/bge-small-en-v1.5`                   | 임베딩(검색, RAG) | 매우 저렴       |
 | `@cf/openai/whisper`                           | 음성→문자         | 초 단위 과금    |
@@ -16,6 +17,8 @@ Cloudflare의 GPU에서 모델을 돌리는 방식입니다. **추론 엔진도 
 모델은 자주 바뀝니다. 쓰기 전에 [Workers AI 모델 카탈로그](https://developers.cloudflare.com/workers-ai/models/)에서 ID와 폐기 예정을 확인하세요. 위의 ID도 언젠가 사라집니다.
 
 비용은 대개 출력 토큰이 좌우하므로 출력 단가를 비교하세요. `mistral-small-3.1-24b`는 출력 100만 토큰당 $0.555로 llama-3.3-70b의 $2.253보다 약 4배 저렴하고, `response`에 문자열을 돌려줍니다.
+
+`granite-4.0-h-micro`는 출력 100만 토큰당 $0.112로 더 저렴하지만(mistral의 1/5), 일본어 질문에는 엉뚱한 답을 줍니다. 일본어라면 mistral, 영어만이라면 granite가 가장 저렴합니다.
 
 모델마다 응답 구조가 다릅니다. `@cf/mistralai/mistral-small-3.1-24b-instruct`는 `response`에 문자열을 주지만, gpt-oss-20b 같은 추론 모델은 `choices[0].message.content`에 주고 생각하는 데 토큰을 많이 씁니다. 처음에는 `response` 모델이 다루기 쉽습니다.
 

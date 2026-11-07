@@ -11,115 +11,115 @@ msgstr ""
 msgid "← 読んで学ぶ"
 msgstr "← 읽기"
 
-#: lessons/index.ts:102
+#: docs/index.ts:38
 msgid "AI Gateway"
 msgstr ""
 
-#: lessons/index.ts:118
+#: docs/index.ts:43
 msgid "Containers"
 msgstr ""
 
-#: lessons/index.ts:54
+#: lessons/index.ts:45
 msgid "D1"
 msgstr ""
 
-#: lessons/index.ts:68
+#: lessons/index.ts:59
 msgid "Durable Objects"
 msgstr ""
 
-#: lessons/index.ts:149
+#: docs/index.ts:54
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, 바인딩 중계, 실행 제한"
 
-#: lessons/index.ts:95
+#: lessons/index.ts:67
 msgid "GPU を持たずに推論。まずは安いモデルから"
 msgstr "GPU 없이 하는 추론. 우선 저렴한 모델부터"
 
-#: lessons/index.ts:39
+#: docs/index.ts:13
 msgid "Hono"
 msgstr ""
 
-#: docs/index.ts:13
+#: docs/index.ts:18
 msgid "Hono のルーターとミドルウェア"
 msgstr "Hono의 라우터와 미들웨어"
 
-#: docs/index.ts:19
+#: docs/index.ts:24
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "isolate가 무엇을 생략하는지, 컨테이너로 넘어갈 지점"
 
-#: lessons/index.ts:119
+#: docs/index.ts:44
 msgid "isolate で足りないときの最後の手段"
 msgstr "isolate로 부족할 때의 마지막 수단"
 
-#: lessons/index.ts:33
+#: lessons/index.ts:32
 msgid "isolate、状態を持たない、制限、課金"
 msgstr "isolate, 상태 없음, 제한, 과금"
 
-#: lessons/index.ts:25
+#: lessons/index.ts:24
 msgid "JavaScript エンジンとランタイム"
 msgstr "JavaScript 엔진과 런타임"
 
-#: lessons/index.ts:47
+#: lessons/index.ts:38
 msgid "KV"
 msgstr ""
 
-#: lessons/index.ts:75
+#: docs/index.ts:33
 msgid "Queues / Workflows"
 msgstr ""
 
-#: lessons/index.ts:61
+#: lessons/index.ts:52
 msgid "R2"
 msgstr ""
 
-#: lessons/index.ts:62
+#: lessons/index.ts:53
 msgid "S3 互換のオブジェクトストレージ。転送無料"
 msgstr "S3 호환 객체 스토리지. 전송 무료"
 
-#: lessons/index.ts:55
+#: lessons/index.ts:46
 msgid "SQLite。SQL、索引、課金される「行数」"
 msgstr "SQLite. SQL, 인덱스, 과금되는 '행 수'"
 
-#: lessons/index.ts:26
+#: lessons/index.ts:25
 msgid "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes、そして Node・Bun・Deno・Workers"
 msgstr "V8 / SpiderMonkey / JavaScriptCore / QuickJS / Hermes, 그리고 Node·Bun·Deno·Workers"
 
-#: lessons/index.ts:94
+#: lessons/index.ts:66
 msgid "Workers AI"
 msgstr ""
 
-#: lessons/index.ts:32
+#: lessons/index.ts:31
 msgid "Workers の実行モデル"
 msgstr "Workers의 실행 모델"
 
-#: lessons/index.ts:148
+#: docs/index.ts:53
 msgid "このサイトの仕組み"
 msgstr "이 사이트의 구조"
 
 #: lessons/index.ts:144
-msgid "この単元は手元のターミナルで実行してください"
-msgstr "이 명령은 직접 터미널에서 실행하세요"
+#~ msgid "この単元は手元のターミナルで実行してください"
+#~ msgstr "이 명령은 직접 터미널에서 실행하세요"
 
 #: lessons/index.ts:114
-msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
-msgstr "자료만 제공 (Gateway 설정과 API 키 필요)"
+#~ msgid "この単元は資料のみ（Gateway の設定と API キーが必要）"
+#~ msgstr "자료만 제공 (Gateway 설정과 API 키 필요)"
 
 #: lessons/index.ts:43
-msgid "この単元は資料のみ（Hono は事前にバンドルが必要です）"
-msgstr "자료만 제공 (Hono는 미리 번들해야 합니다)"
+#~ msgid "この単元は資料のみ（Hono は事前にバンドルが必要です）"
+#~ msgstr "자료만 제공 (Hono는 미리 번들해야 합니다)"
 
 #: lessons/index.ts:127
-msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
-msgstr "자료만 제공 (이미지 빌드와 유료 플랜 필요)"
+#~ msgid "この単元は資料のみ（イメージのビルドと有料プランが必要）"
+#~ msgstr "자료만 제공 (이미지 빌드와 유료 플랜 필요)"
 
 #: lessons/index.ts:162
-msgid "この単元は資料のみ（サイト自身の実装の話です）"
-msgstr "자료만 제공 (사이트 자체 구현 이야기)"
+#~ msgid "この単元は資料のみ（サイト自身の実装の話です）"
+#~ msgstr "자료만 제공 (사이트 자체 구현 이야기)"
 
 #: lessons/index.ts:90
-msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
-msgstr "자료만 제공 (공유 샌드박스에서는 큐를 실행할 수 없음)"
+#~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
+#~ msgstr "자료만 제공 (공유 샌드박스에서는 큐를 실행할 수 없음)"
 
-#: lessons/index.ts:131
+#: docs/index.ts:48
 msgid "デプロイまで"
 msgstr "배포까지"
 
@@ -127,36 +127,36 @@ msgstr "배포까지"
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
 msgstr "브라우저 에디터에서 실행하며 진행하는 장입니다. 네트워크가 막혀 있어 무엇을 써도 안전합니다."
 
-#: docs/index.ts:18
+#: docs/index.ts:23
 msgid "ランタイムの深掘り"
 msgstr "런타임 깊이 보기"
 
-#: docs/index.ts:14
+#: docs/index.ts:19
 msgid "ルーターの仕組み、ミドルウェアの合成、型と RPC"
 msgstr "라우터의 원리, 미들웨어 합성, 타입과 RPC"
 
-#: lessons/index.ts:40
+#: docs/index.ts:14
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "라우팅, 미들웨어, 검증. 작고 빠른 웹 프레임워크"
 
-#: lessons/index.ts:103
+#: docs/index.ts:39
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "모델 앞에서 로그·캐시·제한·폴백"
 
-#: lessons/index.ts:132
+#: docs/index.ts:49
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "로그인, 시크릿, 배포, 공개 후 확인"
 
-#: docs/index.ts:24
+#: docs/index.ts:29
 msgid "一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ"
 msgstr "일관성·크기·과금으로 KV / D1 / R2 / Durable Objects 선택하기"
 
-#: pages/lessons/index.server.ts:22
+#: pages/lessons/index.server.ts:20
 #: pages/lessons/index.tsx:17
 msgid "動かして学ぶ"
 msgstr "실행하며 배우기"
 
-#: lessons/index.ts:69
+#: lessons/index.ts:60
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "이름마다 하나의 실체. 상태와 직렬화"
 
@@ -164,16 +164,16 @@ msgstr "이름마다 하나의 실체. 상태와 직렬화"
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "직접 해보기 전후에 읽는 조금 더 깊은 이야기. 설계 판단의 기준을 여기에 두었습니다."
 
-#: docs/index.ts:23
+#: docs/index.ts:28
 msgid "状態の置き場所を選ぶ"
 msgstr "상태를 둘 곳 고르기"
 
-#: pages/docs/index.server.ts:22
+#: pages/docs/index.server.ts:20
 #: pages/docs/index.tsx:17
 msgid "読んで学ぶ"
 msgstr "읽으며 배우기"
 
-#: lessons/index.ts:98
+#: lessons/index.ts:70
 msgid "費用はこのサイト側で持ちます。ローカル開発だけは Cloudflare ログインが必要です"
 msgstr "AI 호출 비용은 이 사이트가 부담합니다. 로컬 개발에서만 Cloudflare 로그인이 필요합니다."
 
@@ -181,10 +181,10 @@ msgstr "AI 호출 비용은 이 사이트가 부담합니다. 로컬 개발에�
 msgid "資料のみ"
 msgstr "자료만"
 
-#: lessons/index.ts:48
+#: lessons/index.ts:39
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "빠른 읽기와 최종 일관성. 캐시와 설정의 자리"
 
-#: lessons/index.ts:76
+#: docs/index.ts:34
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "비동기 처리와 재개 가능한 장기 작업"

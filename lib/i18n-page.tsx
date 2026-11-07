@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, type ReactNode } from 'react';
 import { I18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { catalogs } from './catalogs';
@@ -10,6 +10,11 @@ export function I18nPage({ locale, children }: { locale: Locale; children: React
     () => new I18n({ locale, messages: { [locale]: catalogs[locale] } }),
     [locale],
   );
+
+  // Remember the rendered language, including when it came from ?lang=.
+  useEffect(() => {
+    document.cookie = `lang=${locale}; path=/; max-age=31536000; samesite=lax`;
+  }, [locale]);
 
   return <I18nProvider i18n={i18n}>{children}</I18nProvider>;
 }

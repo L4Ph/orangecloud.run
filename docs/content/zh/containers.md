@@ -33,4 +33,4 @@ const result = await sandbox.run('node --version');
 
 **启动要秒级，而且即使不用也要为镜像构建和放置付费**，所以教学沙箱更适合 isolate（Dynamic Workers）。本站也是这个架构。
 
-本章仅为资料（构建和运行容器需要 Docker 与 Workers 付费套餐）。
+构建容器需要 Docker 与 Workers 付费套餐，所以这里只给出代码示例。

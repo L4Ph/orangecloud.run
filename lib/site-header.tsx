@@ -38,6 +38,8 @@ export function SiteHeader({ locale, children }: { locale: Locale; children?: Re
           value={locale}
           onValueChange={(next) => {
             if (!next) return;
+            // Persist for later visits, then navigate so SSR re-renders.
+            document.cookie = `lang=${next}; path=/; max-age=31536000; samesite=lax`;
             const url = new URL(window.location.href);
             url.searchParams.set('lang', next);
             window.location.assign(url.toString());
