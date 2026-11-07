@@ -34,6 +34,11 @@ export const docs: Doc[] = [
     summary: msg`一貫性・サイズ・課金から KV / D1 / R2 / Durable Objects を選ぶ`,
   },
   {
+    slug: 'actors',
+    title: msg`Durable Objects と Actor モデル`,
+    summary: msg`なぜ class なのか、どこまでが actor なのか`,
+  },
+  {
     slug: 'queues',
     title: msg`Queues / Workflows`,
     summary: msg`非同期処理と、再開できる長時間ジョブ`,

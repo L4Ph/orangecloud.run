@@ -12,6 +12,7 @@ import { Turnstile } from './turnstile';
 import type { Locale } from './locales';
 import { SiteHeader } from './site-header';
 import { MarkdownArticle } from './markdown-article';
+import type { MarkdownDocument } from '@tanstack/markdown';
 
 type RunResult = {
   status: number;
@@ -113,11 +114,11 @@ function CodeEditor({
 function Playground({
   locale,
   lessonId,
-  source,
+  doc,
 }: {
   locale: Locale;
   lessonId: string;
-  source: string;
+  doc: MarkdownDocument;
 }) {
   const { t, i18n } = useLingui();
   const router = useRouter();
@@ -339,7 +340,7 @@ function Playground({
           className="min-h-0 overflow-x-hidden overflow-y-auto border-l border-kumo-line bg-kumo-base px-8 py-6 max-lg:border-t max-lg:border-l-0"
           aria-label={t`資料`}
         >
-          <MarkdownArticle source={source} />
+          <MarkdownArticle document={doc} />
           <footer className="mt-10 max-w-[680px] border-t border-kumo-line pt-4">
             <nav className="mb-6 flex items-center justify-between gap-3" aria-label={t`章の移動`}>
               <Button
@@ -407,10 +408,14 @@ function Playground({
   );
 }
 
-export default function LessonView(props: { locale: Locale; lessonId: string; source: string }) {
+export default function LessonView(props: {
+  locale: Locale;
+  lessonId: string;
+  doc: MarkdownDocument;
+}) {
   return (
     <I18nPage locale={props.locale}>
-      <Playground locale={props.locale} lessonId={props.lessonId} source={props.source} />
+      <Playground locale={props.locale} lessonId={props.lessonId} doc={props.doc} />
     </I18nPage>
   );
 }

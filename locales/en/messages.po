@@ -7,15 +7,15 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
 
-#: pages/docs/[slug].tsx:22
+#: pages/docs/[slug].tsx:20
 msgid "← 読んで学ぶ"
 msgstr "← Read"
 
-#: docs/index.ts:43
+#: docs/index.ts:48
 msgid "AI Gateway"
 msgstr ""
 
-#: docs/index.ts:48
+#: docs/index.ts:53
 msgid "Containers"
 msgstr ""
 
@@ -35,7 +35,11 @@ msgstr "Run Python inside a Docker image — the escape hatch for work an isolat
 msgid "Durable Objects"
 msgstr ""
 
-#: docs/index.ts:59
+#: docs/index.ts:38
+msgid "Durable Objects と Actor モデル"
+msgstr "Durable Objects and the Actor model"
+
+#: docs/index.ts:64
 msgid "Dynamic Workers、バインディングの中継、実行の制限"
 msgstr "Dynamic Workers, relayed bindings, and run limits"
 
@@ -55,7 +59,7 @@ msgstr "Hono's router and middleware"
 msgid "isolate が何を省略しているか、コンテナとの分岐"
 msgstr "What an isolate leaves out, and when to reach for a container"
 
-#: docs/index.ts:49
+#: docs/index.ts:54
 msgid "isolate で足りないときの最後の手段"
 msgstr "The last resort when isolates are not enough"
 
@@ -75,7 +79,7 @@ msgstr ""
 msgid "Python"
 msgstr ""
 
-#: docs/index.ts:38
+#: docs/index.ts:43
 msgid "Queues / Workflows"
 msgstr ""
 
@@ -111,7 +115,7 @@ msgstr ""
 msgid "Workers の実行モデル"
 msgstr "The Workers execution model"
 
-#: docs/index.ts:58
+#: docs/index.ts:63
 msgid "このサイトの仕組み"
 msgstr "How this site works"
 
@@ -139,9 +143,13 @@ msgstr "How this site works"
 #~ msgid "この単元は資料のみ（共有サンドボックスではキューを流せません）"
 #~ msgstr "Reference only (queues are not available in the shared sandbox)"
 
-#: docs/index.ts:53
+#: docs/index.ts:58
 msgid "デプロイまで"
 msgstr "Deploying"
+
+#: docs/index.ts:39
+msgid "なぜ class なのか、どこまでが actor なのか"
+msgstr "Why a class, and how far the actor model goes"
 
 #: pages/lessons/index.tsx:20
 msgid "ブラウザのエディタで実行しながら進む章です。ネットワークは塞がれているので、壊しても何も起きません。"
@@ -159,11 +167,11 @@ msgstr "How the router works, middleware composition, and types plus RPC"
 msgid "ルーティング、ミドルウェア、バリデーション。小さく速い Web フレームワーク"
 msgstr "Routing, middleware, validation — a small, fast web framework"
 
-#: docs/index.ts:44
+#: docs/index.ts:49
 msgid "ログ・キャッシュ・制限・フォールバックをモデルの手前に"
 msgstr "Logging, caching, limits, and fallbacks in front of the model"
 
-#: docs/index.ts:54
+#: docs/index.ts:59
 msgid "ログイン、秘密値、デプロイ、公開後の確認"
 msgstr "Login, secrets, deploy, and what to check after"
 
@@ -180,7 +188,7 @@ msgstr "Run and learn"
 msgid "名前ごとに 1 つの実体。状態と直列化"
 msgstr "One instance per name. State and serialization"
 
-#: pages/docs/index.tsx:20
+#: pages/docs/index.tsx:18
 msgid "手を動かす前後に読む、少し深い話。設計の判断基準をここに置いています。"
 msgstr "Deeper reading around the hands-on chapters. The judgement calls live here."
 
@@ -193,7 +201,7 @@ msgid "状態の置き場所を選ぶ"
 msgstr "Choosing where state lives"
 
 #: pages/docs/index.server.ts:20
-#: pages/docs/index.tsx:17
+#: pages/docs/index.tsx:15
 msgid "読んで学ぶ"
 msgstr "Read and learn"
 
@@ -209,6 +217,6 @@ msgstr "Reference only"
 msgid "速い読み取りと結果整合。キャッシュや設定の置き場"
 msgstr "Fast reads with eventual consistency. A home for cache and config"
 
-#: docs/index.ts:39
+#: docs/index.ts:44
 msgid "非同期処理と、再開できる長時間ジョブ"
 msgstr "Async work and long-running jobs that resume"

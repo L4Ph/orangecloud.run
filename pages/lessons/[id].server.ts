@@ -4,6 +4,7 @@ import { requestLocale } from '../../lib/request-locale';
 import { catalogs } from '../../lib/catalogs';
 import { lessons } from '../../lessons';
 import { lessonDoc } from '../../lessons/docs';
+import { parseDoc } from '../../lib/markdown-source';
 
 export const loader = defineHandler((c) => {
   const lesson = lessons.find((item) => item.id === c.req.param('id'));
@@ -11,10 +12,7 @@ export const loader = defineHandler((c) => {
 
   const locale = requestLocale(c);
 
-  // The pane header already shows the chapter title.
-  const source = lessonDoc(locale, lesson.id).replace(/^# .+\n+/, '');
-
-  return { locale, lessonId: lesson.id, source };
+  return { locale, lessonId: lesson.id, document: parseDoc(lessonDoc(locale, lesson.id)) };
 });
 
 export type Props = InferProps<typeof loader>;
