@@ -1,0 +1,7 @@
+@source "../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}";
+@import '@cloudflare/kumo/styles/tailwind';
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+/* Kumo drives dark mode with <html data-mode="dark">, not the `dark` class. */
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));

@@ -34,7 +34,7 @@ npm run i18n:extract  # 文言を抽出して .po を更新
 
 ## UI
 
-コンポーネントは Cloudflare の [Kumo UI](https://kumo-ui.com/)（`@cloudflare/kumo`）。スタイルは Tailwind 無しで `@cloudflare/kumo/styles/standalone` を読み、色は Kumo のセマンティックトークン（`--color-kumo-*` / `--text-color-kumo-*`）を参照しています。ダークモードは `<html data-mode>` を matchMedia で切り替え（初回描画前に head のスクリプトで設定）。
+コンポーネントは Cloudflare の [Kumo UI](https://kumo-ui.com/)（`@cloudflare/kumo`）、スタイルは Tailwind v4。`pages/app.css` は Tailwind の読み込みと Kumo のトークン登録だけで、独自 CSS はありません。本文（Markdown）は `@tailwindcss/typography` の `prose` に Kumo トークンを当てています。ダークモードは `<html data-mode>` を matchMedia で切り替え（初回描画前に head のスクリプトで設定）。
 
 ## ツールチェーン
 

@@ -3,13 +3,11 @@ import { fetch as apiFetch } from 'void/client';
 import { useRouter } from '@void/react';
 import { I18n, type Messages } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Button } from '@cloudflare/kumo/components/button';
-import { Dialog } from '@cloudflare/kumo/components/dialog';
 import { Link } from '@cloudflare/kumo/components/link';
 import { Select } from '@cloudflare/kumo/components/select';
-import { ArrowLeftIcon, ArrowRightIcon, ListIcon, PlayIcon } from '@phosphor-icons/react';
-import '@cloudflare/kumo/styles/standalone';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { ArrowLeftIcon, ArrowRightIcon, PlayIcon } from '@phosphor-icons/react';
 import { lessons } from '../lessons';
 import { Turnstile } from '../lib/turnstile';
 import { localeLabel, locales, type Locale } from '../lib/locales';
@@ -18,7 +16,7 @@ import { messages as enMessages } from '../locales/en/messages.po';
 import { messages as zhMessages } from '../locales/zh/messages.po';
 import { messages as koMessages } from '../locales/ko/messages.po';
 import type { Props } from './index.server';
-import './style.css';
+import './app.css';
 
 const catalogs: Record<Locale, Messages> = {
   ja: jaMessages,
@@ -26,6 +24,26 @@ const catalogs: Record<Locale, Messages> = {
   zh: zhMessages,
   ko: koMessages,
 };
+
+const languageItems = Object.fromEntries(locales.map((item) => [item, localeLabel[item]]));
+
+const proseTokens = [
+  'prose prose-sm max-w-[680px]',
+  'prose-h1:mb-4 prose-h1:text-xl prose-h1:font-semibold',
+  'prose-h2:mt-8 prose-h2:mb-2 prose-h2:text-base prose-h2:font-semibold',
+  'prose-h3:text-sm prose-h3:font-semibold',
+  'prose-table:text-xs [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto',
+  'prose-headings:text-kumo-strong prose-headings:font-semibold',
+  'prose-p:text-kumo-default prose-li:text-kumo-default',
+  'prose-strong:text-kumo-strong prose-strong:font-medium',
+  'prose-a:text-kumo-link',
+  'prose-code:text-kumo-strong prose-code:before:content-none prose-code:after:content-none',
+  'prose-pre:bg-kumo-recessed prose-pre:text-kumo-default',
+  'prose-hr:border-kumo-line',
+  'prose-th:border-kumo-line prose-td:border-kumo-line',
+  'prose-blockquote:border-kumo-brand prose-blockquote:text-kumo-subtle',
+  'dark:prose-invert',
+].join(' ');
 
 type RunResult = {
   status: number;
@@ -120,10 +138,8 @@ function CodeEditor({
     });
   }, [language]);
 
-  return <div className="editor-host" ref={host} />;
+  return <div className="h-full w-full" ref={host} />;
 }
-
-const languageItems = Object.fromEntries(locales.map((item) => [item, localeLabel[item]]));
 
 function LanguageSwitcher({
   locale,
@@ -137,7 +153,7 @@ function LanguageSwitcher({
   return (
     <Select
       aria-label={t`言語`}
-      className="lang-select"
+      className="w-[110px]"
       size="sm"
       value={locale}
       onValueChange={(next) => {
@@ -159,7 +175,6 @@ function Playground({
 }) {
   const { t, i18n } = useLingui();
   const router = useRouter();
-  const [indexOpen, setIndexOpen] = useState(false);
   const lessonIndex = Math.max(
     0,
     lessons.findIndex((item) => item.id === lessonId),
@@ -181,7 +196,7 @@ function Playground({
     setError(null);
   }, [lesson.id, lesson.code]);
 
-  // Client navigation does not re-run head(), so keep the document language honest.
+  // Client navigation does not re-run head(), so keep the document in sync.
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
@@ -262,77 +277,56 @@ function Playground({
     [lessonIndex, navigate],
   );
 
+  const chapterItems = useMemo(
+    () =>
+      Object.fromEntries(
+        lessons.map((item, index) => [item.id, `${index + 1}. ${i18n._(item.title)}`]),
+      ),
+    [i18n],
+  );
+
   return (
-    <div className="app">
-      <header className="top">
-        <div className="brand">
-          <strong>
+    <div className="isolate flex h-dvh flex-col overflow-hidden bg-kumo-canvas text-sm text-kumo-default">
+      <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-kumo-line bg-kumo-base px-5 py-2.5">
+        <div className="flex min-w-0 items-baseline gap-3">
+          <strong className="truncate text-sm font-semibold text-kumo-strong">
             <Trans>Cloudflare Workers を動かして学ぶ</Trans>
           </strong>
-          <span>
+          <span className="hidden truncate text-xs text-kumo-subtle sm:inline">
             <Trans>チュートリアル兼プレイグラウンド</Trans>
           </span>
         </div>
-        <div className="progress-area">
-          <span className="progress">
-            <Trans>
-              第 {lessonIndex + 1} 章 / 全 {lessons.length} 章
-            </Trans>
-          </span>
-          <Button
+
+        <div className="flex items-center gap-2">
+          <Select
+            aria-label={t`章`}
+            className="w-[260px]"
             size="sm"
-            variant="secondary"
-            icon={<ListIcon />}
-            aria-expanded={indexOpen}
-            onClick={() => setIndexOpen((open) => !open)}
-          >
-            <Trans>目次</Trans>
-          </Button>
+            value={lesson.id}
+            onValueChange={(next) => {
+              if (next) navigate(next);
+            }}
+            items={chapterItems}
+          />
           <LanguageSwitcher locale={locale} onChange={(next) => navigate(lessonId, next)} />
         </div>
       </header>
 
-      <Dialog.Root open={indexOpen} onOpenChange={setIndexOpen}>
-        <Dialog size="xl" className="index-dialog">
-          <Dialog.Title>
-            <Trans>目次</Trans>
-          </Dialog.Title>
-          <ol className="index-list">
-            {lessons.map((item, index) => (
-              <li key={item.id}>
-                <Button
-                  variant="ghost"
-                  className={item.id === lesson.id ? 'index-item active' : 'index-item'}
-                  onClick={() => {
-                    setIndexOpen(false);
-                    navigate(item.id);
-                  }}
-                >
-                  <span className="num">{String(index + 1).padStart(2, '0')}</span>
-                  <span className="info">
-                    <strong>{i18n._(item.title)}</strong>
-                    <small>{i18n._(item.summary)}</small>
-                  </span>
-                </Button>
-              </li>
-            ))}
-          </ol>
-        </Dialog>
-      </Dialog.Root>
-
       {awaitingToken && <Turnstile key={widgetKey} onToken={setToken} />}
 
-      <main className="split">
-        <section className="pane editor-pane" aria-label={t`エディタ`}>
-          <div className="pane-head">
-            <div>
-              <h1>{i18n._(lesson.title)}</h1>
-              <p>{i18n._(lesson.summary)}</p>
+      <main className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_minmax(0,1fr)] max-lg:block max-lg:overflow-auto">
+        <section className="flex min-h-0 min-w-0 flex-col" aria-label={t`エディタ`}>
+          <div className="flex shrink-0 items-start justify-between gap-4 px-5 pt-4 pb-3 max-sm:flex-col">
+            <div className="min-w-0">
+              <h1 className="text-lg leading-tight font-semibold text-kumo-strong">
+                {i18n._(lesson.title)}
+              </h1>
+              <p className="mt-1 text-sm text-kumo-subtle">{i18n._(lesson.summary)}</p>
             </div>
-            <div className="controls">
+            <div className="flex shrink-0 gap-2">
               <Button
                 variant="primary"
-                icon={<PlayIcon />}
+                icon={<PlayIcon size={16} />}
                 loading={pending}
                 onClick={run}
                 disabled={!lesson.runnable}
@@ -345,35 +339,49 @@ function Playground({
             </div>
           </div>
 
-          {lesson.hint && <p className="hint">{i18n._(lesson.hint)}</p>}
+          {lesson.hint && (
+            <p className="mx-5 mb-3 rounded-md bg-kumo-recessed px-3 py-2 text-xs text-kumo-subtle">
+              {i18n._(lesson.hint)}
+            </p>
+          )}
 
-          <CodeEditor
-            value={code}
-            onChange={setCode}
-            language={lesson.language ?? 'javascript'}
-            onRun={run}
-          />
+          <div className="min-h-0 flex-1 border-t border-kumo-line max-lg:h-[45vh] max-lg:flex-none">
+            <CodeEditor
+              value={code}
+              onChange={setCode}
+              language={lesson.language ?? 'javascript'}
+              onRun={run}
+            />
+          </div>
 
-          <div className="result" aria-live="polite">
-            {error && <pre className="error">{error}</pre>}
+          <div className="max-h-[42%] shrink-0 overflow-auto border-t border-kumo-line bg-kumo-base px-5 py-3 max-lg:max-h-none">
+            {error && (
+              <pre className="mb-2 text-xs break-words whitespace-pre-wrap text-kumo-danger">
+                {error}
+              </pre>
+            )}
             {result && (
               <>
-                <p className="status">
+                <p className="mb-1.5 text-xs text-kumo-subtle">
                   <Trans>
                     HTTP {result.status} · {result.ms}ms
                   </Trans>
                 </p>
-                <pre>{result.body}</pre>
+                <pre className="mb-2 rounded-md bg-kumo-recessed p-3 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap text-kumo-default">
+                  {result.body}
+                </pre>
                 {result.logs.length > 0 && (
                   <>
-                    <p className="status">console</p>
-                    <pre>{result.logs.join('\n')}</pre>
+                    <p className="mb-1.5 text-xs text-kumo-subtle">console</p>
+                    <pre className="rounded-md bg-kumo-recessed p-3 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap text-kumo-default">
+                      {result.logs.join('\n')}
+                    </pre>
                   </>
                 )}
               </>
             )}
             {!error && !result && (
-              <p className="empty">
+              <p className="text-sm text-kumo-subtle">
                 {lesson.runnable ? (
                   <Trans>
                     実行するとここにレスポンスと console
@@ -387,34 +395,38 @@ function Playground({
           </div>
         </section>
 
-        <section className="pane doc-pane" aria-label={t`資料`}>
-          <article className="doc" dangerouslySetInnerHTML={{ __html: docHtml }} />
-          <footer className="doc-footer">
-            <nav className="lesson-nav" aria-label={t`章の移動`}>
+        <section
+          className="min-h-0 overflow-x-hidden overflow-y-auto border-l border-kumo-line bg-kumo-base px-8 py-6 max-lg:border-t max-lg:border-l-0"
+          aria-label={t`資料`}
+        >
+          <article className={proseTokens} dangerouslySetInnerHTML={{ __html: docHtml }} />
+          <footer className="mt-10 max-w-[680px] border-t border-kumo-line pt-4">
+            <nav className="mb-6 flex items-center justify-between gap-3" aria-label={t`章の移動`}>
               <Button
                 variant="outline"
-                icon={<ArrowLeftIcon />}
+                icon={<ArrowLeftIcon size={16} />}
                 onClick={() => go(-1)}
                 disabled={lessonIndex === 0}
               >
                 <Trans>前の章</Trans>
               </Button>
-              <span>
+              <span className="text-xs text-kumo-subtle">
                 {lessonIndex + 1} / {lessons.length}
               </span>
               <Button
                 variant="outline"
-                icon={<ArrowRightIcon />}
+                icon={<ArrowRightIcon size={16} />}
                 onClick={() => go(1)}
                 disabled={lessonIndex === lessons.length - 1}
               >
                 <Trans>次の章</Trans>
               </Button>
             </nav>
-            <p>
+
+            <p className="mb-2 text-sm font-semibold text-kumo-strong">
               <Trans>前提知識</Trans>
             </p>
-            <ul>
+            <ul className="list-disc space-y-1 pl-5 text-sm text-kumo-default">
               <li>
                 <Link href="https://jsprimer.net/" target="_blank" rel="noreferrer">
                   JavaScript Primer

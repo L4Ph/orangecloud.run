@@ -11,11 +11,12 @@ export const loader = defineHandler((c) => {
   const requested = c.req.query('lesson');
   const lesson = lessons.find((item) => item.id === requested) ?? lessons[0];
 
-  return {
-    locale,
-    lessonId: lesson.id,
-    docHtml: marked.parse(lessonDoc(locale, lesson.id), { async: false }),
-  };
+  // The pane header already shows the chapter title.
+  const docHtml = marked
+    .parse(lessonDoc(locale, lesson.id), { async: false })
+    .replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>/, '');
+
+  return { locale, lessonId: lesson.id, docHtml };
 });
 
 export type Props = InferProps<typeof loader>;
