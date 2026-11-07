@@ -32,6 +32,7 @@ npm run smoke   # execute every lesson snippet against the dev server
 ## Deploy
 
 ```sh
-npx void deploy --platform cloudflare
+npx void connect --platform cloudflare   # pick the account (also enables local Workers AI)
+npx void deploy
 npx void secret put TURNSTILE_SECRET
 ```
